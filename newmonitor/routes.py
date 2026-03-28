@@ -8,3 +8,8 @@ lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
 def home():
     return render_template("home.html")
 
+@app.route("/registro")
+def registro():
+    return render_template("registro.html")
+
+
