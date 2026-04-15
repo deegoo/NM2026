@@ -1,9 +1,9 @@
 <!-- Sidebar -->
   <div class="sidebar">
     <h2>SGO</h2>
-    <ul>
+    <ul><a href="/">
       <li>Home</li>
-      <li>Página inicial</li>
+      <li>Página inicial</li></a>
       <li>Incidentes
         <ul>
           <li>Consultar</li>
@@ -17,13 +17,13 @@
       <li>Painéis</li>
       <li>Abrir Registro
         <ul>
-          <li>Novo</li>
+          <li><a href="{{ url_for('abrir_registro')}}">Novo</a></li>
         </ul>
       </li> 
       <li>Consultas
         <ul>
           <li>Consulta Incidentes Datacenter</li>
-          <li>Consulta Reg. de Falha</li>
+          <li><a href="{{ url_for('consulta_regitro_falha')}}">Consulta Reg. de Falha</a></li>
           <li>Consulta Manobras</li>
           <li>Consulta Manobras abertas</li>
         </ul>

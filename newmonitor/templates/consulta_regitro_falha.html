@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="main-content">
+    <h1>Consulta de Registro de Falha</h1>
+
+    <form method="POST">
+        <label for="ticket">Ticket:</label>
+        <input type="text" id="ticket" name="ticket">
+
+        <label for="data_inicio">Data Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio">
+
+        <label for="data_final">Data Final:</label>
+        <input type="date" id="data_final" name="data_final">
+
+        <label for="operacao">Operação:</label>
+        <select id="operacao" name="operacao">
+            <option value="">Selecione a cidade</option>
+            <option value="sp">São Paulo</option>
+            <option value="rj">Rio de Janeiro</option>
+        </select>
+
+        <button type="submit">Consultar Data</button>
+    </form>
+
+    <hr>
+
+    
+
+    <h2>Status de Ticket</h2>
+    <ul>
+        <li>Ticket não tratado</li>
+        <li>Ticket em tratamento</li>
+        <li>Ticket parado</li>
+        <li>Ticket fechado</li>
+    </ul>
+
+</div>
+{% endblock %}

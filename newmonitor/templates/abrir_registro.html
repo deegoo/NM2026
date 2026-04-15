@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<form method="POST">
+    <label for="sintoma">Sintoma:</label>
+    <select name="sintoma" id="sintoma">
+        <option value="net">NET VIRTUA</option>
+        <option value="fone">NET FONE</option>
+    </select>
+
+    <label for="data_inicio">Data Início:</label>
+    <input type="datetime-local" name="data_inicio" id="data_inicio">
+
+    <label for="descricao">Descrição do Problema:</label>
+    <textarea name="descricao" id="descricao"></textarea>
+
+    <label for="cidade">Cidade:</label>
+    <select name="cidade" id="cidade">
+        <option value="sp">São Paulo</option>
+        <option value="rj">Rio de Janeiro</option>
+    </select>
+
+    <button type="submit">Registrar</button>
+</form>
+{% endblock %}

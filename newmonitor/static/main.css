@@ -2,83 +2,101 @@ body {
       margin: 0;
       font-family: Arial, sans-serif;
       display: flex;
-    }
+}
 
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background-color: #1c1c1c;
-      color: #fff;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 0;
-      position: fixed;
-    }
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #1c1c1c;
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  position: fixed;
+}
 
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
 
-    .sidebar ul li {
-      padding: 12px 20px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+.sidebar ul li {
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-    .sidebar ul li:hover {
-      background-color: #333;
-    }
+.sidebar ul li:hover {
+  background-color: #333;
+}
 
-    .sidebar ul li ul {
-      margin-left: 15px;
-      display: none;
-    }
+.sidebar ul li ul {
+  margin-left: 15px;
+  display: none;
+}
 
-    .sidebar ul li:hover ul {
-      display: block;
-    }
+.sidebar ul li:hover ul {
+  display: block;
+}
 
-    /* Conteúdo principal */
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-      flex: 1;
-      background-color: #f4f4f4;
-      min-height: 100vh;
-    }
+/* Conteúdo principal */
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  flex: 1;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+}
 
-    .dashboard {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+.dashboard {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      flex: 1;
-      min-width: 150px;
-      text-align: center;
-    }
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+}
 
-    .card h3 {
-      margin: 0;
-      font-size: 18px;
-      color: #333;
-    }
+.card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
 
-    .card p {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0 0;
-      color: #007bff;
-    }
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0 0;
+  color: #007bff;
+}
+
+/* estilo geral para todos os links */
+a {
+  color: inherit;            /* herda a cor do elemento pai */
+  text-decoration: none;     /* remove o sublinhado */
+}
+
+/* se quiser definir uma cor específica */
+a {
+  color: #fff;               /* exemplo: branco */
+  text-decoration: none;
+}
+
+/* opcional: estilo ao passar o mouse */
+a:hover {
+  color: #007bff;            /* muda a cor no hover */
+  text-decoration: underline; /* ou pode manter sem sublinhado */
+}

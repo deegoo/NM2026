@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, url_for
 from newmonitor import app
 
 
@@ -12,4 +12,10 @@ def home():
 def registro():
     return render_template("registro.html")
 
+@app.route("/abrir_registro")
+def abrir_registro():
+    return render_template("abrir_registro.html")
 
+@app.route("/consulta_regitro_falha")
+def consulta_regitro_falha():
+    return render_template("consulta_regitro_falha.html")
