@@ -19,3 +19,7 @@ def abrir_registro():
 @app.route("/consulta_regitro_falha")
 def consulta_regitro_falha():
     return render_template("consulta_regitro_falha.html")
+
+@app.route("/fechar_registro")
+def fechar_registro():
+    return render_template("fechar_registro.html")    

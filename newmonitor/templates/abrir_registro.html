@@ -1,25 +1,81 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<form method="POST">
-    <label for="sintoma">Sintoma:</label>
-    <select name="sintoma" id="sintoma">
-        <option value="net">NET VIRTUA</option>
-        <option value="fone">NET FONE</option>
-    </select>
+<div class="main-content">
+    <h1>Inclusão Ticket: Registro de Falha</h1>
 
-    <label for="data_inicio">Data Início:</label>
-    <input type="datetime-local" name="data_inicio" id="data_inicio">
+    <form method="POST">
+        <!-- Sintoma -->
+        <label for="sintoma">Sintoma:</label>
+        <select name="sintoma" id="sintoma" required>
+            <option value="" selected disabled>Selecione um título</option>
+            <option value="mudo">Mudo</option>
+            <option value="queda">Queda de Link</option>
+            <option value="trafe">Queda no Tráfego</option>
+        </select>
 
-    <label for="descricao">Descrição do Problema:</label>
-    <textarea name="descricao" id="descricao"></textarea>
+        <!-- Data Início -->
+        <label for="data_inicio">Data Início:</label>
+        <input type="datetime-local" id="data_inicio" name="data_inicio" value="2026-03-12T21:17">
 
-    <label for="cidade">Cidade:</label>
-    <select name="cidade" id="cidade">
-        <option value="sp">São Paulo</option>
-        <option value="rj">Rio de Janeiro</option>
-    </select>
+        <!-- Descrição -->
+        <label for="descricao">Descrição do Problema:</label>
+        <textarea id="descricao" name="descricao"></textarea>
 
-    <button type="submit">Registrar</button>
-</form>
+        <!-- Serviços Afetados -->
+        <fieldset>
+            <legend>Serviços Afetados:</legend>
+            <label><input type="checkbox" name="servico" value="net"> NET VIRTUA</label><br>
+            <label><input type="checkbox" name="servico" value="fone"> NET FONE</label><br>
+            <label><input type="checkbox" name="servico" value="paytv"> PayTV - Digital</label><br>
+            <label><input type="checkbox" name="servico" value="wifi"> WiFi</label><br>
+            <label><input type="checkbox" name="servico" value="now">NOW</label><br>
+            <label><input type="checkbox" name="servico" value="bsod">BSOD</label><br>
+            <!-- adicione os demais conforme necessário -->
+        </fieldset>
+
+        <!-- Cidade -->
+        <label for="cidade">Cidade:</label>
+        <select name="cidade" id="cidade" required>
+            <option value="" selected disabled>Selecione a cidade</option>
+            <option value="sp">São Paulo</option>
+            <option value="rj">Rio de Janeiro</option>
+            <option value="teresopolis">Teresópolis</option>
+        </select>
+
+        <!-- Categoria -->
+        <label for="categoria">Categoria:</label>
+        <select name="categoria" id="categoria" required>
+            <option value="" selected disabled>Selecione Categoria</option>
+            <option value="falha">Links</option>
+            <option value="incidente">Infra</option>
+        </select>
+
+        <!-- Ofensor -->
+        <label for="ofensor">Ofensor (Link/Host):</label>
+        <select name="ofensor" id="ofensor" required>
+            <option value="" selected disabled>Selecione Ofensor</option>
+            <option value="link1">Link tal x tal</option>
+            <option value="host1"></option>
+        </select>
+
+        <!-- Evento -->
+        <label for="evento">Evento:</label>
+        <select name="evento" id="evento" required>
+            <option value="" selected disabled>Selecione Evento</option>
+            <option value="queda">Degradação</option>
+            <option value="manutencao">Inerrupção</option>
+        </select>
+
+        <!-- Fila -->
+        <label for="fila">Fila:</label>
+        <input type="text" id="fila" name="fila" value="selecione" readonly>
+
+        <!-- Chamado da operadora -->
+        <label for="chamado">Chamado da operadora:</label>
+        <input type="text" id="chamado" name="chamado">
+
+        <button type="submit">Registrar</button>
+    </form>
+</div>
 {% endblock %}

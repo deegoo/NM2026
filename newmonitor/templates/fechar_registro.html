@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <h1>Registro de Falha (Ticket nº 14419977)</h1>
+
+    <!-- Seção para fechar o ticket -->
+    <section>
+        <h2>Fechar Ticket</h2>
+        <form method="POST">
+            <label for="responsabilidade">Responsabilidade:</label>
+            <select id="responsabilidade" name="responsabilidade">
+                <option value="">Selecione</option>
+                <option value="rede">Rede</option>
+                <option value="infra">Infraestrutura</option>
+            </select>
+
+            <label for="parte_rede">Parte da Rede:</label>
+            <select id="parte_rede" name="parte_rede">
+                <option value="">Selecione</option>
+            </select>
+
+            <label for="natureza">Nat. da Manutenção:</label>
+            <select id="natureza" name="natureza">
+                <option value="">Selecione</option>
+            </select>
+
+            <label for="data_final">Data Final:</label>
+            <input type="datetime-local" id="data_final" name="data_final" value="2026-03-12T21:22">
+
+            <label for="causa">Causa:</label>
+            <input type="text" id="causa" name="causa">
+
+            <label for="solucao">Solução:</label>
+            <input type="text" id="solucao" name="solucao">
+
+            <label for="sumario">Sumário:</label>
+            <textarea id="sumario" name="sumario"></textarea>
+
+            <label for="erro_operacional">Erro operacional?</label>
+            <select id="erro_operacional" name="erro_operacional">
+                <option value="sim">SIM</option>
+                <option value="nao">NÃO</option>
+            </select>
+
+            <button type="submit">Fechar</button>
+        </form>
+    </section>
+
+   
+   
+
+{% endblock %}
