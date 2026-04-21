@@ -1,81 +1,91 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="main-content">
-    <h1>Inclusão Ticket: Registro de Falha</h1>
+<div class="container">
+<h1>Registro de Falha</h1>
 
-    <form method="POST">
-        <!-- Sintoma -->
-        <label for="sintoma">Sintoma:</label>
-        <select name="sintoma" id="sintoma" required>
-            <option value="" selected disabled>Selecione um título</option>
-            <option value="mudo">Mudo</option>
-            <option value="queda">Queda de Link</option>
-            <option value="trafe">Queda no Tráfego</option>
-        </select>
+<label>Sintoma</label>
+<select>
+  <option>Degradação de tráfego</option>  <option>Mudo</option>  <option>Não afetado</option></select>
+<label>Data de Início</label>
+<input type="datetime-local">
 
-        <!-- Data Início -->
-        <label for="data_inicio">Data Início:</label>
-        <input type="datetime-local" id="data_inicio" name="data_inicio" value="2026-03-12T21:17">
 
-        <!-- Descrição -->
-        <label for="descricao">Descrição do Problema:</label>
-        <textarea id="descricao" name="descricao"></textarea>
+<label>Descrição da Falha</label>
+<textarea rows="4"></textarea>
 
-        <!-- Serviços Afetados -->
-        <fieldset>
-            <legend>Serviços Afetados:</legend>
-            <label><input type="checkbox" name="servico" value="net"> NET VIRTUA</label><br>
-            <label><input type="checkbox" name="servico" value="fone"> NET FONE</label><br>
-            <label><input type="checkbox" name="servico" value="paytv"> PayTV - Digital</label><br>
-            <label><input type="checkbox" name="servico" value="wifi"> WiFi</label><br>
-            <label><input type="checkbox" name="servico" value="now">NOW</label><br>
-            <label><input type="checkbox" name="servico" value="bsod">BSOD</label><br>
-            <!-- adicione os demais conforme necessário -->
-        </fieldset>
 
-        <!-- Cidade -->
-        <label for="cidade">Cidade:</label>
-        <select name="cidade" id="cidade" required>
-            <option value="" selected disabled>Selecione a cidade</option>
-            <option value="sp">São Paulo</option>
-            <option value="rj">Rio de Janeiro</option>
-            <option value="teresopolis">Teresópolis</option>
-        </select>
+<label>Cidades</label>
+<div class="dual-list">
+  <div class="list-box">
+    <strong>Disponíveis</strong>
+    <ul id="cidadesDisponiveis" ondragover="event.preventDefault()" ondrop="drop(event,'disp')"></ul>
+  </div>
 
-        <!-- Categoria -->
-        <label for="categoria">Categoria:</label>
-        <select name="categoria" id="categoria" required>
-            <option value="" selected disabled>Selecione Categoria</option>
-            <option value="falha">Links</option>
-            <option value="incidente">Infra</option>
-        </select>
+  <div class="arrow-box">
+    <button onclick="moverParaSelecionadas()">➡</button>
+    <button onclick="moverParaDisponiveis()">⬅</button>
+  </div>
 
-        <!-- Ofensor -->
-        <label for="ofensor">Ofensor (Link/Host):</label>
-        <select name="ofensor" id="ofensor" required>
-            <option value="" selected disabled>Selecione Ofensor</option>
-            <option value="link1">Link tal x tal</option>
-            <option value="host1"></option>
-        </select>
+  <div class="list-box">
+    <strong>Selecionadas</strong>
+    <ul id="cidadesSelecionadas" ondragover="event.preventDefault()" ondrop="drop(event,'sel')"></ul>
+  </div>
+</div>
 
-        <!-- Evento -->
-        <label for="evento">Evento:</label>
-        <select name="evento" id="evento" required>
-            <option value="" selected disabled>Selecione Evento</option>
-            <option value="queda">Degradação</option>
-            <option value="manutencao">Inerrupção</option>
-        </select>
+<label>Serviços Afetados</label>
+<select id="servicosAfetados" multiple size="6">
+  <option>AVV</option>
+  <option>BSOD</option>
+  <option>CLARO BOX TV</option>
+  <option>CLARO TV+</option>
+  <option>NET FONE</option>
+  <option>NET VIRTUA</option>
+  <option>NOW</option>
+  <option>NOW ONLINE</option>
+  <option>PAY TV ANALOGICO</option>
+  <option>PAY TV DIGITAL</option>
+  <option>TV EVERYWHERE</option>
+  <option>WIFI</option>
+</select>
+<small>Use Ctrl ou arraste o mouse para selecionar múltiplos serviços</small>
+<label>Categoria</label>
+<select id="categoria" onchange="atualizarOfensores()">
+  <option>Não Definida</option>
+  <option>SoftSwitch</option>
+  <option>Servidores/Provisionamento</option>
+  <option>Links</option>
+  <option>Infra Estrutura</option>
+  <option>Backbone IP</option>
+  <option>Geradora</option>
+  <option>Canal indisponível</option>
+</select>
 
-        <!-- Fila -->
-        <label for="fila">Fila:</label>
-        <input type="text" id="fila" name="fila" value="selecione" readonly>
+<label>Ofensor</label>
+<select id="ofensor"></select>
 
-        <!-- Chamado da operadora -->
-        <label for="chamado">Chamado da operadora:</label>
-        <input type="text" id="chamado" name="chamado">
 
-        <button type="submit">Registrar</button>
-    </form>
+<label>Evento</label>
+<select>
+  <option>Degradação</option>
+  <option>Interrupção</option>
+  <option>Programada</option>
+  <option>Informativo</option>
+  <option>Avaliação de desempenho</option>
+</select>
+<label>Fila</label>
+<select>
+  <option>Rodrigo</option>
+  <option>Ednilton</option>
+  <option>Danilo</option>
+  <option>Cleiton</option>
+  <option>Rosemeire</option>
+</select>
+<label>Chamado Operadora</label>
+<textarea maxlength="42" rows="2"></textarea>
+<small>Máximo 42 caracteres</small>
+
+
+<button onclick="cadastrar()">Cadastrar</button>
 </div>
 {% endblock %}
