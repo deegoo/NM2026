@@ -1,3 +1,4 @@
+alert("Java script conectado com sucesso")
 const capitais = ["São Paulo","Rio de Janeiro","Belo Horizonte","Brasília","Salvador"];
 const disp = document.getElementById("cidadesDisponiveis");
 const sel = document.getElementById("cidadesSelecionadas");
