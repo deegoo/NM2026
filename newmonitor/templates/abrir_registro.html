@@ -2,20 +2,20 @@
 
 {% block body %}
 <div class="container">
-<h1>Registro de Falha</h1>
+<h1>Registro de Falha</h1><br>
 
 <label>Sintoma</label>
 <select>
-  <option>Degradação de tráfego</option>  <option>Mudo</option>  <option>Não afetado</option></select>
+  <option>Degradação de tráfego</option>  <option>Mudo</option>  <option>Não afetado</option></select><br>
 <label>Data de Início</label>
-<input type="datetime-local">
+<input type="datetime-local"><br>
 
 
 <label>Descrição da Falha</label>
-<textarea rows="4"></textarea>
+<textarea rows="4"></textarea><br>
 
 
-<label>Cidades</label>
+<label>Cidades</label><br>
 <div class="dual-list">
   <div class="list-box">
     <strong>Disponíveis</strong>
@@ -31,7 +31,7 @@
     <strong>Selecionadas</strong>
     <ul id="cidadesSelecionadas" ondragover="event.preventDefault()" ondrop="drop(event,'sel')"></ul>
   </div>
-</div>
+</div><br>
 
 <label>Serviços Afetados</label>
 <select id="servicosAfetados" multiple size="6">
@@ -47,8 +47,8 @@
   <option>PAY TV DIGITAL</option>
   <option>TV EVERYWHERE</option>
   <option>WIFI</option>
-</select>
-<small>Use Ctrl ou arraste o mouse para selecionar múltiplos serviços</small>
+</select><br>
+<small>Use Ctrl ou arraste o mouse para selecionar múltiplos serviços</small><br>
 <label>Categoria</label>
 <select id="categoria" onchange="atualizarOfensores()">
   <option>Não Definida</option>
@@ -59,10 +59,10 @@
   <option>Backbone IP</option>
   <option>Geradora</option>
   <option>Canal indisponível</option>
-</select>
+</select><br>
 
 <label>Ofensor</label>
-<select id="ofensor"></select>
+<select id="ofensor"></select><br>
 
 
 <label>Evento</label>
@@ -72,7 +72,7 @@
   <option>Programada</option>
   <option>Informativo</option>
   <option>Avaliação de desempenho</option>
-</select>
+</select><br>
 <label>Fila</label>
 <select>
   <option>Rodrigo</option>
@@ -80,14 +80,12 @@
   <option>Danilo</option>
   <option>Cleiton</option>
   <option>Rosemeire</option>
-</select>
+</select><br>
 <label>Chamado Operadora</label>
-<textarea maxlength="42" rows="2"></textarea>
-<small>Máximo 42 caracteres</small>
+<textarea maxlength="42" rows="2"></textarea><br>
+<small>Máximo 42 caracteres</small><br>
 
 
 <button onclick="cadastrar()">Cadastrar</button>
 </div>
-
-<script type="text/javascript" src="../script.js">
 {% endblock %}
