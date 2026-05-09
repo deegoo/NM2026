@@ -23,3 +23,7 @@ def consulta_regitro_falha():
 @app.route("/fechar_registro")
 def fechar_registro():
     return render_template("fechar_registro.html")    
+
+@app.route("/registra_ofensor")
+def registra_ofensor():
+    return render_template("registra_ofensor.html") 

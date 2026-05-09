@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div>
+    <label>Novo Ofensor</label>
+    <label>Ofensor:</label>
+    <input type="text">
+    <label for="cidades_lista">Cidade:</label>    
+        <select id="cidades_lista"></select>
+    <label>Categoria</label>
+    <select id="categoria">
+          <option>Não Definida</option>
+          <option>SoftSwitch</option>
+          <option>Servidores/Provisionamento</option>
+          <option>Links</option>
+          <option>Infra Estrutura</option>
+          <option>Backbone IP</option>
+          <option>Geradora</option>
+          <option>Canal indisponível</option>
+</select>
+</br></br>
+    <button>Incluir</button>
+</div>
+
+
+{% endblock %}
