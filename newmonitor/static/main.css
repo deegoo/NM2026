@@ -41,10 +41,6 @@ body {
   display: none;
 }
 
-.sidebar ul li:hover ul {
-  display: block;
-}
-
 /* Conteúdo principal */
 .main-content {
   margin-left: 250px;
@@ -228,6 +224,14 @@ button[onclick="cadastrar()"]:hover {
 small {
     color: #666;
     margin-top: 2px;
+}
+
+.menu_option {
+  display: none;
+}
+
+.menu_option.show {
+  display: block;
 }
 
 

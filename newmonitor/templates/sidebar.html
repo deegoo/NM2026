@@ -4,8 +4,8 @@
     <ul><a href="/">
       <li>Home</li>
       <li>Página inicial</li></a>
-      <li>Incidentes
-        <ul>
+      <li class="menu_main">Incidentes
+        <ul class="menu_option">
           <li>Consultar</li>
           <li>Listar</li>
           <li>Incidentes abertos</li>
@@ -14,39 +14,40 @@
           <li>Novo</li>
         </ul>
       </li>
-      <li>Painéis</li>
-      <li>Abrir Registro
-        <ul>
+      <li class="menu_main">Abrir Registro
+        <ul class="menu_option">
           <li><a href="{{ url_for('abrir_registro')}}">Novo</a></li>
         </ul>
       </li> 
-      <li>Consultas
-        <ul>
+      <li class="menu_main">Consultas
+        <ul class="menu_option">
           <li>Consulta Incidentes Datacenter</li>
           <li><a href="{{ url_for('consulta_regitro_falha')}}">Consulta Reg. de Falha</a></li>
           <li>Consulta Manobras</li>
           <li>Consulta Manobras abertas</li>
         </ul>
       </li> 
-      <li>Painel
-        <ul>
+      <li class="menu_main">Painel
+        <ul class="menu_option">
           <li>Painel de Outages</li>
           <li>Painel Monitoração</li>
         </ul>
       </li> 
-      <li>Relatórios
-        <ul>
+      <li class="menu_main">Relatórios
+        <ul class="menu_option">
           <li>CMTS X Node</li>
           <li>Manobeas</li>
           <li>Outages</li>
           <li>Outages x Manobras</li>
         </ul>
       </li>
-      <li>Gerenciamento Monitor
-        <ul>
+      <li class="menu_main">Gerenciamento Monitor
+        <ul class="menu_option">
           <li>Excluir Tickets</li>
           <li><a href="{{ url_for('registra_ofensor')}}">Ofensor</a></li>
         </ul>
       </li>
     </ul>
   </div>
+
+  <script src="{{ url_for('static', filename='sidebar.js')}}" defer></script>
