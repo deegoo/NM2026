@@ -10,19 +10,14 @@
         <form method="POST">
             <label for="responsabilidade">Responsabilidade:</label>
             <select id="responsabilidade" name="responsabilidade">
-                <option value="">Selecione</option>
-                <option value="rede">Rede</option>
-                <option value="infra">Infraestrutura</option>
             </select>
 
             <label for="parte_rede">Parte da Rede:</label>
             <select id="parte_rede" name="parte_rede">
-                <option value="">Selecione</option>
             </select>
 
             <label for="natureza">Nat. da Manutenção:</label>
             <select id="natureza" name="natureza">
-                <option value="">Selecione</option>
             </select>
 
             <label for="data_final">Data Final:</label>
@@ -50,7 +45,7 @@
         </form>
     </section>
 
-   
+   <script src="{{ url_for('static', filename='fechamento.js')}}" defer></script>
    
 
 {% endblock %}
