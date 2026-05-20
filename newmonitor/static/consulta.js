@@ -57,7 +57,7 @@ function renderTabela(lista) {
             <td>${t.cidade}</td>
             <td>${t.servico}</td>
             <td>${t.sintoma}</td>
-            <td>${t.data_inicio}</td>
+            <td>${formatarData(t.data_inicio)}</td>
         `;
 
         tbody.appendChild(tr);
@@ -73,4 +73,15 @@ function limpar() {
     document.getElementById("filtro_cidade").value = "";
 
     document.getElementById("resultado").innerHTML = "";
+}
+
+function formatarData(dataISO) {
+
+    if (!dataISO) return "";
+
+    const [data, hora] = dataISO.split("T");
+
+    const [ano, mes, dia] = data.split("-");
+
+    return `${dia}-${mes}-${ano} ${hora}`;
 }
