@@ -1,25 +1,22 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
 <div class="container">
-<h1>Registro de Falha</h1><br>
 
-<label>Sintoma</label>
-<select>
-  <option>Degradação de tráfego</option>  <option>Mudo</option>  <option>Não afetado</option></select><br>
-<label>Data de Início</label>
-<input type="datetime-local"><br>
+<h1>Registro de Falha</h1>
+<br>
 
-
-<label>Descrição da Falha</label>
-<textarea rows="4"></textarea><br>
-
+<label>Data Início</label>
+<input type="datetime-local" id="data_inicio"><br>
 
 <label>Cidades</label><br>
+
 <div class="dual-list">
+
   <div class="list-box">
     <strong>Disponíveis</strong>
-    <ul id="cidadesDisponiveis" ondragover="event.preventDefault()" ondrop="drop(event,'disp')"></ul>
+    <ul id="cidadesDisponiveis"></ul>
   </div>
 
   <div class="arrow-box">
@@ -29,66 +26,47 @@
 
   <div class="list-box">
     <strong>Selecionadas</strong>
-    <ul id="cidadesSelecionadas" ondragover="event.preventDefault()" ondrop="drop(event,'sel')"></ul>
+    <ul id="cidadesSelecionadas"></ul>
   </div>
+
 </div><br>
 
-<label>Serviços Afetados</label>
-<select id="servicosAfetados" multiple size="6">
-  <option>AVV</option>
-  <option>BSOD</option>
-  <option>CLARO BOX TV</option>
-  <option>CLARO TV+</option>
-  <option>NET FONE</option>
-  <option>NET VIRTUA</option>
-  <option>NOW</option>
-  <option>NOW ONLINE</option>
-  <option>PAY TV ANALOGICO</option>
-  <option>PAY TV DIGITAL</option>
-  <option>TV EVERYWHERE</option>
-  <option>WIFI</option>
-</select><br>
-<small>Use Ctrl ou arraste o mouse para selecionar múltiplos serviços</small><br>
+<label>Serviços</label>
+<select id="servicosAfetados" multiple size="6"></select><br>
+
+
+<label>Sintoma</label>
+<select id="sintoma"></select><br>
+
+<label>Evento</label>
+<select id="evento"></select><br>
+
+
 <label>Categoria</label>
-<select id="categoria" onchange="atualizarOfensores()">
-  <option>Não Definida</option>
-  <option>SoftSwitch</option>
-  <option>Servidores/Provisionamento</option>
-  <option>Links</option>
-  <option>Infra Estrutura</option>
-  <option>Backbone IP</option>
-  <option>Geradora</option>
-  <option>Canal indisponível</option>
-</select><br>
+<select id="categoria"></select><br>
 
 <label>Ofensor</label>
 <select id="ofensor"></select><br>
 
 
-<label>Evento</label>
-<select>
-  <option>Degradação</option>
-  <option>Interrupção</option>
-  <option>Programada</option>
-  <option>Informativo</option>
-  <option>Avaliação de desempenho</option>
-</select><br>
-<label>Fila</label>
-<select>
-  <option>Rodrigo</option>
-  <option>Ednilton</option>
-  <option>Danilo</option>
-  <option>Cleiton</option>
-  <option>Rosemeire</option>
-</select><br>
+<label>Descrição</label>
+<textarea id="descricao"></textarea><br>
+
+
 <label>Chamado Operadora</label>
-<textarea maxlength="42" rows="2"></textarea><br>
-<small>Máximo 42 caracteres</small><br>
+<input type="text" id="chamado_operadora"><br>
 
-<label>Outage</label>
-<textarea maxlength="42" rows="2"></textarea><br>
-<small>Máximo 42 caracteres</small><br>
 
-<button onclick="cadastrar()">Cadastrar</button>
+
+<button type="button" onclick="cadastrar()">Cadastrar</button>
+
+
+<script>
+    window.USUARIO_LOGADO = "{{ usuario }}";
+</script>
+
 </div>
+
+<script src="{{ url_for('static', filename='abertura.js') }}"></script>
+
 {% endblock %}

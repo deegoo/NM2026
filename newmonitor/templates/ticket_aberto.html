@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>Tickets Abertos</h2>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Ticket</th>
+            <th>Cidade</th>
+            <th>Serviço</th>
+            <th>Sintoma</th>
+            <th>Evento</th>
+            <th>Categoria</th>
+            <th>Ofensor</th>
+            <th>Chamado</th>
+            <th>Usuário</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabela_tickets"></tbody>
+</table>
+
+<!-- ✅ MODAL DE FECHAMENTO -->
+<div id="modal_fechamento" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+">
+
+    <div style="
+        background:white;
+        padding:20px;
+        width:400px;
+        margin:100px auto;
+    ">
+
+        <h3>Fechar Ticket</h3>
+
+        <label>Data Final</label>
+        <input type="datetime-local" id="data_final"><br>
+
+        <label>Causa</label>
+        <input id="causa"><br>
+
+        <label>Solução</label>
+        <input id="solucao"><br><br>
+
+        <button id="btn_confirmar">Confirmar</button>
+        <button onclick="fecharModal()">Cancelar</button>
+
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='tickets.js')}}" defer></script>
+
+{% endblock %}

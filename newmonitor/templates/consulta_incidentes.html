@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>Consulta de Incidentes</h2>
+
+<label>Número do Ticket</label>
+<input type="text" id="filtro_ticket"><br>
+
+<label>Data Início</label>
+<input type="date" id="filtro_data_inicio"><br>
+
+<label>Data Fim</label>
+<input type="date" id="filtro_data_fim"><br>
+
+
+<label>Cidade</label>
+<input type="text" id="filtro_cidade"><br><br>
+
+<button onclick="buscar()">Buscar</button>
+<button onclick="limpar()">Limpar</button>
+
+
+<hr>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Ticket</th>
+            <th>Cidade</th>
+            <th>Serviço</th>
+            <th>Sintoma</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+
+    <tbody id="resultado"></tbody>
+</table>
+
+<script src="{{ url_for('static', filename='consulta.js') }}"></script>
+
+{% endblock %}

@@ -8,7 +8,7 @@
         <ul class="menu_option">
           <li>Consultar</li>
           <li>Listar</li>
-          <li>Incidentes abertos</li>
+          <li><a href="{{ url_for('ticket_aberto')}}">Incidentes abertos</a></li>
           <li>Listar (Beta)</li>
           <li>Incidentes abertos (Beta)</li>
           <li>Novo</li>
@@ -25,6 +25,7 @@
           <li><a href="{{ url_for('consulta_regitro_falha')}}">Consulta Reg. de Falha</a></li>
           <li>Consulta Manobras</li>
           <li>Consulta Manobras abertas</li>
+          <li><a href="{{ url_for('ticket_aberto')}}">Tickets abertos</a></li>
         </ul>
       </li> 
       <li class="menu_main">Painel

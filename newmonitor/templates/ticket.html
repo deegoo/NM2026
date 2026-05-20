@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1>Ticket Gerado</h1>
+
+{% if tickets|length > 0 %}
+
+<h3>ID: {{ tickets[0].id_ticket }}</h3>
+
+<p><b>Descrição:</b> {{ tickets[0].descricao }}</p>
+<p><b>Data início:</b> {{ tickets[0].data_inicio }}</p>
+<p><b>Sintoma:</b> {{ tickets[0].sintoma }}</p>
+<p><b>Evento:</b> {{ tickets[0].evento }}</p>
+<p><b>Categoria:</b> {{ tickets[0].categoria }}</p>
+<p><b>Ofensor:</b> {{ tickets[0].ofensor }}</p>
+<p><b>Usuário:</b> {{ tickets[0].usuario }}</p>
+
+<hr>
+
+<h3>Registros</h3>
+
+<ul>
+{% for t in tickets %}
+    <li>{{ t.cidade }} | {{ t.servico }}</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h3>Adicionar Comentário</h3>
+
+<form id="form_comentario">
+    <textarea id="comentario"></textarea><br>
+    <input type="file" id="imagem"><br><br>
+    <button type="submit">Enviar</button>
+</form>
+
+<hr>
+
+<h3>Histórico</h3>
+
+<div id="lista_logs">
+
+{% if tickets[0].logs %}
+    {% for log in tickets[0].logs %}
+        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+            <p>{{ log.comentario }}</p>
+
+            {% if log.imagem %}
+                <img src="{{ url_for('static', filename='uploads/' ~ log.imagem) }}">
+            {% endif %}
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Sem comentários ainda</p>
+{% endif %}
+
+</div>
+
+<br>
+<a href="/ticket_aberto">Voltar para lista</a>
+
+
+
+{% else %}
+
+<p>Ticket não encontrado</p>
+
+{% endif %}
+<script src="{{ url_for('static', filename='criar_ticket.js') }}"></script>
+{% endblock %}
