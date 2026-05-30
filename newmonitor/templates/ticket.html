@@ -8,6 +8,7 @@
 
 <h3>ID: {{ tickets[0].id_ticket }}</h3>
 
+<p><b>Serviços Afetados:</b> {{ tickets[0].servico }}</p>
 <p><b>Descrição:</b> {{ tickets[0].descricao }}</p>
 <p><b>Data início:</b> {{ tickets[0].data_inicio }}</p>
 <p><b>Sintoma:</b> {{ tickets[0].sintoma }}</p>
@@ -60,7 +61,7 @@
 </div>
 
 <br>
-<a href="/ticket_aberto">Voltar para lista</a>
+<a class="ticket_link" href="/ticket_aberto">Voltar para lista</a>
 
 
 

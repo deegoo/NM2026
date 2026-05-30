@@ -233,7 +233,29 @@ small {
 .menu_option.show {
   display: block;
 }
-
-
+.dash_abertos th{
+  color:#fff;
+  background-color:red;
+}
+.dash_abertos td{
+  color:#333;
+  background-color:#fff;
+}
+.dash_abertos a{
+  text-decoration: none;
+  color:#333;
+}
+.dash_abertos a:hover{
+  text-decoration:underline;
+  color:blue;
+}
+.ticket_link{
+  text-decoration: none;
+  color:#333;
+}
+.ticket_link:hover{
+  text-decoration:underline;
+  color:blue;
+}
 
 
