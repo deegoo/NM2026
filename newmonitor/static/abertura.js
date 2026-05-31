@@ -30,59 +30,20 @@ const regras = {
 
 
 /* =========================
-   CATEGORIA / OFENSOR (UNIFICADO)
+   DADOS (JSON)
 ========================= */
 
-const mapaOfensores = {
-    "Não Definida": ["Não Definida"],
-    "SoftSwitch": ["CDR","DCN","HIQ","ISMC","PNT"],
-    "Servidores/Provisionamento": ["AKAMAI","AMAZON","FACEBOOK","GGC","GLOBO","LOAD BALANCE","NETFLIX","PTT","TIKTOK","SPACEX","CLOUDFARE","UOL","BYTEDANCE","MICROSOFT","UPIX","RIOTGAMES","ALGAR","DURAND","MAXHOST","MARS","FLYS","OPENX","GARENA","EDGEUNO","FASTLY","VIVO","CDN77","CDNSTAR","BRASILTELECOM","QWILT","APPLE","I3D","ZENLAYER"],
-    "Infra Estrutura": ["Rede HFC","Rede FTTH","Queda de energia - Datacenter/HeadEnd","Queda de energia-POP EBT","Queda de energia - Região"],
-    "Backbone IP": ["Backbone IP"],
-    "Geradora": ["HBO","Telecine","Warner"],
-    "Canal indisponível": ["Globo","SBT","Record"]
-};
+let estrutura = {};
 
-
-/* =========================
-   VALIDAÇÃO
-========================= */
-
-function validarRegras(servico, sintoma, evento) {
-
-    if (servico === "NET FONE") {
-
-        if (sintoma === "MUDO" && !["INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
-            return "MUDO aceita apenas INTERRUPÇÃO ou PROGRAMADA";
-        }
-
-        if (sintoma === "MANOBRA" && evento !== "PROGRAMADA") {
-            return "MANOBRA só aceita PROGRAMADA";
-        }
-    }
-
-    if (["NET VIRTUA", "NOW", "PAY TV DIGITAL"].includes(servico)) {
-
-        if (!["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
-            return "Evento inválido";
-        }
-    }
-
-    return null;
+async function carregarEstrutura() {
+    const res = await fetch("/data/estrutura.json");
+    estrutura = await res.json();
 }
 
 
 /* =========================
    CIDADES / DRAG DROP
 ========================= */
-
-const capitais = [
-    "São Paulo",
-    "Rio de Janeiro",
-    "Belo Horizonte",
-    "Brasília",
-    "Salvador"
-];
 
 let dragItem = null;
 
@@ -104,51 +65,74 @@ function criarLi(texto) {
 
 function iniciarFormulario() {
 
-    const categoria = document.getElementById("categoria");
     const servicos = document.getElementById("servicosAfetados");
-    const selectCidades = document.getElementById("cidades_lista");
-    const disp = document.getElementById("cidadesDisponiveis");
 
-    // serviços
     Object.keys(regras).forEach(s => {
         servicos.add(new Option(s, s));
     });
+}
 
-    // categorias
-    Object.keys(mapaOfensores).forEach(c => {
-        categoria.add(new Option(c, c));
+
+function iniciarCidades() {
+
+    const disp = document.getElementById("cidadesDisponiveis");
+
+    if (disp) disp.innerHTML = "";
+
+    Object.keys(estrutura).forEach(cidade => {
+        if (disp) disp.appendChild(criarLi(cidade));
     });
+}
 
-    // select cidades
-    if (selectCidades) {
-        capitais.forEach(cidade => {
-            selectCidades.add(new Option(cidade, cidade));
-        });
-    }
 
-    // lista cidades drag
-    if (disp) {
-        capitais.forEach(c => disp.appendChild(criarLi(c)));
-    }
+/* =========================
+   NOVO: CAPTURA CIDADE (UL)
+========================= */
+
+function getCidadeSelecionada() {
+
+    const selecionadas = document.querySelectorAll("#cidadesSelecionadas li");
+
+    if (selecionadas.length === 0) return null;
+
+    return selecionadas[0].textContent;
+}
+
+
+/* =========================
+   CASCATA
+========================= */
+
+function atualizarCategorias() {
+
+    const cidade = getCidadeSelecionada();
+    const categoria = document.getElementById("categoria");
+
+    categoria.innerHTML = "";
+
+    if (!cidade || !estrutura[cidade]) return;
+
+    Object.keys(estrutura[cidade]).forEach(cat => {
+        categoria.add(new Option(cat, cat));
+    });
 
     atualizarOfensores();
 }
 
 
-/* =========================
-   OFENSORES
-========================= */
-
 function atualizarOfensores() {
 
-    const categoria = document.getElementById("categoria");
+    const cidade = getCidadeSelecionada();
+    const categoria = document.getElementById("categoria").value;
     const ofensor = document.getElementById("ofensor");
-
-    if (!categoria || !ofensor) return;
 
     ofensor.innerHTML = "";
 
-    (mapaOfensores[categoria.value] || []).forEach(o => {
+    if (!cidade) return;
+
+    const lista = estrutura[cidade]?.[categoria] || [];
+
+    lista.forEach(o => {
         ofensor.add(new Option(o, o));
     });
 }
@@ -175,6 +159,9 @@ function mover(origemId, destinoId) {
         li.classList.remove("selected");
         destino.appendChild(li);
     });
+
+    // ✅ ESSENCIAL: dispara cascata
+    atualizarCategorias();
 }
 
 
@@ -196,6 +183,7 @@ function iniciarSintomas() {
 
     atualizarEventos();
 }
+
 
 function atualizarEventos() {
 
@@ -319,16 +307,51 @@ function cadastrar() {
 
 
 /* =========================
-   EVENTOS GERAIS (UNIFICADO)
+   VALIDAÇÃO
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+function validarRegras(servico, sintoma, evento) {
 
-    document.getElementById("categoria")?.addEventListener("change", atualizarOfensores);
-    document.getElementById("servicosAfetados")?.addEventListener("change", atualizarEventos);
-    document.getElementById("sintoma")?.addEventListener("change", atualizarEventos);
+    if (servico === "NET FONE") {
+
+        if (sintoma === "MUDO" && !["INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
+            return "MUDO aceita apenas INTERRUPÇÃO ou PROGRAMADA";
+        }
+
+        if (sintoma === "MANOBRA" && evento !== "PROGRAMADA") {
+            return "MANOBRA só aceita PROGRAMADA";
+        }
+    }
+
+    if (["NET VIRTUA", "NOW", "PAY TV DIGITAL"].includes(servico)) {
+
+        if (!["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
+            return "Evento inválido";
+        }
+    }
+
+    return null;
+}
+
+
+/* =========================
+   EVENTOS GERAIS
+========================= */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await carregarEstrutura();
 
     iniciarFormulario();
+    iniciarCidades();
     iniciarSintomas();
 
+    document.getElementById("categoria")
+        ?.addEventListener("change", atualizarOfensores);
+
+    document.getElementById("servicosAfetados")
+        ?.addEventListener("change", atualizarEventos);
+
+    document.getElementById("sintoma")
+        ?.addEventListener("change", atualizarEventos);
 });

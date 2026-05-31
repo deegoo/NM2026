@@ -1,4 +1,4 @@
-from flask import render_template, url_for, request, jsonify
+from flask import render_template, url_for, request, jsonify, send_from_directory
 from newmonitor import app
 
 from werkzeug.utils import secure_filename
@@ -174,6 +174,11 @@ def comentar(id_ticket):
 @app.route("/consulta_incidentes")
 def consulta_incidentes():
     return render_template("consulta_incidentes.html")
+
+@app.route('/data/<path:filename>')
+def servir_dados(filename):
+    return send_from_directory('data', filename)
+
 
 
 
