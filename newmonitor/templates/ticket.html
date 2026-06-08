@@ -1,74 +1,204 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<div>
+    <button class="evento_btn active" data-tela="ticket">Ticket</button>
+    <button class="evento_btn" data-tela="evento">Evento</button>
+    <button class="evento_btn" data-tela="fechamento">Fechamento</button>
+</div>
 
-<h1>Ticket Gerado</h1>
+<div id="tela_evento" class="tela" style="display:none">
 
-{% if tickets|length > 0 %}
+    
+    {% if tickets[0].evento_detalhe %}
 
-<h3>ID: {{ tickets[0].id_ticket }}</h3>
+    <ul class="ul_evento">
 
-<p><b>Serviços Afetados:</b> {{ tickets[0].servico }}</p>
-<p><b>Descrição:</b> {{ tickets[0].descricao }}</p>
-<p><b>Data início:</b> {{ tickets[0].data_inicio }}</p>
-<p><b>Sintoma:</b> {{ tickets[0].sintoma }}</p>
-<p><b>Evento:</b> {{ tickets[0].evento }}</p>
-<p><b>Categoria:</b> {{ tickets[0].categoria }}</p>
-<p><b>Ofensor:</b> {{ tickets[0].ofensor }}</p>
-<p><b>Usuário:</b> {{ tickets[0].usuario }}</p>
+    {% for ev in tickets[0].evento_detalhe.eventos %}
 
-<hr>
+    <li>
+        <strong>{{ ev.cidade }} | {{ ev.servico }}</strong><br>
 
-<h3>Registros</h3>
+        Início: {{ tickets[0].evento_detalhe.inicio }}<br>
+        Final: {{ ev.final_evento }}<br>
 
-<ul>
-{% for t in tickets %}
-    <li>{{ t.cidade }} | {{ t.servico }}</li>
-{% endfor %}
-</ul>
+        Interrupção:
+        {% if ev.fases and ev.fases|length > 0 %}
+            {{ ev.fases | sum(attribute='tempo') }} min
+        {% else %}
+            0 min
+        {% endif %}
+        <br>
 
-<hr>
+        Impacto:
+        {% if ev.fases and ev.fases|length > 0 %}
+            {{ ev.fases[0].impacto }} %
+        {% else %}
+            0 %
+        {% endif %}
+        <br>
 
-<h3>Adicionar Comentário</h3>
+        VC: {{ ev.vc_evento }}
 
-<form id="form_comentario">
-    <textarea id="comentario"></textarea><br>
-    <input type="file" id="imagem"><br><br>
-    <button type="submit">Enviar</button>
-</form>
+    </li>
 
-<hr>
-
-<h3>Histórico</h3>
-
-<div id="lista_logs">
-
-{% if tickets[0].logs %}
-    {% for log in tickets[0].logs %}
-        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
-            <p>{{ log.comentario }}</p>
-
-            {% if log.imagem %}
-                <img src="{{ url_for('static', filename='uploads/' ~ log.imagem) }}">
-            {% endif %}
-
-        </div>
     {% endfor %}
-{% else %}
-    <p>Sem comentários ainda</p>
-{% endif %}
+
+    </ul>
+
+    {% endif %}
+
+
+    <form class="evento_form">
+
+        <label>Início Evento:</label>
+        <p>{{ tickets[0].data_inicio if tickets else '' }}</p>
+
+        <br>
+
+        <!-- ✅ CONTROLES -->
+         <div class="label_mesmoHorario">
+            <label>
+                Usar mesmo horário para todas as cidades
+                <input type="checkbox" id="mesmoHorario">
+            </label>
+            
+        </div>
+        <br>
+        <div class="label_impactoCidade">
+            <label>
+                Usar mesmo impacto por serviço/cidade
+                <input type="checkbox" id="impactoCidade">
+            </label>
+            
+        </div>
+        <br>
+        <div class="label_impactoParcial">
+            <label>
+                Evento com variação de impacto
+                <input type="checkbox" id="impactoParcial">
+            </label>
+            
+        </div>
+        <br><br>
+        <div id="impactoPorCidadeContainer" style="display:none;"></div>
+
+        <!-- ✅ FINAL GLOBAL -->
+        <label>Final Evento (global):</label>
+        <input type="datetime-local" id="data_final_global">
+
+        <br><br>
+        <hr>
+        <!-- ✅ EVENTOS DINÂMICOS -->
+        <div id="eventosPorCidade"></div>
+
+        <br>
+
+        <button class="evento_btn" type="submit">Salvar Evento</button>
+
+    </form>
 
 </div>
 
+<div id="tela_fechamento" class="tela" style="display:none">
+
+    <h2>Fechamento por Serviço</h2>
+
+    <div id="fechamentosContainer"></div>
+
+    <button id="btnFecharTudo">Fechar Ticket</button>
+
+</div>
+
+
+<div id="tela_ticket" class="tela">
+
+    {% if tickets|length > 0 %}
+
+    <h3>ID: {{ tickets[0].id_ticket }}</h3>
+
+    <p><b>Cidade:</b> {{ tickets[0].cidade }}</p>
+    <p><b>Serviços Afetados:</b> {{ tickets[0].servico }}</p>
+    <p><b>Descrição:</b> {{ tickets[0].descricao }}</p>
+    <p><b>Data início:</b> {{ tickets[0].data_inicio }}</p>
+    <p><b>Data abertura:</b> {{ tickets[0].data_abertura }}</p>
+    <p><b>Sintoma:</b> {{ tickets[0].sintoma }}</p>
+    <p><b>Evento:</b> {{ tickets[0].evento }}</p>
+    <p><b>Categoria:</b> {{ tickets[0].categoria }}</p>
+    <p><b>Ofensor:</b> {{ tickets[0].ofensor }}</p>
+    <p><b>chamado:</b> {{ tickets[0].chamado_operadora or '-'}}</p>
+    <p><b>Outage:</b> {{ tickets[0].outage or '-'}}</p>
+    <p><b>Usuário:</b> {{ tickets[0].usuario }}</p>
+
+    <hr>
+
+    <h3>Registros</h3>
+
+    <ul>
+    {% for t in tickets %}
+        <li>{{ t.cidade }} | {{ t.servico }}</li>
+    {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h3>Adicionar Comentário</h3>
+
+    <form id="form_comentario">
+        <textarea id="comentario"></textarea><br>
+        <input type="file" id="imagem"><br><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <hr>
+
+    <h3>Histórico</h3>
+
+    <div id="lista_logs">
+
+    {% if tickets[0].logs %}
+        {% for log in tickets[0].logs %}
+            <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+                
+                
+                <p>
+                    <strong>
+                        {{ log.data[8:10] }}-{{ log.data[5:7] }}-{{ log.data[0:4] }} {{ log.data[11:19] }}
+                        - {{ log.usuario or "Desconhecido" }}
+                    </strong>
+                </p>
+
+
+                {% if log.comentario %}
+                <p>{{ log.comentario | safe }}</p>
+                {% endif %}
+
+                {% if log.imagem %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ log.imagem) }}">
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Sem comentários ainda</p>
+    {% endif %}
+
+    </div>
+    <button class="evento_btn" onclick="window.location.href='/ticket_aberto'">Voltar para lista</button>
+</div>
 <br>
-<a class="ticket_link" href="/ticket_aberto">Voltar para lista</a>
-
-
 
 {% else %}
 
 <p>Ticket não encontrado</p>
 
+
 {% endif %}
-<script src="{{ url_for('static', filename='criar_ticket.js') }}"></script>
+
+<script>
+window.TICKETS = {{ tickets | tojson | safe }};
+window.ID_TICKET = "{{ tickets[0].id_ticket if tickets else '' }}";
+</script>
+
+<script src="{{ url_for('static', filename='ticket.js') }}"></script>
 {% endblock %}

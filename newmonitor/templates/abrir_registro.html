@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
-
 {% block body %}
 
 <div class="container">
 
 <h1>Registro de Falha</h1>
+
 <br>
 
 <label>Data Início</label>
-<input type="datetime-local" id="data_inicio"><br>
+<input type="datetime-local" id="data_inicio" required><br>
 
 <label>Cidades</label><br>
 
@@ -16,6 +16,7 @@
 
   <div class="list-box">
     <strong>Disponíveis</strong>
+    <input type="text" id="buscaCidades" placeholder="Digite uma cidade..." />
     <ul id="cidadesDisponiveis"></ul>
   </div>
 
@@ -32,14 +33,9 @@
 </div><br>
 
 <label>Serviços</label>
-<select id="servicosAfetados" multiple size="6"></select><br>
+<select id="servicosAfetados" multiple size="6"></select><br><br>
 
-
-<label>Sintoma</label>
-<select id="sintoma"></select><br>
-
-<label>Evento</label>
-<select id="evento"></select><br>
+<div id="configServicos"></div>
 
 
 <label>Categoria</label>
@@ -48,18 +44,18 @@
 <label>Ofensor</label>
 <select id="ofensor"></select><br>
 
-
 <label>Descrição</label>
 <textarea id="descricao"></textarea><br>
 
-
 <label>Chamado Operadora</label>
-<input type="text" id="chamado_operadora"><br>
+<input type="text" id="chamado_operadora" placeholder="Ex: INC000000123"><br>
 
+<label>Outage</label>
+<input type="text" id="outage_ticket" placeholder="Ex: INC000000123"><br>
 
+<br><br>
 
 <button type="button" onclick="cadastrar()">Cadastrar</button>
-
 
 <script>
     window.USUARIO_LOGADO = "{{ usuario }}";

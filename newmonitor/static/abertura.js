@@ -3,28 +3,25 @@
 ========================= */
 
 const regras = {
-
     "NET FONE": {
         sintomas: ["MUDO", "MANOBRA"],
         eventos: {
-            "MUDO": ["INTERRUPCAO", "PROGRAMADA"],
-            "MANOBRA": ["PROGRAMADA"]
+            "MUDO": ["INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"],
+            "MANOBRA": ["PROGRAMADA"],
+
         }
     },
-
     "NET VIRTUA": {
         sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"]
+        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
     },
-
     "NOW": {
         sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"]
+        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
     },
-
     "PAY TV DIGITAL": {
         sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"]
+        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
     }
 };
 
@@ -64,7 +61,6 @@ function criarLi(texto) {
 ========================= */
 
 function iniciarFormulario() {
-
     const servicos = document.getElementById("servicosAfetados");
 
     Object.keys(regras).forEach(s => {
@@ -72,30 +68,18 @@ function iniciarFormulario() {
     });
 }
 
-
 function iniciarCidades() {
-
     const disp = document.getElementById("cidadesDisponiveis");
 
     if (disp) disp.innerHTML = "";
 
-    Object.keys(estrutura).forEach(cidade => {
+   
+    Object.keys(estrutura)
+    .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+    .forEach(cidade => {
         if (disp) disp.appendChild(criarLi(cidade));
     });
-}
 
-
-/* =========================
-   NOVO: CAPTURA CIDADE (UL)
-========================= */
-
-function getCidadeSelecionada() {
-
-    const selecionadas = document.querySelectorAll("#cidadesSelecionadas li");
-
-    if (selecionadas.length === 0) return null;
-
-    return selecionadas[0].textContent;
 }
 
 
@@ -103,43 +87,101 @@ function getCidadeSelecionada() {
    CASCATA
 ========================= */
 
+function getCidadeSelecionada() {
+    const selecionadas = document.querySelectorAll("#cidadesSelecionadas li");
+    if (selecionadas.length === 0) return null;
+    return selecionadas[0].textContent;
+}
+
 function atualizarCategorias() {
 
-    const cidade = getCidadeSelecionada();
+    const cidadesSelecionadas = [...document.querySelectorAll("#cidadesSelecionadas li")];
     const categoria = document.getElementById("categoria");
 
     categoria.innerHTML = "";
 
-    if (!cidade || !estrutura[cidade]) return;
+    if (!cidadesSelecionadas.length) return;
 
-    Object.keys(estrutura[cidade]).forEach(cat => {
-        categoria.add(new Option(cat, cat));
-    });
+    const multiCidade = cidadesSelecionadas.length > 1;
+
+    if (multiCidade) {
+
+        const categoriasPermitidas = [
+            "Backbone IP",
+            "Infra Estrutura",
+            "CMTS",
+            "Links"
+        ];
+
+        categoriasPermitidas.forEach(cat => {
+            categoria.add(new Option(cat, cat));
+        });
+
+    } else {
+
+        const cidade = cidadesSelecionadas[0].textContent;
+
+        if (!estrutura[cidade]) return;
+
+        Object.keys(estrutura[cidade])
+            .sort((a, b) => a.localeCompare(b, "pt-BR"))
+            .forEach(cat => {
+                categoria.add(new Option(cat, cat));
+            });
+    }
 
     atualizarOfensores();
 }
 
-
 function atualizarOfensores() {
 
-    const cidade = getCidadeSelecionada();
+    const cidadesSelecionadas = [...document.querySelectorAll("#cidadesSelecionadas li")];
     const categoria = document.getElementById("categoria").value;
     const ofensor = document.getElementById("ofensor");
 
     ofensor.innerHTML = "";
 
-    if (!cidade) return;
+    if (!cidadesSelecionadas.length) return;
 
-    const lista = estrutura[cidade]?.[categoria] || [];
+    const multiCidade = cidadesSelecionadas.length > 1;
 
-    lista.forEach(o => {
-        ofensor.add(new Option(o, o));
+    let ofensoresSet = new Set();
+
+    cidadesSelecionadas.forEach(li => {
+
+        const cidade = li.textContent;
+
+        const lista = estrutura[cidade]?.[categoria] || [];
+
+        lista.forEach(o => {
+            ofensoresSet.add(o);
+        });
     });
+
+    let listaFinal = [...ofensoresSet];
+
+    if (multiCidade) {
+
+        if (categoria === "Links") {
+            listaFinal = listaFinal.filter(o =>
+                o.toUpperCase().includes("BACKBONE") ||
+                o.toUpperCase().includes("GPON")
+            );
+        }
+
+        // outras categorias permanecem completas
+    }
+
+    listaFinal
+        .sort((a, b) => a.localeCompare(b, "pt-BR"))
+        .forEach(o => {
+            ofensor.add(new Option(o, o));
+        });
 }
 
 
 /* =========================
-   CIDADES MOVE
+   MOVE
 ========================= */
 
 function moverParaSelecionadas() {
@@ -160,118 +202,110 @@ function mover(origemId, destinoId) {
         destino.appendChild(li);
     });
 
-    // ✅ ESSENCIAL: dispara cascata
     atualizarCategorias();
 }
 
 
 /* =========================
-   SINTOMA / EVENTO
+   ✅ NOVO: CONFIG POR SERVIÇO
 ========================= */
 
-function iniciarSintomas() {
+function renderConfigServicos() {
 
-    const sintoma = document.getElementById("sintoma");
+    const container = document.getElementById("configServicos");
+    container.innerHTML = "";
 
-    const listaSintomas = ["MUDO", "MANOBRA", "QUEDA NO TRAFEGO"];
-
-    sintoma.innerHTML = "";
-
-    listaSintomas.forEach(s => {
-        sintoma.add(new Option(s, s));
-    });
-
-    atualizarEventos();
-}
-
-
-function atualizarEventos() {
-
-    const sintomaSelect = document.getElementById("sintoma");
-    const evento = document.getElementById("evento");
-
-    const sintomaAtual = sintomaSelect.value;
-
-    const servicosSelecionados = [...document.getElementById("servicosAfetados").selectedOptions]
+    const servicos = [...document.getElementById("servicosAfetados").selectedOptions]
         .map(o => o.value);
 
-    evento.innerHTML = "";
+    servicos.forEach(servico => {
 
-    if (servicosSelecionados.length === 0) {
-        evento.add(new Option("Selecione um serviço primeiro", ""));
-        return;
-    }
+        const div = document.createElement("div");
+        div.style.border = "1px solid #ccc";
+        div.style.padding = "10px";
+        div.style.marginBottom = "10px";
 
-    let sintomasValidos = new Set();
-    let eventosValidos = new Set();
+        div.innerHTML = `
+            <strong>${servico}</strong><br><br>
 
-    servicosSelecionados.forEach(servico => {
+            <label>Sintoma</label>
+            <select class="sintoma-servico"></select><br>
 
-        regras[servico].sintomas.forEach(s => sintomasValidos.add(s));
+            <label>Evento</label>
+            <select class="evento-servico"></select><br>
+        `;
 
-        if (servico === "NET FONE") {
-            if (regras[servico].eventos[sintomaAtual]) {
-                regras[servico].eventos[sintomaAtual].forEach(e => eventosValidos.add(e));
+        container.appendChild(div);
+
+        const sintomaSelect = div.querySelector(".sintoma-servico");
+        const eventoSelect = div.querySelector(".evento-servico");
+
+        const regra = regras[servico];
+
+        regra.sintomas.forEach(s => {
+            sintomaSelect.add(new Option(s, s));
+        });
+
+        function atualizarEventos() {
+
+            eventoSelect.innerHTML = "";
+
+            if (servico === "NET FONE") {
+                const lista = regra.eventos[sintomaSelect.value];
+                lista.forEach(e => eventoSelect.add(new Option(e, e)));
+            } else {
+                regra.eventos.forEach(e => eventoSelect.add(new Option(e, e)));
             }
-        } else {
-            regras[servico].eventos.forEach(e => eventosValidos.add(e));
         }
 
-    });
+        sintomaSelect.addEventListener("change", atualizarEventos);
 
-    if (!sintomasValidos.has(sintomaAtual)) {
-        sintomaSelect.value = [...sintomasValidos][0];
-        return atualizarEventos();
-    }
-
-    if (eventosValidos.size === 0) {
-        evento.add(new Option("Nenhum evento válido", ""));
-        return;
-    }
-
-    eventosValidos.forEach(e => {
-        evento.add(new Option(e, e));
+        atualizarEventos();
     });
 }
 
 
 /* =========================
-   CADASTRAR
+   CADASTRAR (NOVO MODELO)
 ========================= */
 
 function cadastrar() {
 
-    const id_ticket = Date.now();
+    
+    const dataInicio = document.getElementById("data_inicio").value;
+
+    if (!dataInicio) {
+        alert("Preencha a data de início");
+        return;
+    }
 
     const cidades = [...document.querySelectorAll("#cidadesSelecionadas li")]
         .map(li => li.textContent);
 
-    const servicos = [...document.getElementById("servicosAfetados").selectedOptions]
-        .map(o => o.value);
+    const configs = document.querySelectorAll("#configServicos > div");
 
-    if (!cidades.length || !servicos.length) {
+    if (!cidades.length || configs.length === 0) {
         alert("Selecione cidades e serviços");
         return;
     }
 
-    const sintoma = document.getElementById("sintoma").value;
-    const evento = document.getElementById("evento").value;
-
     const registros = [];
-    const erros = [];
 
-    cidades.forEach(cidade => {
+    configs.forEach(div => {
 
-        servicos.forEach(servico => {
+        const servico = div.querySelector("strong").textContent;
+        const sintoma = div.querySelector(".sintoma-servico").value;
+        const evento = div.querySelector(".evento-servico").value;
 
-            const erro = validarRegras(servico, sintoma, evento);
+        const erro = validarRegras(servico, sintoma, evento);
 
-            if (erro) {
-                erros.push(`${cidade} / ${servico}: ${erro}`);
-            }
+        if (erro) {
+            alert(`❌ ${servico}: ${erro}`);
+            return;
+        }
 
+        cidades.forEach(cidade => {
             registros.push({
-                id_ticket,
                 cidade,
                 servico,
                 sintoma,
@@ -281,27 +315,22 @@ function cadastrar() {
                 categoria: document.getElementById("categoria").value,
                 ofensor: document.getElementById("ofensor").value,
                 chamado_operadora: document.getElementById("chamado_operadora").value,
+                outage: Number(document.getElementById("outage_ticket").value) || null,
                 usuario: window.USUARIO_LOGADO,
                 aberto: true
             });
-
         });
-
     });
-
-    if (erros.length > 0) {
-        alert("❌ Erros:\n\n" + erros.join("\n"));
-        return;
-    }
 
     fetch("/abrir", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(registros)
     })
-    .then(() => {
+    .then(res => res.json())
+    .then(data => {
         alert("✅ Tickets gerados");
-        window.location.href = "/ticket/" + id_ticket;
+        window.location.href = "/ticket/" + data.id_ticket;
     });
 }
 
@@ -312,21 +341,26 @@ function cadastrar() {
 
 function validarRegras(servico, sintoma, evento) {
 
-    if (servico === "NET FONE") {
+    const regra = regras[servico];
 
-        if (sintoma === "MUDO" && !["INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
-            return "MUDO aceita apenas INTERRUPÇÃO ou PROGRAMADA";
-        }
+    if (!regra) return "Serviço inválido";
 
-        if (sintoma === "MANOBRA" && evento !== "PROGRAMADA") {
-            return "MANOBRA só aceita PROGRAMADA";
-        }
+    if (!regra.sintomas.includes(sintoma)) {
+        return `Sintoma inválido para ${servico}`;
     }
 
-    if (["NET VIRTUA", "NOW", "PAY TV DIGITAL"].includes(servico)) {
+    if (servico === "NET FONE") {
 
-        if (!["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA"].includes(evento)) {
-            return "Evento inválido";
+        const eventosValidos = regra.eventos[sintoma];
+
+        if (!eventosValidos || !eventosValidos.includes(evento)) {
+            return `Evento inválido para ${servico} / ${sintoma}`;
+        }
+
+    } else {
+
+        if (!regra.eventos.includes(evento)) {
+            return `Evento inválido para ${servico}`;
         }
     }
 
@@ -335,7 +369,7 @@ function validarRegras(servico, sintoma, evento) {
 
 
 /* =========================
-   EVENTOS GERAIS
+   EVENTOS GERAIS (CORRIGIDO)
 ========================= */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -344,14 +378,105 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     iniciarFormulario();
     iniciarCidades();
-    iniciarSintomas();
 
     document.getElementById("categoria")
         ?.addEventListener("change", atualizarOfensores);
 
     document.getElementById("servicosAfetados")
-        ?.addEventListener("change", atualizarEventos);
+        ?.addEventListener("change", () => {
 
-    document.getElementById("sintoma")
-        ?.addEventListener("change", atualizarEventos);
+            renderConfigServicos(); 
+        });
+});
+
+/*======================== 
+      Busca de cidades
+==========================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const inputBusca = document.getElementById("buscaCidades");
+
+    if (!inputBusca) {
+        console.log("❌ buscaCidades não encontrado");
+        return;
+    }
+
+    /*======================== 
+          Busca de cidades
+    ==========================*/
+    inputBusca.addEventListener("input", function () {
+
+        const termo = this.value.toUpperCase();
+        const lista = document.querySelectorAll("#cidadesDisponiveis li");
+
+        let primeiraMatch = null;
+
+        lista.forEach(li => {
+
+            const texto = li.textContent.toUpperCase();
+
+            if (texto.startsWith(termo)) {
+
+                li.style.display = "block";
+
+                if (!primeiraMatch) {
+                    primeiraMatch = li;
+                }
+
+                li.style.fontWeight = "bold";
+                li.style.backgroundColor = "#e6f0ff";
+
+            } else {
+                li.style.display = "none";
+                li.style.fontWeight = "normal";
+                li.style.backgroundColor = "";
+            }
+
+        });
+
+        if (primeiraMatch) {
+            primeiraMatch.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+    });
+
+    /*=================================== 
+          Selecionar cidades com enter
+    =====================================*/
+    inputBusca.addEventListener("keydown", function (e) {
+
+        if (e.key === "Enter") {
+
+            e.preventDefault();
+
+            const lista = document.querySelectorAll("#cidadesDisponiveis li");
+
+            document.querySelectorAll("#cidadesDisponiveis li.selected")
+                .forEach(li => li.classList.remove("selected"));
+
+            for (let li of lista) {
+
+                if (li.style.display !== "none") {
+
+                    li.classList.add("selected");
+
+                    moverParaSelecionadas();
+
+                    break;
+                }
+            }
+
+            this.value = "";
+
+            lista.forEach(li => {
+                li.style.display = "block";
+                li.style.fontWeight = "normal";
+                li.style.backgroundColor = "";
+            });
+        }
+    });
+
 });

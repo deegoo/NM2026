@@ -10,11 +10,13 @@
             <th onclick="ordenarPor('id_ticket')">Ticket</th>
             <th onclick="ordenarPor('cidades')">Cidade</th>
             <th onclick="ordenarPor('servicos')">Serviço</th>
-            <th onclick="ordenarPor('sintoma')">Sintoma</th>
             <th onclick="ordenarPor('evento')">Evento</th>
             <th onclick="ordenarPor('categoria')">Categoria</th>
             <th onclick="ordenarPor('ofensor')">Ofensor</th>
+            <th onclick="ordenarPor('data_inicio')">Abertura</th>
+            <th onclick="ordenarPor('ultima_atualizacao')">Última Atualização</th>
             <th onclick="ordenarPor('chamado_operadora')">Chamado</th>
+            <th onclick="ordenarPor('outage')">Outage</th>
             <th onclick="ordenarPor('usuario')">Usuário</th>
         </tr>
     </thead>
@@ -22,41 +24,6 @@
     <tbody id="tabela_tickets"></tbody>
 </table>
 
-<!-- ✅ MODAL DE FECHAMENTO -->
-<div id="modal_fechamento" style="
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.4);
-">
-
-    <div style="
-        background:white;
-        padding:20px;
-        width:400px;
-        margin:100px auto;
-    ">
-
-        <h3>Fechar Ticket</h3>
-
-        <label>Data Final</label>
-        <input type="datetime-local" id="data_final"><br>
-
-        <label>Causa</label>
-        <input id="causa"><br>
-
-        <label>Solução</label>
-        <input id="solucao"><br><br>
-
-        <button id="btn_confirmar">Confirmar</button>
-        <button onclick="fecharModal()">Cancelar</button>
-
-    </div>
-</div>
-
-<script src="{{ url_for('static', filename='tickets.js')}}" defer></script>
+<script src="{{ url_for('static', filename='tickets_dash.js')}}" defer></script>
 
 {% endblock %}

@@ -22,7 +22,7 @@
       <li class="menu_main">Consultas
         <ul class="menu_option">
           <li>Consulta Incidentes Datacenter</li>
-          <li><a href="{{ url_for('consulta_regitro_falha')}}">Consulta Reg. de Falha</a></li>
+          <li><a href="{{ url_for('consulta_incidentes')}}">Consulta Tickets</a></li>
           <li>Consulta Manobras</li>
           <li>Consulta Manobras abertas</li>
           <li><a href="{{ url_for('ticket_aberto')}}">Tickets abertos</a></li>
@@ -36,7 +36,7 @@
       </li> 
       <li class="menu_main">Relatórios
         <ul class="menu_option">
-          <li>CMTS X Node</li>
+          <li><a href="{{ url_for('tela_relatorios')}}">Tickets</a></li>
           <li>Manobeas</li>
           <li>Outages</li>
           <li>Outages x Manobras</li>

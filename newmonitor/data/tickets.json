@@ -1,668 +1,1547 @@
 [
   {
-    "id_ticket": 1779236917546,
-    "cidade": "S\u00e3o Paulo",
+    "cidade": "MAUÁ",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "TESTE",
+    "data_inicio": "03/06/2026 18:00",
+    "categoria": "Links",
+    "ofensor": "SNE/IP/00798",
+    "chamado_operadora": "965410",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "63/2026",
+    "data_abertura": "03/06/2026 20:40",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 18:00",
+      "eventos": [
+        {
+          "cidade": "MAUÁ",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 20:50",
+          "fases": [
+            {
+              "tempo": 170,
+              "impacto": 65
+            }
+          ],
+          "vc_evento": 0.3495047140348754
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "TEÓFILO OTONI",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "APARECIDA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "TEÓFILO OTONI",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "APARECIDA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "TEÓFILO OTONI",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "APARECIDA",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "TEÓFILO OTONI",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "APARECIDA",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes múltiplas cidades",
+    "data_inicio": "03/06/2026 12:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - REGIÃO",
+    "chamado_operadora": "753951264",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "64/2026",
+    "data_abertura": "03/06/2026 20:54",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:00",
+      "eventos": [
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 32
+            }
+          ],
+          "vc_evento": 0.17643042785037588
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 0.5860633862850758
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "TEÓFILO OTONI",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        },
+        {
+          "cidade": "APARECIDA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 18:00",
+          "fases": [
+            {
+              "tempo": 360,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "NET FONE",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 129.44303491395516
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": "Links",
+    "solucao": "Fusão da fibra",
+    "sumario": "NET FONE"
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "ANANINDEUA",
+          "servico": "NET FONE",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 16.97023459584737
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": "Links",
+    "solucao": "Fusão da fibra",
+    "sumario": "NET FONE"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "NET VIRTUA",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 16.11416252358417
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": "Links",
+    "solucao": "Fusão da fibra",
+    "sumario": "NET VIRTUA"
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "ANANINDEUA",
+          "servico": "NET VIRTUA",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 2.3021434663174407
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": "Links",
+    "solucao": "Fusão da fibra",
+    "sumario": "NET VIRTUA"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "NOW",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 16.11416252358417
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "NET",
+    "parte_rede": "Datacenter /Headend",
+    "causa": "Streamer",
+    "solucao": "Efetuado limpeza nas sessões inativas",
+    "sumario": "NOW"
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "ANANINDEUA",
+          "servico": "NOW",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 2.3021434663174407
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "NET",
+    "parte_rede": "Datacenter /Headend",
+    "causa": "Streamer",
+    "solucao": "Efetuado limpeza nas sessões inativas",
+    "sumario": "NOW"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 12.583228214036872
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "NET",
+    "parte_rede": "ENERGIA",
+    "causa": "TV - QUEDA DE ENERGIA NO HEADEND",
+    "solucao": "RESTABELECIDO ENERGIA NO HEADEND",
+    "sumario": "PAY TV DIGITAL"
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste evento unitário",
+    "data_inicio": "03/06/2026 12:30",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "98326547",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": false,
+    "id_ticket": "65/2026",
+    "data_abertura": "03/06/2026 21:05",
+    "evento_detalhe": {
+      "inicio": "03/06/2026 12:30",
+      "eventos": [
+        {
+          "cidade": "ANANINDEUA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "06/06/2026 21:01",
+          "fases": [
+            {
+              "tempo": 4831,
+              "impacto": 33
+            }
+          ],
+          "vc_evento": 1.5964751932288495
+        }
+      ]
+    },
+    "data_fechamento": "06/06/2026 22:51",
+    "responsabilidade": "NET",
+    "parte_rede": "ENERGIA",
+    "causa": "TV - QUEDA DE ENERGIA NO HEADEND",
+    "solucao": "RESTABELECIDO ENERGIA NO HEADEND",
+    "sumario": "PAY TV DIGITAL"
+  },
+  {
+    "cidade": "GUARULHOS",
     "servico": "NET FONE",
     "sintoma": "MUDO",
     "evento": "INTERRUPCAO",
     "descricao": "teste",
-    "data_inicio": "2026-02-15T10:10",
-    "categoria": "Backbone IP",
-    "ofensor": "Backbone IP",
-    "chamado_operadora": "98765",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
     "aberto": true,
-    "logs": [
-      {
-        "comentario": "Metodo R. de treinamentos",
-        "imagem": null
-      },
-      {
-        "comentario": "chjdhfhg",
-        "imagem": null
-      },
-      {
-        "comentario": "",
-        "imagem": "1780194424681_IMG2.png"
-      },
-      {
-        "comentario": "",
-        "imagem": "1780249283131_IMG4.png"
-      },
-      {
-        "comentario": "zsdfasdgfsdhggfkfghfdag",
-        "imagem": null
-      }
-    ]
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "GUARULHOS",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 95
+            }
+          ],
+          "vc_evento": 690.313023088371
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779236917546,
-    "cidade": "Bras\u00edlia",
+    "cidade": "ARUJÁ",
     "servico": "NET FONE",
     "sintoma": "MUDO",
     "evento": "INTERRUPCAO",
     "descricao": "teste",
-    "data_inicio": "2026-02-15T10:10",
-    "categoria": "Backbone IP",
-    "ofensor": "Backbone IP",
-    "chamado_operadora": "98765",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779239035582,
-    "cidade": "Belo Horizonte",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "sdfasdfadfas",
-    "data_inicio": "2025-05-30T23:23",
-    "categoria": "Backbone IP",
-    "ofensor": "Backbone IP",
-    "chamado_operadora": "234123452432",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779239296617,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "dsadfasdfas",
-    "data_inicio": "2021-01-01T02:02",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AMAZON",
-    "chamado_operadora": "sadfasdfasddfsadfsad",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779239296617,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "dsadfasdfas",
-    "data_inicio": "2021-01-01T02:02",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AMAZON",
-    "chamado_operadora": "sadfasdfasddfsadfsad",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779239959827,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "DEGRADACAO",
-    "descricao": "dasfsfasf",
-    "data_inicio": "2021-01-01T01:01",
-    "categoria": "SoftSwitch",
-    "ofensor": "CDR",
-    "chamado_operadora": "132456",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779240315351,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "aweqrweqr",
-    "data_inicio": "2026-02-26T01:02",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AKAMAI",
-    "chamado_operadora": "9867",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
     "aberto": true,
-    "logs": [
-      {
-        "comentario": "ewqrqwerqwer",
-        "imagem": null
-      },
-      {
-        "comentario": "qwer",
-        "imagem": "IMG.png"
-      }
-    ]
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARUJÁ",
+          "servico": "NET FONE",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 78
+            }
+          ],
+          "vc_evento": 56.97044214000123
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779241705973,
-    "cidade": "Belo Horizonte",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "NETFLIX",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779241905263,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779241905263,
-    "cidade": "Salvador",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242167129,
-    "cidade": "Rio de Janeiro",
+    "cidade": "GUARULHOS",
     "servico": "NET VIRTUA",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "N\u00e3o Definida",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242167129,
-    "cidade": "Belo Horizonte",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "N\u00e3o Definida",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242366610,
-    "cidade": "Belo Horizonte",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "N\u00e3o Definida",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242580108,
-    "cidade": "Belo Horizonte",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "jdfjfgjhfg",
-    "data_inicio": "2026-05-14T22:48",
-    "categoria": "Infra Estrutura",
-    "ofensor": "N\u00e3o Definida",
-    "chamado_operadora": "432532",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242703773,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AKAMAI",
-    "chamado_operadora": "uyioyuoyu",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242703773,
-    "cidade": "Rio de Janeiro",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AKAMAI",
-    "chamado_operadora": "uyioyuoyu",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242703773,
-    "cidade": "Bras\u00edlia",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AKAMAI",
-    "chamado_operadora": "uyioyuoyu",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242703773,
-    "cidade": "Salvador",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Servidores/Provisionamento",
-    "ofensor": "AKAMAI",
-    "chamado_operadora": "uyioyuoyu",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242820510,
-    "cidade": "Belo Horizonte",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "ewqrqwerqw",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779242820510,
-    "cidade": "Bras\u00edlia",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "poiuiopuiopuip",
-    "data_inicio": "2021-01-01T03:03",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "ewqrqwerqw",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779243171928,
-    "cidade": "Belo Horizonte",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "rwe3254623456342",
-    "data_inicio": "2026-01-01T00:01",
-    "categoria": "Backbone IP",
-    "ofensor": "Backbone IP",
-    "chamado_operadora": "42352345",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1779243326921,
-    "cidade": "Belo Horizonte",
-    "servico": "NOW",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "rwe3254623456342",
-    "data_inicio": "2026-01-01T00:16",
-    "categoria": "N\u00e3o Definida",
-    "ofensor": "N\u00e3o Definida",
-    "chamado_operadora": "42352345",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
     "aberto": true,
-    "logs": [
-      {
-        "comentario": "rqwerqwerwqeerw",
-        "imagem": null
-      },
-      {
-        "comentario": "",
-        "imagem": "IMG1.png"
-      },
-      {
-        "comentario": "",
-        "imagem": "1779243547430_IMG2.png"
-      },
-      {
-        "comentario": "",
-        "imagem": "1779243562383_IMG2.png"
-      },
-      {
-        "comentario": "",
-        "imagem": "1779244039810_IMG.png"
-      }
-    ]
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "GUARULHOS",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 95
+            }
+          ],
+          "vc_evento": 70.75781754002092
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779244293502,
-    "cidade": "S\u00e3o Paulo",
-    "servico": "NOW",
+    "cidade": "ARUJÁ",
+    "servico": "NET VIRTUA",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "gsdfhdsfgsd",
-    "data_inicio": "2027-12-01T00:00",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "dsfgsdfgs",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
     "aberto": true,
-    "logs": [
-      {
-        "comentario": "rdtaertasfasd",
-        "imagem": null
-      },
-      {
-        "comentario": "",
-        "imagem": "1779244403764_IMG.png"
-      }
-    ]
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARUJÁ",
+          "servico": "NET VIRTUA",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 78
+            }
+          ],
+          "vc_evento": 4.533702574639968
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779244293502,
-    "cidade": "Rio de Janeiro",
+    "cidade": "GUARULHOS",
     "servico": "NOW",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "gsdfhdsfgsd",
-    "data_inicio": "2027-12-01T00:00",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "dsfgsdfgs",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true
+    "aberto": true,
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "GUARULHOS",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 95
+            }
+          ],
+          "vc_evento": 70.75781754002092
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779244293502,
-    "cidade": "Belo Horizonte",
+    "cidade": "ARUJÁ",
     "servico": "NOW",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "gsdfhdsfgsd",
-    "data_inicio": "2027-12-01T00:00",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "dsfgsdfgs",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true
+    "aberto": true,
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARUJÁ",
+          "servico": "NOW",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 78
+            }
+          ],
+          "vc_evento": 4.533702574639968
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779244293502,
-    "cidade": "Bras\u00edlia",
-    "servico": "NOW",
+    "cidade": "GUARULHOS",
+    "servico": "PAY TV DIGITAL",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "gsdfhdsfgsd",
-    "data_inicio": "2027-12-01T00:00",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "dsfgsdfgs",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true
+    "aberto": true,
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "GUARULHOS",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 95
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
   },
   {
-    "id_ticket": 1779244293502,
-    "cidade": "Salvador",
-    "servico": "NOW",
+    "cidade": "ARUJÁ",
+    "servico": "PAY TV DIGITAL",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "gsdfhdsfgsd",
-    "data_inicio": "2027-12-01T00:00",
-    "categoria": "Infra Estrutura",
-    "ofensor": "Rede HFC",
-    "chamado_operadora": "dsfgsdfgs",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AMERICO BRASILIENSE",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
+    "descricao": "teste",
+    "data_inicio": "01/06/2026 00:00",
     "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "986532",
+    "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AMERICO BRASILIENSE",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AMERICO BRASILIENSE",
-    "servico": "NOW",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AMERICO BRASILIENSE",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANANINDEUA",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANANINDEUA",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANANINDEUA",
-    "servico": "NOW",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANANINDEUA",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AN\u00c1POLIS",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AN\u00c1POLIS",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AN\u00c1POLIS",
-    "servico": "NOW",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "AN\u00c1POLIS",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANDIRA",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANDIRA",
-    "servico": "NET VIRTUA",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANDIRA",
-    "servico": "NOW",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
-  },
-  {
-    "id_ticket": 1780193975761,
-    "cidade": "ANDIRA",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "ghfdhdgfhgdf",
-    "data_inicio": "2026-05-30T23:00",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "2345423535",
-    "usuario": "Rodrigo",
-    "aberto": true
+    "aberto": true,
+    "id_ticket": "66/2026",
+    "data_abertura": "03/06/2026 21:50",
+    "evento_detalhe": {
+      "inicio": "01/06/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARUJÁ",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "03/06/2026 22:00",
+          "fases": [
+            {
+              "tempo": 4200,
+              "impacto": 78
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
   }
 ]

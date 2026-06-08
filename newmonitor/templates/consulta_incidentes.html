@@ -3,23 +3,28 @@
 {% block body %}
 
 <h2>Consulta de Incidentes</h2>
-
-<label>Número do Ticket</label>
-<input type="text" id="filtro_ticket"><br>
-
-<label>Data Início</label>
-<input type="date" id="filtro_data_inicio"><br>
-
-<label>Data Fim</label>
-<input type="date" id="filtro_data_fim"><br>
-
-
-<label>Cidade</label>
-<input type="text" id="filtro_cidade"><br><br>
-
-<button onclick="buscar()">Buscar</button>
-<button onclick="limpar()">Limpar</button>
-
+<div class="buscar_ticket">
+    <div class="buscar_ticket_campo">
+        <label>Número do Ticket</label>
+        <input type="text" id="filtro_ticket"><br>
+    </div>
+    <div class="buscar_ticket_campo">
+        <label>Data Início</label>
+        <input type="date" id="filtro_data_inicio"><br>
+    </div>
+    <div class="buscar_ticket_campo">
+        <label>Data Fim</label>
+        <input type="date" id="filtro_data_fim"><br>
+    </div>
+    <div class="buscar_ticket_campo">
+        <label>Cidade</label>
+        <select id="filtro_cidade"></select>
+    </div>
+    <div class="buscar_ticket_campo">
+        <button class="buscar_btn" onclick="buscar()">Buscar</button>
+        <button class="buscar_btn" onclick="limpar()">Limpar</button>
+    </div>
+</div>
 
 <hr>
 
@@ -31,11 +36,18 @@
             <th>Serviço</th>
             <th>Sintoma</th>
             <th>Data</th>
+            <th>Status</th>
         </tr>
     </thead>
 
     <tbody id="resultado"></tbody>
 </table>
+
+
+<div id="loading" style="display:none;">🔄 Carregando...</div>
+
+<div id="paginacao" style="margin-top:10px;"></div>
+
 
 <script src="{{ url_for('static', filename='consulta.js') }}"></script>
 

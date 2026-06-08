@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>Relatório de tickets</h2>
+
+<div class="filtros">
+
+    <div class="buscar_relatório">
+        <label>Data Início</label>
+        <input type="date" id="f_data_inicio">
+    </div>
+    <div class="buscar_relatório">
+        <label>Data Fim</label>
+        <input type="date" id="f_data_fim">
+    </div>
+    <div class="buscar_relatório">
+        <label>Cidade</label>
+        <select id="f_cidade"></select>
+    </div>
+    <div class="buscar_relatório">
+        <label>Serviço</label>
+        <select id="f_servico"></select>
+    </div>
+    <div class="buscar_relatório">
+        <label>Evento</label>
+        <select id="f_evento"></select>
+    </div>
+    <div class="buscar_relatório">
+        <label>Responsável</label>
+        <select id="f_responsavel"></select>
+    </div>
+        <button class="relatorio_btn" onclick="buscarRelatorio()">Buscar</button>
+
+</div>
+<div class="download_btn">
+    <button class="relatorio_btn" onclick="exportarCSV()">Exportar CSV</button>
+    <button class="relatorio_btn" onclick="exportarXLSX()">Exportar XLSX</button>
+</div>
+<hr>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Ticket</th>
+            <th>Cidade</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Interrupção (min)</th>
+            <th>Evento</th>
+            <th>Impacto (%)</th>
+            <th>Serviço</th>
+            <th>Responsável</th>
+            <th>Sintoma</th>
+            <th>Nat. manut.</th>
+            <th>Parte rede</th>
+            <th>Causa</th>
+            <th>Solução</th>
+            <th>Erro operacional</th>
+            <th>Num. manobra</th>
+            <th>Num. Outage</th>
+            <th>Isolator</th>
+        </tr>
+    </thead>
+
+    <tbody id="resultado_relatorio"></tbody>
+</table>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="{{ url_for('static', filename='relatorios.js') }}"></script>
+
+{% endblock %}
