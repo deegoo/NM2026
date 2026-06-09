@@ -156,15 +156,14 @@
 
     <div id="lista_logs">
 
-    {% if tickets[0].logs %}
+    {% if tickets and tickets[0].logs %}
         {% for log in tickets[0].logs %}
             <div style="border:1px solid #ccc; margin:10px; padding:10px;">
                 
                 
                 <p>
                     <strong>
-                        {{ log.data[8:10] }}-{{ log.data[5:7] }}-{{ log.data[0:4] }} {{ log.data[11:19] }}
-                        - {{ log.usuario or "Desconhecido" }}
+                        {{ log.data}} - {{ log.usuario or "Desconhecido" }}
                     </strong>
                 </p>
 

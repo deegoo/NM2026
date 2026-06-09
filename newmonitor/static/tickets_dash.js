@@ -59,10 +59,33 @@ function carregarTickets() {
 /* =========================
    FORMATAR DATA
 ========================= */
+function parseBR(data) {
+    if (!data) return null;
+
+    // ✅ se já for Date, retorna direto
+    if (data instanceof Date) return data;
+
+    // ✅ só aplica replace se for string
+    if (typeof data !== "string") return null;
+
+    data = data.replace(",", "");
+
+    const [d, h] = data.split(" ");
+    const [dia, mes, ano] = d.split("/");
+
+    return new Date(`${ano}-${mes}-${dia}T${h}`);
+}
+
 function formatarData(dataStr) {
     if (!dataStr) return "-";
 
-    const d = new Date(dataStr);
+    let d = dataStr;
+
+    if (!(d instanceof Date)) {
+        d = parseBR(d);
+    }
+
+    if (!d || isNaN(d)) return "-";
 
     return d.toLocaleString("pt-BR");
 }
@@ -114,15 +137,18 @@ function aplicarCor(tr, abertura, ultimaAtualizacao, evento) {
     // 🔹 REGRA PADRÃO
     // =========================
 
-    if (diffAtualizacao >= 3) {
-        tr.style.backgroundColor = "#ffbfc4"; // vermelho
-        return;
-    }
 
-    if (diffAbertura >= 2) {
-        tr.style.backgroundColor = "#ffde72"; // amarelo
+    if (diffAtualizacao >= 3) {
+        tr.style.backgroundColor = "#ffbdbd"; // vermelho
+    }
+    else if (diffAtualizacao >= 1.5) {
+        tr.style.backgroundColor = "#fdffbd"; // amarelo
+    }
+    else {
+        tr.style.backgroundColor = "#fff";
     }
 }
+
 
 
 /* =========================

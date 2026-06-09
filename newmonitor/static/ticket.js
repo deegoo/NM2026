@@ -47,11 +47,33 @@ function abrirTela(nome) {
 function parseBR(data) {
     if (!data) return null;
 
-    // "03/06/2026 19:43" → "2026-06-03T19:43"
+    // ✅ se já for Date, retorna direto
+    if (data instanceof Date) return data;
+
+    // ✅ só aplica replace se for string
+    if (typeof data !== "string") return null;
+
+    data = data.replace(",", "");
+
     const [d, h] = data.split(" ");
     const [dia, mes, ano] = d.split("/");
 
     return new Date(`${ano}-${mes}-${dia}T${h}`);
+}
+
+function formatarData(dataStr) {
+    if (!dataStr) return "-";
+
+    let d = dataStr;
+
+    // ✅ se não for Date, faz parse
+    if (!(d instanceof Date)) {
+        d = parseBR(d);
+    }
+
+    if (!d || isNaN(d)) return "-";
+
+    return d.toLocaleString("pt-BR");
 }
 
 function calcularDuracao(inicio, fim) {
@@ -634,4 +656,53 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     });
+
+        const formComentario = document.getElementById("form_comentario");
+
+    if (formComentario) {
+        formComentario.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            console.log("💬 enviando comentário...");
+
+            const comentario = document.getElementById("comentario").value.trim();
+            const imagemInput = document.getElementById("imagem");
+            const imagem = imagemInput.files[0];
+
+            const formData = new FormData();
+            formData.append("comentario", comentario);
+            formData.append("usuario", "Sistema"); // pode trocar depois
+
+            if (imagem) {
+                formData.append("imagem", imagem);
+            }
+
+            fetch(`/comentar/${window.ID_TICKET}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Erro HTTP: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(() => {
+                console.log("✅ comentário salvo");
+
+                // limpa o formulário
+                document.getElementById("comentario").value = "";
+                imagemInput.value = "";
+
+                // recarrega pra mostrar no histórico
+                location.reload();
+            })
+            .catch(err => {
+                console.error("❌ erro ao salvar comentário:", err);
+                alert("Erro ao salvar comentário");
+            });
+        });
+    }
+
+
 });

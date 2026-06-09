@@ -179,7 +179,7 @@ def comentar(id_ticket):
     if comentario:
         comentario = comentario.replace("\n", "<br>")
 
-    usuario = request.form.get("usuario") or "Desconhecido"
+    usuario = request.form.get("usuario") or "Usuário Desconhecido"
     arquivo = request.files.get("imagem")
 
     nome_arquivo = None
@@ -205,7 +205,7 @@ def comentar(id_ticket):
                 "comentario": comentario,
                 "imagem": nome_arquivo,
                 "usuario": usuario,
-                "data": datetime.now().isoformat()
+                "data": datetime.now().strftime("%d/%m/%Y %H:%M")
             })
 
             print("✅ Log adicionado:", t["logs"])
