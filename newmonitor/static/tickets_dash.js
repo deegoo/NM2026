@@ -60,20 +60,21 @@ function carregarTickets() {
    FORMATAR DATA
 ========================= */
 function parseBR(data) {
+
     if (!data) return null;
 
-    // ✅ se já for Date, retorna direto
     if (data instanceof Date) return data;
 
-    // ✅ só aplica replace se for string
     if (typeof data !== "string") return null;
 
     data = data.replace(",", "");
 
     const [d, h] = data.split(" ");
-    const [dia, mes, ano] = d.split("/");
+    const [dia, mes, ano] = d.split("/").map(Number);
 
-    return new Date(`${ano}-${mes}-${dia}T${h}`);
+    const [hora, min] = (h || "00:00").split(":").map(Number);
+
+    return new Date(ano, mes - 1, dia, hora || 0, min || 0);
 }
 
 function formatarData(dataStr) {
@@ -98,10 +99,15 @@ function getUltimaAtualizacao(t) {
 
     if (t.logs && t.logs.length > 0) {
         const ultimoLog = t.logs[t.logs.length - 1];
-        return new Date(ultimoLog.data || ultimoLog.data_hora || t.data_inicio);
+
+        if (ultimoLog.data instanceof Date) {
+            return ultimoLog.data;
+        }
+
+        return parseBR(ultimoLog.data);
     }
 
-    return new Date(t.data_inicio);
+    return parseBR(t.data_inicio);
 }
 
 
@@ -112,8 +118,18 @@ function aplicarCor(tr, abertura, ultimaAtualizacao, evento) {
 
     const agora = new Date();
 
-    const diffAbertura = (agora - abertura) / (1000 * 60 * 60);
+    if (!(ultimaAtualizacao instanceof Date) || isNaN(ultimaAtualizacao)) {
+        tr.style.backgroundColor = "#fff";
+        return;
+    }
+
     const diffAtualizacao = (agora - ultimaAtualizacao) / (1000 * 60 * 60);
+
+    console.log({
+        ticket: tr.innerText,
+        ultimaAtualizacao,
+        diffAtualizacao
+    });
 
     const ev = (evento || "").toUpperCase();
 
@@ -127,7 +143,7 @@ function aplicarCor(tr, abertura, ultimaAtualizacao, evento) {
             return;
         }
 
-        if (diffAbertura >= 12) {
+        if (diffAtualizacao >= 12) {
             tr.style.backgroundColor = "#ffde72"; // amarelo
             return;
         }
@@ -137,7 +153,6 @@ function aplicarCor(tr, abertura, ultimaAtualizacao, evento) {
     // 🔹 REGRA PADRÃO
     // =========================
 
-
     if (diffAtualizacao >= 3) {
         tr.style.backgroundColor = "#ffbdbd"; // vermelho
     }
@@ -145,7 +160,7 @@ function aplicarCor(tr, abertura, ultimaAtualizacao, evento) {
         tr.style.backgroundColor = "#fdffbd"; // amarelo
     }
     else {
-        tr.style.backgroundColor = "#fff";
+        tr.style.backgroundColor = "#fff"; // branco
     }
 }
 
@@ -228,24 +243,6 @@ function ordenarPor(campo) {
     });
 
     renderTabela(listaOrdenada);
-}
-
-function atualizarCoresTempo() {
-
-    const linhas = document.querySelectorAll("#tabela_tickets tr");
-
-    linhas.forEach(tr => {
-
-        const aberturaStr = tr.getAttribute("data-abertura");
-        const ultimaStr = tr.getAttribute("data-ultima");
-
-        if (!aberturaStr) return;
-
-        const abertura = new Date(aberturaStr);
-        const ultima = new Date(ultimaStr || aberturaStr);
-
-        aplicarCor(tr, abertura, ultima);
-    });
 }
 
 /* =========================

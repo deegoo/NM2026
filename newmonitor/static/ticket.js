@@ -45,20 +45,21 @@ function abrirTela(nome) {
 // ============================
 
 function parseBR(data) {
+
     if (!data) return null;
 
-    // ✅ se já for Date, retorna direto
     if (data instanceof Date) return data;
 
-    // ✅ só aplica replace se for string
     if (typeof data !== "string") return null;
 
     data = data.replace(",", "");
 
     const [d, h] = data.split(" ");
-    const [dia, mes, ano] = d.split("/");
+    const [dia, mes, ano] = d.split("/").map(Number);
 
-    return new Date(`${ano}-${mes}-${dia}T${h}`);
+    const [hora, min] = (h || "00:00").split(":").map(Number);
+
+    return new Date(ano, mes - 1, dia, hora || 0, min || 0);
 }
 
 function formatarData(dataStr) {
