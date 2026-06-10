@@ -55,6 +55,29 @@ function carregarTickets() {
     });
 }
 
+/* =========================
+   NÃO TRATADOS
+========================= */
+
+function contarNaoTratados(lista) {
+
+    const agora = new Date();
+    let total = 0;
+
+    lista.forEach(t => {
+        const ultima = getUltimaAtualizacao(t);
+
+        if (!(ultima instanceof Date) || isNaN(ultima)) return;
+
+        const diff = (agora - ultima) / (1000 * 60 * 60);
+
+        if (diff >= 1.5) {
+            total++;
+        }
+    });
+
+    return total;
+}
 
 /* =========================
    FORMATAR DATA
@@ -175,6 +198,14 @@ function renderTabela(lista) {
     tabela.innerHTML = "";
 
     if (!lista.length) return;
+
+    const naoTratados = contarNaoTratados(dadosAgrupados);
+
+    const cardNaoTratados = document.querySelector("#card_nao_tratados");
+
+    if (cardNaoTratados) {
+        cardNaoTratados.textContent = naoTratados;
+    }
 
     lista.forEach(t => {
 

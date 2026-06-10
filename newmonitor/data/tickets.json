@@ -1,472 +1,230 @@
 [
   {
-    "cidade": "CAMPOS DO JORDAO",
+    "cidade": "ALFENAS",
     "servico": "NET FONE",
     "sintoma": "MUDO",
     "evento": "INTERRUPCAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
+    "descricao": "teste comment",
+    "data_inicio": "09/06/2026 10:00",
     "categoria": "Links",
     "ofensor": "GPON",
-    "chamado_operadora": "123456",
+    "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
     "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
+    "id_ticket": "70/2026",
+    "data_abertura": "09/06/2026 19:25",
     "logs": [
       {
-        "comentario": "qwerty",
+        "comentario": "teste comment",
         "imagem": null,
         "usuario": "Sistema",
-        "data": "09/06/2026 15:55"
+        "data": "09/06/2026 19:26"
+      },
+      {
+        "comentario": "teste de novo",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 19:26"
+      },
+      {
+        "comentario": "teste atualização feijão coração",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 19:29"
+      },
+      {
+        "comentario": "TESTE ATUALIZAÇÃO",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 21:21"
+      },
+      {
+        "comentario": "ALFENAS | NET FONE",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:49"
+      }
+    ]
+  },
+  {
+    "cidade": "MANAUS",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste dashboard home",
+    "data_inicio": "09/06/2026 20:38",
+    "categoria": "Links",
+    "ofensor": "MNS/IP/02756",
+    "chamado_operadora": "75864253",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "71/2026",
+    "data_abertura": "09/06/2026 20:39",
+    "logs": [
+      {
+        "comentario": "ALFENAS | NET FONE",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:50"
+      }
+    ]
+  },
+  {
+    "cidade": "MANAUS",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste dash home +12h",
+    "data_inicio": "08/06/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "MNS/IP/03418",
+    "chamado_operadora": "357951",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "72/2026",
+    "data_abertura": "09/06/2026 20:44",
+    "logs": [
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 20:44"
       },
       {
         "comentario": "",
-        "imagem": "1781031526923_IMG.png",
+        "imagem": "1781048702789_IMG1.png",
         "usuario": "Sistema",
-        "data": "09/06/2026 15:58"
+        "data": "09/06/2026 20:45"
+      },
+      {
+        "comentario": "ALFENAS | NET FONE",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:49"
       }
-    ],
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "CAMPOS DO JORDAO",
-          "servico": "NET FONE",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
+    ]
   },
   {
-    "cidade": "APARECIDA",
+    "cidade": "ARAUCÁRIA",
     "servico": "NET FONE",
     "sintoma": "MUDO",
     "evento": "INTERRUPCAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
+    "descricao": "TESTE DASHBOARD IMPACTO",
+    "data_inicio": "15/05/2026 00:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - DATACENTER/HEADEND",
+    "chamado_operadora": "539571",
+    "outage": 789456123,
     "usuario": "Rodrigo",
     "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "APARECIDA",
-          "servico": "NET FONE",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
+    "id_ticket": "73/2026",
+    "data_abertura": "09/06/2026 21:20",
+    "logs": [
+      {
+        "comentario": "TESTE ATUALIZAÇÃO",
+        "imagem": "1781050946067_IMG.png",
+        "usuario": "Sistema",
+        "data": "09/06/2026 21:22"
+      },
+      {
+        "comentario": "teste",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:28"
+      }
+    ]
   },
   {
-    "cidade": "CAMPOS DO JORDAO",
+    "cidade": "ARAUCÁRIA",
     "servico": "NET VIRTUA",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
+    "descricao": "TESTE DASHBOARD IMPACTO",
+    "data_inicio": "15/05/2026 00:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - DATACENTER/HEADEND",
+    "chamado_operadora": "539571",
+    "outage": 789456123,
     "usuario": "Rodrigo",
     "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "CAMPOS DO JORDAO",
-          "servico": "NET VIRTUA",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
+    "id_ticket": "73/2026",
+    "data_abertura": "09/06/2026 21:20",
+    "logs": [
+      {
+        "comentario": "TESTE ATUALIZAÇÃO",
+        "imagem": "1781050946067_IMG.png",
+        "usuario": "Sistema",
+        "data": "09/06/2026 21:22"
+      },
+      {
+        "comentario": "teste",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:28"
+      }
+    ]
   },
   {
-    "cidade": "APARECIDA",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "APARECIDA",
-          "servico": "NET VIRTUA",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
-  },
-  {
-    "cidade": "CAMPOS DO JORDAO",
+    "cidade": "ARAUCÁRIA",
     "servico": "NOW",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
+    "descricao": "TESTE DASHBOARD IMPACTO",
+    "data_inicio": "15/05/2026 00:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - DATACENTER/HEADEND",
+    "chamado_operadora": "539571",
+    "outage": 789456123,
     "usuario": "Rodrigo",
     "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "CAMPOS DO JORDAO",
-          "servico": "NOW",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
+    "id_ticket": "73/2026",
+    "data_abertura": "09/06/2026 21:20",
+    "logs": [
+      {
+        "comentario": "TESTE ATUALIZAÇÃO",
+        "imagem": "1781050946067_IMG.png",
+        "usuario": "Sistema",
+        "data": "09/06/2026 21:22"
+      },
+      {
+        "comentario": "teste",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:28"
+      }
+    ]
   },
   {
-    "cidade": "APARECIDA",
-    "servico": "NOW",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "APARECIDA",
-          "servico": "NOW",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
-  },
-  {
-    "cidade": "CAMPOS DO JORDAO",
+    "cidade": "ARAUCÁRIA",
     "servico": "PAY TV DIGITAL",
     "sintoma": "QUEDA NO TRAFEGO",
     "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
+    "descricao": "TESTE DASHBOARD IMPACTO",
+    "data_inicio": "15/05/2026 00:00",
+    "categoria": "Infra Estrutura",
+    "ofensor": "QUEDA DE ENERGIA - DATACENTER/HEADEND",
+    "chamado_operadora": "539571",
+    "outage": 789456123,
     "usuario": "Rodrigo",
     "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "CAMPOS DO JORDAO",
-          "servico": "PAY TV DIGITAL",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
-  },
-  {
-    "cidade": "APARECIDA",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste",
-    "data_inicio": "01/06/2026 15:55",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "123456",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "67/2026",
-    "data_abertura": "09/06/2026 15:55",
-    "evento_detalhe": {
-      "inicio": "01/06/2026 15:55",
-      "eventos": [
-        {
-          "cidade": "APARECIDA",
-          "servico": "PAY TV DIGITAL",
-          "final_evento": "09/06/2026 15:55",
-          "fases": [
-            {
-              "tempo": 11520,
-              "impacto": 0
-            }
-          ],
-          "vc_evento": 0
-        }
-      ]
-    }
-  },
-  {
-    "cidade": "CAMPOS DOS GOYTACAZES",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CASIMIRO DE ABREU",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CAMPOS DOS GOYTACAZES",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CASIMIRO DE ABREU",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CAMPOS DOS GOYTACAZES",
-    "servico": "NOW",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CASIMIRO DE ABREU",
-    "servico": "NOW",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CAMPOS DOS GOYTACAZES",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "CASIMIRO DE ABREU",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste abertura",
-    "data_inicio": "09/06/2026 09:00",
-    "categoria": "Links",
-    "ofensor": "BACKBONE",
-    "chamado_operadora": "789654",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "68/2026",
-    "data_abertura": "09/06/2026 16:50"
-  },
-  {
-    "cidade": "ALEGRETE",
-    "servico": "NET FONE",
-    "sintoma": "MUDO",
-    "evento": "INTERRUPCAO",
-    "descricao": "teste dash",
-    "data_inicio": "09/06/2026 15:50",
-    "categoria": "Links",
-    "ofensor": "Gpon",
-    "chamado_operadora": "753951",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "69/2026",
-    "data_abertura": "09/06/2026 17:18"
-  },
-  {
-    "cidade": "ALEGRETE",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste dash",
-    "data_inicio": "09/06/2026 15:50",
-    "categoria": "Links",
-    "ofensor": "Gpon",
-    "chamado_operadora": "753951",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "69/2026",
-    "data_abertura": "09/06/2026 17:18"
-  },
-  {
-    "cidade": "ALEGRETE",
-    "servico": "NOW",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste dash",
-    "data_inicio": "09/06/2026 15:50",
-    "categoria": "Links",
-    "ofensor": "Gpon",
-    "chamado_operadora": "753951",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "69/2026",
-    "data_abertura": "09/06/2026 17:18"
-  },
-  {
-    "cidade": "ALEGRETE",
-    "servico": "PAY TV DIGITAL",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste dash",
-    "data_inicio": "09/06/2026 15:50",
-    "categoria": "Links",
-    "ofensor": "Gpon",
-    "chamado_operadora": "753951",
-    "outage": null,
-    "usuario": "Rodrigo",
-    "aberto": true,
-    "id_ticket": "69/2026",
-    "data_abertura": "09/06/2026 17:18"
+    "id_ticket": "73/2026",
+    "data_abertura": "09/06/2026 21:20",
+    "logs": [
+      {
+        "comentario": "TESTE ATUALIZAÇÃO",
+        "imagem": "1781050946067_IMG.png",
+        "usuario": "Sistema",
+        "data": "09/06/2026 21:22"
+      },
+      {
+        "comentario": "teste",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "09/06/2026 23:28"
+      }
+    ]
   }
 ]

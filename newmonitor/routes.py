@@ -1,4 +1,5 @@
-from flask import render_template, url_for, request, jsonify, send_from_directory
+
+from flask import render_template, url_for, request, jsonify, send_from_directory, session
 from newmonitor import app
 from newmonitor.ticket_generator import gerar_id_ticket
 from werkzeug.utils import secure_filename
@@ -61,9 +62,8 @@ def abrir_ticket():
 
     if not os.path.exists(DATA_PATH):
         with open(DATA_PATH, "w", encoding="utf-8") as f:
-            json.dump([], f)
+            json.dump(lista, f, indent=2, ensure_ascii=False)
 
-    # ✅ leitura limpa (sem open duplicado)
     try:
         with open(DATA_PATH, "r", encoding="utf-8") as f:
             lista = json.load(f)
@@ -71,18 +71,16 @@ def abrir_ticket():
         lista = []
 
     id_ticket = gerar_id_ticket()
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M")   # ✅ já salva no formato BR
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M") 
 
-    # ✅ CASO LISTA
+
     if isinstance(dados, list):
 
         for t in dados:
             t["id_ticket"] = id_ticket
 
-            # ✅ AQUI CORRIGE DATA INÍCIO
             t["data_inicio"] = formatar_data_br(t.get("data_inicio"))
 
-            # ✅ AQUI DATA ABERTURA NO FORMATO CORRETO
             t["data_abertura"] = agora
 
         lista.extend(dados)
@@ -90,15 +88,12 @@ def abrir_ticket():
     else:
         dados["id_ticket"] = id_ticket
 
-        # ✅ AQUI CORRIGE DATA INÍCIO
         dados["data_inicio"] = formatar_data_br(dados.get("data_inicio"))
 
-        # ✅ DATA ABERTURA CORRETA
         dados["data_abertura"] = agora
 
         lista.append(dados)
 
-    # ✅ escrita correta UTF-8
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(lista, f, indent=2, ensure_ascii=False)
 
@@ -130,7 +125,7 @@ def fechar():
     if not dados:
         return jsonify({"erro": "JSON inválido"}), 400
 
-    with open(DATA_PATH, "r") as f:
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
         lista = json.load(f)
 
     index = dados.get("index")
@@ -145,7 +140,7 @@ def fechar():
     ticket["causa"] = dados.get("causa")
     ticket["solucao"] = dados.get("solucao")
 
-    with open(DATA_PATH, "w") as f:
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(lista, f, indent=2)
 
     return jsonify({"ok": True})
@@ -174,10 +169,12 @@ def comentar(id_ticket):
 
     os.makedirs(UPLOAD_PATH, exist_ok=True)
 
-    comentario = request.form.get("comentario")
+    comentario = request.form.get("comentario") or ""
 
-    if comentario:
-        comentario = comentario.replace("\n", "<br>")
+    # ✅ protege encoding
+    comentario = comentario.encode("utf-8", "ignore").decode("utf-8")
+
+    comentario = comentario.replace("\n", "<br>")
 
     usuario = request.form.get("usuario") or "Usuário Desconhecido"
     arquivo = request.files.get("imagem")
@@ -189,12 +186,14 @@ def comentar(id_ticket):
         caminho = os.path.join(UPLOAD_PATH, nome_arquivo)
         arquivo.save(caminho)
 
-    with open(DATA_PATH, "r") as f:
-        try:
+    # ✅ leitura correta
+    try:
+        with open(DATA_PATH, "r", encoding="utf-8") as f:
             lista = json.load(f)
-        except:
-            lista = []
+    except:
+        lista = []
 
+    # ✅ aplica em TODOS os registros do ticket
     for t in lista:
         if str(t.get("id_ticket")) == str(id_ticket):
 
@@ -208,10 +207,8 @@ def comentar(id_ticket):
                 "data": datetime.now().strftime("%d/%m/%Y %H:%M")
             })
 
-            print("✅ Log adicionado:", t["logs"])
-            break
-
-    with open(DATA_PATH, "w") as f:
+    # ✅ escrita correta
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(lista, f, indent=2, ensure_ascii=False)
 
     return {"ok": True}
@@ -381,4 +378,7 @@ def relatorios_dados():
         resultado.append(t)
 
     return jsonify(resultado)
+
+    
+
 

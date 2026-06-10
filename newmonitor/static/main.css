@@ -66,34 +66,47 @@ body {
   min-height: 100vh;
 }
 
+
 .dashboard {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .card {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  flex: 1;
-  min-width: 150px;
-  text-align: center;
+  box-shadow: 0 4px 6px var(--shadow1);
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .card h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px; 
 }
 
 .card p {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
   margin: 10px 0 0;
   color: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
 }
+
 
 /* estilo geral para todos os links */
 a {

@@ -7,29 +7,32 @@
     <h1>Dashboard NM</h1>
 
     <div class="dashboard">
+      <a href="{{ url_for('ticket_aberto')}}">
       <div class="card">
-        <h3>Registro Abertos</h3>
-        <p>86</p>
+        <h3> Tickets Abertos</h3>
+        <p id="card_abertos"></p>
       </div>
+      </a>
+      <a href="{{ url_for('ticket_aberto')}}">
       <div class="card">
-        <h3>Registros Com Impacto</h3>
-        <p>6</p>
+        <h3>Tickets atualizar </h3>
+        <p id="card_nao_tratados"></p>
       </div>
+      </a>
+      <a href="{{ url_for('ticket_aberto')}}">
+      <div class="card">
+        <h3>Tickets com impacto</h3>
+        <p id="card_com_impacto"></p>
+      </div>
+      </a>
       <div class="card">
         <h3>MEGs</h3>
-        <p>3</p>
+        <p id="card_meg"></p>
       </div>
       <div class="card">
         <h3>SITs</h3>
         <p>0</p>
       </div>
-      <div class="card">
-        <h3>RALs</h3>
-        <p>0</p>
-      </div>
-    </div><br>
-
-    <div class="dashboard">
       <div class="card">
         <h3>Helix</h3>
         <p>986</p>
@@ -43,16 +46,13 @@
         <p>930</p>
       </div>
       <div class="card">
-        <h3>Ticket não tratado</h3>
-        <p>99</p>
+        <h3>Tickets não tratados</h3>
+        <p>0</p>
       </div>
       <div class="card">
         <h3>Ticket em tratamento</h3>
         <p>0</p>
       </div>
-    </div><br>
-
-    <div class="dashboard">
       <div class="card">
         <h3>Ticket parado</h3>
         <p>986</p>
@@ -75,6 +75,6 @@
       </div>
     </div>
 
-  
+<script src="{{ url_for('static', filename='home.js') }}"></script>
 
 {% endblock %}
