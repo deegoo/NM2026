@@ -4,15 +4,24 @@ from newmonitor import app
 from newmonitor.ticket_generator import gerar_id_ticket
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from fastapi import FastAPI
+from requests_ntlm import HttpNtlmAuth
+from time import time
 
 import json
 import os
 import time
+import requests
 
 UPLOAD_PATH = "newmonitor/static/uploads"
 DATA_PATH = "newmonitor/data/tickets.json"
 
 lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
+
+#cache_meg = {
+#"valor": 0,
+#"time": 600
+#}
 
 @app.route("/")
 def home():
@@ -379,6 +388,95 @@ def relatorios_dados():
 
     return jsonify(resultado)
 
-    
+@app.route("/api/meg")
+def api_meg():
 
+    url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
 
+    usuario = "F183209"
+    senha = "Senh@idm01"
+
+    try:
+        r = requests.get(
+            url,
+            auth=HttpNtlmAuth(usuario, senha),
+            timeout=10
+        )
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
+    if r.status_code != 200:
+        return jsonify({"erro": f"status {r.status_code}"}), 500
+
+    if "<html" in r.text.lower():
+        return jsonify({"total": 0, "erro": "falha na autenticação"})
+
+    conteudo = r.content.decode("latin-1")
+    conteudo = conteudo.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+
+    linhas = conteudo.splitlines()
+
+    total = 0
+
+    for linha in linhas:
+
+        if not linha.strip():
+            continue
+
+        partes = linha.split(";")
+
+        for p in partes:
+            if "RESIDENCIAL" in p.upper():
+                total += 1
+                break
+
+    return jsonify({"total": total})
+
+@app.route("/api/sit")
+def api_sit():
+
+    url = "http://10.53.5.77/Arcos/Arcossit.aspx"
+
+    usuario = "F183209"
+    senha = "Senh@idm01"
+
+    try:
+        r = requests.get(
+            url,
+            auth=HttpNtlmAuth(usuario, senha),
+            timeout=10
+        )
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
+    if r.status_code != 200:
+        return jsonify({"erro": f"status {r.status_code}"}), 500
+
+    # ✅ fallback se login falhar
+    if "<html" in r.text.lower():
+        return jsonify({"total": 0, "erro": "falha na autenticação"})
+
+    # ✅ trata CSV (igual MEG)
+    conteudo = r.content.decode("latin-1")
+    conteudo = conteudo.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+
+    linhas = conteudo.splitlines()
+
+    total = 0
+
+    for linha in linhas:
+
+        if not linha.strip():
+            continue
+
+        # ✅ limpeza da linha (mesmo padrão que funcionou)
+        linha = linha.strip().replace("\r", "")
+
+        partes = linha.split(";")
+
+        for p in partes:
+            if "NOC RES MON" in p.upper():
+                total += 1
+                break
+
+    return jsonify({"total": total})

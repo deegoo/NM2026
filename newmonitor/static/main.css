@@ -487,3 +487,13 @@ margin: 5px;
     border: 2px solid var(--accent);
     box-shadow: 3px 3px 6px var(--shadow0);
 }
+
+.piscar {
+    animation: piscarAnim 1s infinite;
+}
+
+@keyframes piscarAnim {
+    0%   { box-shadow: 0 0 5px #dc3545; }
+    50%  { box-shadow: 0 0 20px #dc3545; }
+    100% { box-shadow: 0 0 5px #dc3545; }
+}

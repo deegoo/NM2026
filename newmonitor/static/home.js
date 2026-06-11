@@ -1,5 +1,18 @@
+
+let cacheMEG = {
+    valor: 0,
+    time: 0
+};
+
+let cacheSIT = {
+    valor: 0,
+    time: 0
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     iniciarSistema();
+    atualizarTudo();
+    setInterval(atualizarTudo, 120000);
 });
 
         /* =========================
@@ -32,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
             atualizarCardNaoTratados(lista);
             atualizarCardAbertos(lista);
             atualizarCardComImpacto(lista);
-
-
+            atualizarCardMEG();
+            atualizarCardSIT();
             // 👉 novos cards, adicionar aqui:
             // atualizarCardCriticos(lista);
             // atualizarCardHelix(lista);
@@ -75,9 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // status visual
             if (total >= 5) {
-                card.style.border = "2px solid #dc3545"; // vermelho
+                card.style.border = "5px solid #dc3545"; // vermelho
             } else if (total > 0) {
-                card.style.border = "2px solid #ffc107"; // amarelo
+                card.style.border = "5px solid #ffc107"; // amarelo
             }
         }
 
@@ -111,6 +124,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!el) return;
 
             el.textContent = total;
+            
+            const card = el.parentElement;
+
+            aplicarBordaCardElemento(card, total)
+
         }
 
         /* =========================
@@ -150,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return new Date(ano, mes - 1, dia, hora || 0, min || 0);
         }
+
 // ================= SISTEMA PRINCIPAL =================
 let sistemaIniciado = false;
 function iniciarSistema() {
@@ -184,3 +203,113 @@ function iniciarSistema() {
         console.error("Erro ao iniciar sistema:", err);
     }
 }
+function atualizarTudo() {
+
+    console.log("🔄 atualizando dashboard");
+
+    fetch("/listar")
+        .then(r => r.json())
+        .then(lista => {
+            atualizarCards(lista);
+        })
+        .catch(err => console.error("erro listar:", err));
+
+    atualizarCardMEG();
+    atualizarCardSIT();
+}
+/* =========================
+CARD: MEG
+========================= */
+function atualizarCardMEG() {
+
+    const agora = Date.now();
+
+    const card = document.getElementById("card_meg_box");
+
+    if (agora - cacheMEG.time < 120000) {
+
+        const total = cacheMEG.valor;
+
+        document.getElementById("card_meg").textContent = total;
+
+        aplicarBordaCardElemento(card, total); 
+
+        return;
+    }
+
+    fetch("/api/meg")
+        .then(r => r.json())
+        .then(d => {
+
+            const total = d.total || 0;
+
+            cacheMEG.valor = total;
+            cacheMEG.time = agora;
+
+            document.getElementById("card_meg").textContent = total;
+
+            aplicarBordaCardElemento(card, total); 
+
+        })
+        .catch(err => console.error("erro MEG:", err));
+}
+/* =========================
+CARD: SIT
+========================= */
+function atualizarCardSIT() {
+
+    const agora = Date.now();
+
+    if (agora - cacheSIT.time < 120000) {
+
+        const total = cacheSIT.valor;
+
+        document.getElementById("card_sit").textContent = total;
+
+        aplicarBorda("card_sit_box", total); // ✅ correto
+
+        return;
+    }
+
+    fetch("/api/sit")
+        .then(r => r.json())
+        .then(d => {
+
+            const total = d.total || 0;
+
+            cacheSIT.valor = total;
+            cacheSIT.time = agora;
+
+            document.getElementById("card_sit").textContent = total;
+
+            aplicarBorda("card_sit_box", total); // ✅ correto
+
+        })
+        .catch(err => console.error("erro SIT:", err));
+}
+
+function aplicarBorda(cardId, total) {
+
+    const card = document.getElementById(cardId);
+
+    if (!card) return;
+
+    if (total > 0) {
+        card.style.border = "5px solid #dc3545";
+        card.classList.add("piscar");  
+    } else {
+        card.style.border = "1px solid #ccc";
+        card.classList.remove("piscar"); 
+    }
+}
+
+function aplicarBordaCardElemento(card, total) {
+
+    if (!card) return;
+
+    card.style.border = total > 0
+        ? "5px solid #dc3545"  // 🔴 vermelho
+        : "1px solid #ccc";
+}
+            
+            

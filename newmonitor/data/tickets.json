@@ -50,6 +50,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
       }
     ]
   },
@@ -80,6 +86,24 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:42"
+      },
+      {
+        "comentario": "bghgfd",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:12"
+      },
+      {
+        "comentario": "",
+        "imagem": "1781115160613_IMG.png",
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:12"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
       }
     ]
   },
@@ -122,6 +146,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
       }
     ]
   },
@@ -158,6 +188,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
       }
     ]
   },
@@ -194,6 +230,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
       }
     ]
   },
@@ -230,6 +272,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
       }
     ]
   },
@@ -266,6 +314,372 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 14:43"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:28"
+      }
+    ]
+  },
+  {
+    "cidade": "AMERICO BRASILIENSE",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMPARO",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMERICO BRASILIENSE",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMPARO",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMERICO BRASILIENSE",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMPARO",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMERICO BRASILIENSE",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "AMPARO",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
+      }
+    ]
+  },
+  {
+    "cidade": "ANANINDEUA",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "",
+    "data_inicio": "01/01/2026 00:00",
+    "categoria": "Links",
+    "ofensor": "BACKBONE",
+    "chamado_operadora": "123",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "aberto": true,
+    "id_ticket": "74/2026",
+    "data_abertura": "10/06/2026 15:13",
+    "logs": [
+      {
+        "comentario": "trwetw",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 15:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "10/06/2026 19:27"
       }
     ]
   }

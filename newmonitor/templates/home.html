@@ -7,32 +7,41 @@
     <h1>Dashboard NM</h1>
 
     <div class="dashboard">
+
       <a href="{{ url_for('ticket_aberto')}}">
       <div class="card">
         <h3> Tickets Abertos</h3>
         <p id="card_abertos"></p>
       </div>
       </a>
+
       <a href="{{ url_for('ticket_aberto')}}">
       <div class="card">
         <h3>Tickets atualizar </h3>
         <p id="card_nao_tratados"></p>
       </div>
       </a>
+
       <a href="{{ url_for('ticket_aberto')}}">
       <div class="card">
         <h3>Tickets com impacto</h3>
         <p id="card_com_impacto"></p>
       </div>
       </a>
-      <div class="card">
+      <a href="http://meg.nocclarobrasil.com.br/Meg/MegAbertos.aspx" target="_blank">
+      <div class="card" id="card_meg_box">
         <h3>MEGs</h3>
         <p id="card_meg"></p>
       </div>
-      <div class="card">
+      </a>
+
+      <a href="http://sit.nocclarobrasil.com.br/Arcos/SitSuporte.aspx" target="_blank">
+      <div class="card" id="card_sit_box">
         <h3>SITs</h3>
-        <p>0</p>
+        <p id="card_sit">0</p>
       </div>
+      </a>
+
       <div class="card">
         <h3>Helix</h3>
         <p>986</p>
