@@ -1,12 +1,15 @@
 
-from flask import render_template, url_for, request, jsonify, send_from_directory, session
-from newmonitor import app
+from flask import render_template,  url_for, flash, request, jsonify, send_from_directory, session, redirect, url_for, request, Response
+from newmonitor import app, login_manager
 from newmonitor.ticket_generator import gerar_id_ticket
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from fastapi import FastAPI
 from requests_ntlm import HttpNtlmAuth
 from time import time
+from flask_login import login_required, UserMixin, login_required, current_user, login_user, logout_user
+
+
 
 import json
 import os
@@ -18,38 +21,88 @@ DATA_PATH = "newmonitor/data/tickets.json"
 
 lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
 
-#cache_meg = {
-#"valor": 0,
-#"time": 600
-#}
+# Banco de dados temporário
+USUARIOS_DB = {
+    "1": {"username": "admin", "password": "123"},
+    "2": {"username": "claro", "password": "123"}
+}
+
+class User(UserMixin):
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id in USUARIOS_DB:
+        return User(id=user_id, username=USUARIOS_DB[user_id]["username"])
+    return None
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        username_digitado = request.form.get('username')
+        senha_digitada = request.form.get('password')
+        
+        
+        for user_id, dados in USUARIOS_DB.items():
+            if dados["username"] == username_digitado and dados["password"] == senha_digitada:
+                usuario_obj = User(id=user_id, username=dados["username"])
+                login_user(usuario_obj) 
+                return redirect(url_for('home'))
+        
+        # Se errou o login, exibe o aviso no HTML
+        flash('Usuário ou senha incorretos.')
+        
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required 
+def logout():
+    logout_user() 
+    flash("Você saiu do sistema com sucesso!") 
+    return redirect(url_for('home'))
 
 @app.route("/")
+@login_required
 def home():
     return render_template("home.html")
 
 @app.route("/registro")
+@login_required
 def registro():
     return render_template("registro.html")
 
 @app.route("/abrir_registro")
+@login_required
 def abrir_registro():
     return render_template("abrir_registro.html", usuario ="Rodrigo")
 
 @app.route("/consulta_regitro_falha")
+@login_required
 def consulta_regitro_falha():
     return render_template("consulta_incidentes.html")
 
 @app.route("/fechar_registro")
+@login_required
 def fechar_registro():
     return render_template("fechar_registro.html")    
 
 @app.route("/registra_ofensor")
+@login_required
 def registra_ofensor():
     return render_template("registra_ofensor.html") 
 
 
 
 @app.route("/abrir", methods=["POST"])
+@login_required
 def abrir_ticket():
 
     def formatar_data_br(dt_str):
@@ -114,6 +167,7 @@ def abrir_ticket():
 
 
 @app.route("/listar", methods=["GET"])
+@login_required
 def listar():
 
     if not os.path.exists(DATA_PATH):
@@ -155,11 +209,13 @@ def fechar():
     return jsonify({"ok": True})
 
 @app.route("/ticket_aberto")
+@login_required
 def ticket_aberto():
     return render_template("ticket_aberto.html")
 
 
 @app.route("/ticket/<path:id_ticket>")
+@login_required
 def visualizar_ticket(id_ticket):
 
     import json
@@ -172,6 +228,7 @@ def visualizar_ticket(id_ticket):
     return render_template("ticket.html", tickets=tickets)
 
 @app.route("/comentar/<path:id_ticket>", methods=["POST"])
+@login_required
 def comentar(id_ticket):
 
     print("✅ Entrou na rota comentar")
@@ -223,16 +280,19 @@ def comentar(id_ticket):
     return {"ok": True}
 
 @app.route("/consulta_incidentes")
+@login_required
 def consulta_incidentes():
     return render_template("consulta_incidentes.html")
 
 @app.route('/data/<path:filename>')
+@login_required
 def servir_dados(filename):
     return send_from_directory('data', filename)
 
 from urllib.parse import unquote
 
 @app.route("/salvar_evento/<path:id_ticket>", methods=["POST"])
+@login_required
 def salvar_evento(id_ticket):
 
     from urllib.parse import unquote
@@ -286,6 +346,7 @@ def salvar_evento(id_ticket):
     return jsonify({"ok": True})
 
 @app.route("/fechar_ticket_multi/<path:id_ticket>", methods=["POST"])
+@login_required
 def fechar_ticket_multi(id_ticket):
 
     from urllib.parse import unquote
@@ -335,10 +396,12 @@ def fechar_ticket_multi(id_ticket):
 
 
 @app.route("/relatorios")
+@login_required
 def tela_relatorios():
     return render_template("tela_relatorios.html")
 
 @app.route("/relatorios_dados", methods=["POST"])
+@login_required
 def relatorios_dados():
 
     dados = request.json
@@ -389,6 +452,7 @@ def relatorios_dados():
     return jsonify(resultado)
 
 @app.route("/api/meg")
+@login_required
 def api_meg():
 
     url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
@@ -433,6 +497,7 @@ def api_meg():
     return jsonify({"total": total})
 
 @app.route("/api/sit")
+@login_required
 def api_sit():
 
     url = "http://10.53.5.77/Arcos/Arcossit.aspx"
