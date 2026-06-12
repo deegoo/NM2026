@@ -545,3 +545,58 @@ def api_sit():
                 break
 
     return jsonify({"total": total})
+
+@app.route("/meg_detalhe")
+def meg_detalhe():
+    return render_template("meg_detalhe.html")
+
+
+@app.route("/api/meg_detalhe")
+def api_meg_detalhe():
+
+    url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
+
+    usuario = "F183209"
+    senha = "Senh@idm01"
+
+    r = requests.get(
+        url,
+        auth=HttpNtlmAuth(usuario, senha),
+        timeout=10
+    )
+
+    conteudo = r.content.decode("utf-8", errors="replace")
+    conteudo = conteudo.replace("<br>", "\n")
+
+    linhas = conteudo.splitlines()
+
+    resultado = []
+
+    for linha in linhas:
+
+        if not linha.strip():
+            continue
+
+        partes = linha.split(";")
+
+        # procura RESIDENCIAL
+        if not any("RESIDENCIAL" in p.upper() for p in partes):
+            continue
+
+        try:
+            numero = partes[0]
+            evento = partes[9] if len(partes) > 9 else ""
+            previsao = partes[14] if len(partes) > 14 else ""
+            status = partes[15] if len(partes) > 15 else ""
+
+            resultado.append({
+                "numero": numero,
+                "evento": evento,
+                "previsao": previsao,
+                "status": status
+            })
+
+        except:
+            continue
+
+    return jsonify(resultado)

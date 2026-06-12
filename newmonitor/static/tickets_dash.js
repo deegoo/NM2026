@@ -240,7 +240,7 @@ function renderTabela(lista) {
             <td>${t.outage ?? "-"}</td>
             <td>${t.usuario}</td>
         `;
-
+            
         tabela.appendChild(tr);
     });
 }

@@ -56,43 +56,69 @@ document.addEventListener("DOMContentLoaded", () => {
         /* =========================
         CARD: NÃO TRATADOS
         ========================= */
-        function atualizarCardNaoTratados(lista) {
+function atualizarCardNaoTratados(lista) {
 
-            const agora = new Date();
-            let total = 0;
+    const agora = new Date();
 
-            lista.forEach(t => {
+    let temAmarelo = false;
+    let temVermelho = false;
+    let total = 0;
 
-                const ultima = getUltimaAtualizacao(t);
+    lista.forEach(t => {
 
-                if (!(ultima instanceof Date) || isNaN(ultima)) return;
+        const ultima = getUltimaAtualizacao(t);
 
-                const diff = (agora - ultima) / 3600000;
+        if (!(ultima instanceof Date) || isNaN(ultima)) return;
 
-                if (diff >= 1.5) {
-                    total++;
-                }
-            });
+        const diffMin = Math.floor((agora - ultima) / 60000);
 
-            const el = document.getElementById("card_nao_tratados");
+        const ev = (t.evento || "").toUpperCase();
 
-            if (!el) return;
+        // 🔹 REGRA ESPECIAL AVALIAÇÃO
+        if (ev.includes("AVALIAÇÃO")) {
 
-            el.textContent = total;
+            if (diffMin >= 1440) {      // 24h
+                temVermelho = true;
+                total++;
+                return;
+            }
 
-            const card = el.parentElement;
-
-            // reset visual
-            card.style.border = "";
-            card.style.backgroundColor = "";
-            
-            // status visual
-            if (total >= 5) {
-                card.style.border = "5px solid #dc3545"; // vermelho
-            } else if (total > 0) {
-                card.style.border = "5px solid #ffc107"; // amarelo
+            if (diffMin >= 720) {       // 12h
+                temAmarelo = true;
+                total++;
+                return;
             }
         }
+
+        // 🔹 REGRA PADRÃO
+        if (diffMin >= 180) {       
+            temVermelho = true;
+            total++;
+        } else if (diffMin >= 90) { 
+            temAmarelo = true;
+            total++;
+        }
+    });
+
+    const el = document.getElementById("card_nao_tratados");
+
+    if (!el) return;
+
+    el.textContent = total;
+
+    const card = el.parentElement;
+
+    // reset
+    card.style.border = "";
+    card.classList.remove("piscar");
+
+    // 🔥 PRIORIDADE VISUAL
+    if (temVermelho) {
+        card.style.border = "5px solid #dc3545"; // 🔴 vermelho
+    } else if (temAmarelo) {
+        card.style.border = "5px solid #ffc107"; // 🟡 amarelo
+    }
+}
 
         /* =========================
         CARD: ABERTOS
@@ -168,7 +194,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return new Date(ano, mes - 1, dia, hora || 0, min || 0);
         }
+/* =========================
+TELA INTERNA MEG
+========================= */
 
+function abrirTelaMEG() {
+    window.open("/meg_detalhe", "_self");
+}
 // ================= SISTEMA PRINCIPAL =================
 let sistemaIniciado = false;
 function iniciarSistema() {
@@ -237,21 +269,20 @@ function atualizarCardMEG() {
         return;
     }
 
-    fetch("/api/meg")
-        .then(r => r.json())
-        .then(d => {
+        fetch("/api/meg_detalhe")
+            .then(r => r.json())
+            .then(lista => {
 
-            const total = d.total || 0;
+                const total = lista.length;
 
-            cacheMEG.valor = total;
-            cacheMEG.time = agora;
+                cacheMEG.valor = total;
+                cacheMEG.time = agora;
 
-            document.getElementById("card_meg").textContent = total;
+                document.getElementById("card_meg").textContent = total;
 
-            aplicarBordaCardElemento(card, total); 
-
-        })
-        .catch(err => console.error("erro MEG:", err));
+                aplicarSLA_MEG(card, lista);
+            })
+            .catch(err => console.error("erro MEG:", err));
 }
 /* =========================
 CARD: SIT
@@ -266,7 +297,7 @@ function atualizarCardSIT() {
 
         document.getElementById("card_sit").textContent = total;
 
-        aplicarBorda("card_sit_box", total); // ✅ correto
+        aplicarBorda("card_sit_box", total);
 
         return;
     }
@@ -282,7 +313,7 @@ function atualizarCardSIT() {
 
             document.getElementById("card_sit").textContent = total;
 
-            aplicarBorda("card_sit_box", total); // ✅ correto
+            aplicarBorda("card_sit_box", total);
 
         })
         .catch(err => console.error("erro SIT:", err));
@@ -311,5 +342,56 @@ function aplicarBordaCardElemento(card, total) {
         ? "5px solid #dc3545"  // 🔴 vermelho
         : "1px solid #ccc";
 }
-            
-            
+
+function extrairDataPrevisao(texto) {
+
+    if (!texto) return null;
+
+    const regex = /(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})/;
+
+    const match = texto.match(regex);
+
+    if (!match) return null;
+
+    const [_, data, hora] = match;
+
+    return parseBR(`${data} ${hora}`);
+}            
+function aplicarSLA_MEG(card, listaMeg) {
+
+    if (!card) return;
+
+    if (!listaMeg || listaMeg.length === 0) {
+        card.style.border = "1px solid #ccc";
+        card.classList.remove("piscar");
+        return;
+    }
+
+    const agora = new Date();
+
+    let menorTempo = Infinity;
+
+    listaMeg.forEach(m => {
+
+        const previsao = extrairDataPrevisao(m.previsao);
+
+        if (!previsao) return;
+
+        const diffMin = (previsao - agora) / 60000;
+
+        if (diffMin < menorTempo) {
+            menorTempo = diffMin;
+        }
+    });
+
+    card.classList.remove("piscar");
+
+    if (menorTempo <= 15) {
+        card.style.border = "5px solid #dc3545";
+        card.classList.add("piscar");
+    } else if (menorTempo <= 30) {
+        card.style.border = "5px solid #dc3545";
+    } else {
+        card.style.border = "5px solid #ffc107";
+    }
+}

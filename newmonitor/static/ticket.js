@@ -146,7 +146,6 @@ function gerarInputsPorCidade() {
         const container = document.getElementById("impactoPorCidadeContainer");
         container.innerHTML = "";
 
-        // ✅ pega cidades únicas
         const cidades = [...new Set(tickets.map(t => t.cidade))];
 
             cidades.forEach(cidade => {
@@ -373,7 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const chkImpactoCidade = document.getElementById("impactoCidade");
     const containerCidades = document.getElementById("impactoPorCidadeContainer");
 
-    // ✅ CHECKBOX IMPACTO POR CIDADE
     if (chkImpactoCidade) {
         chkImpactoCidade.addEventListener("change", () => {
 
@@ -385,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         });
-    } // ✅ FECHOU CORRETAMENTE AQUI
+    } 
 
     // ============================
     // ✅ BOTÕES
@@ -510,7 +508,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? global
                     : document.querySelector(`.final_evento[data-key="${key}"]`)?.value;
 
-                // ✅ ISO → BR
                 if (final_evento && final_evento.includes("T")) {
                     const [data, hora] = final_evento.split("T");
                     const [ano, mes, dia] = data.split("-");
@@ -538,7 +535,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     let impacto;
 
-                    // ✅ AQUI É O CORRETO
                     if (document.getElementById("impactoCidade")?.checked) {
                         impacto = impactoCidadeMap[reg.cidade] || 0;
                     } else {

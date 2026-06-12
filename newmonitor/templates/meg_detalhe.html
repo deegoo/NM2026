@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>MEG's Residenciais</h2>
+</br>
+</hr>
+<table id="tabela_meg">
+    <thead>
+        <tr>
+            <th>Nº MEG</th>
+            <th>Evento</th>
+            <th>Previsão</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+fetch("/api/meg_detalhe")
+    .then(r => r.json())
+    .then(lista => {
+
+        const tbody = document.querySelector("#tabela_meg tbody");
+
+        lista.forEach(item => {
+
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>
+                    <a href="http://meg.nocclarobrasil.com.br/Meg/MegAbertos.aspx" target="_blank">${item.numero}</a>
+                </td>
+                <td>${item.evento}</td>
+                <td>${item.previsao}</td>
+                <td>${item.status}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    });
+</script>
+
+{% endblock %}
