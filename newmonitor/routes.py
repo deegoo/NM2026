@@ -44,7 +44,7 @@ def load_user(user_id):
 def login():
     
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
 
     if request.method == 'POST':
         username_digitado = request.form.get('username')
@@ -547,11 +547,12 @@ def api_sit():
     return jsonify({"total": total})
 
 @app.route("/meg_detalhe")
+@login_required
 def meg_detalhe():
     return render_template("meg_detalhe.html")
 
-
 @app.route("/api/meg_detalhe")
+@login_required
 def api_meg_detalhe():
 
     url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
@@ -566,11 +567,32 @@ def api_meg_detalhe():
     )
 
     conteudo = r.content.decode("utf-8", errors="replace")
-    conteudo = conteudo.replace("<br>", "\n")
 
-    linhas = conteudo.splitlines()
+    conteudo = conteudo.replace("<br />", "\n") \
+                       .replace("<br/>", "\n") \
+                       .replace("<br>", "\n")
 
-    resultado = []
+    linhas = conteudo.split("\n")
+
+    def eh_rede_residencial(partes):
+        for i in range(len(partes)):
+            valor = partes[i].strip().upper()
+
+            if valor == "RESIDENCIAL":
+                if i + 1 < len(partes):
+                    prox = partes[i + 1].strip().upper()
+
+                    if prox == "TRUE":
+                        anterior = partes[i - 1].strip() if i - 1 >= 0 else ""
+
+                        if anterior == "":
+                            return True
+        return False
+
+    # =========================
+    # AGRUPAMENTO POR MEG
+    # =========================
+    megs = {}
 
     for linha in linhas:
 
@@ -579,24 +601,52 @@ def api_meg_detalhe():
 
         partes = linha.split(";")
 
-        # procura RESIDENCIAL
-        if not any("RESIDENCIAL" in p.upper() for p in partes):
+        if len(partes) < 5:
             continue
 
-        try:
-            numero = partes[0]
-            evento = partes[9] if len(partes) > 9 else ""
-            previsao = partes[14] if len(partes) > 14 else ""
-            status = partes[15] if len(partes) > 15 else ""
+        numero = partes[0]
 
-            resultado.append({
-                "numero": numero,
-                "evento": evento,
-                "previsao": previsao,
-                "status": status
-            })
+        if numero not in megs:
+            megs[numero] = {
+                "linhas": [],
+                "residencial": False
+            }
 
-        except:
+        megs[numero]["linhas"].append(partes)
+
+        if not megs[numero]["residencial"]:
+            if eh_rede_residencial(partes):
+                megs[numero]["residencial"] = True
+
+    # =========================
+    # FILTRO FINAL
+    # =========================
+    resultado = []
+
+    for numero, dados in megs.items():
+
+        if not dados["residencial"]:
             continue
+
+        partes_residencial = None
+
+        for l in dados["linhas"]:
+            if eh_rede_residencial(l):
+                partes_residencial = l
+                break
+
+        if not partes_residencial:
+            continue
+
+        evento = partes_residencial[9] if len(partes_residencial) > 9 else ""
+        previsao = partes_residencial[14] if len(partes_residencial) > 14 else ""
+        status = partes_residencial[15] if len(partes_residencial) > 15 else ""
+
+        resultado.append({
+            "numero": numero,
+            "evento": evento,
+            "previsao": previsao,
+            "status": status
+        })
 
     return jsonify(resultado)

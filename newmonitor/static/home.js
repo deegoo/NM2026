@@ -371,16 +371,23 @@ function aplicarSLA_MEG(card, listaMeg) {
 
     let menorTempo = Infinity;
 
+
     listaMeg.forEach(m => {
 
-        const previsao = extrairDataPrevisao(m.previsao);
+    const previsao = extrairDataPrevisao(m.previsao);
 
-        if (!previsao) return;
+    if (!previsao) return;
 
-        const diffMin = (previsao - agora) / 60000;
+    let diffMin = Math.floor((previsao - agora) / 60000);
 
-        if (diffMin < menorTempo) {
-            menorTempo = diffMin;
+    // 🔥 se já passou do SLA, vira 0 (crítico imediato)
+    if (diffMin < 0) {
+        diffMin = 0;
+    }
+
+    if (diffMin < menorTempo) {
+        menorTempo = diffMin;
+
         }
     });
 
