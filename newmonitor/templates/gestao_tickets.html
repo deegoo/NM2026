@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="gestao_tickets_container">
+  <div class="gestao_tickets">
+
+    <input type="text" id="buscaTicket" placeholder="Buscar ID / cidade / serviço">
+
+    <label>De:</label>
+    <input type="date" id="dataInicio">
+
+    <label>Até:</label>
+    <input type="date" id="dataFim">
+
+    <button onclick="buscar()">Buscar</button>
+
+    <button onclick="carregar()">Limpar</button>
+
+  </div>
+
+  <div class="gestao_tickets_table">
+    <table>
+
+      <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>Cidade</th>
+          <th>Serviços</th>
+        </tr>
+      </thead>
+
+      <tbody id="tabela"></tbody>
+    </table>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='gestao_tickets.js') }}"></script>
+{% endblock %}

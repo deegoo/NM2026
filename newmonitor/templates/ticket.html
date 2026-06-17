@@ -9,54 +9,55 @@
 
 <div id="tela_evento" class="tela" style="display:none">
 
-    
-    {% if tickets[0].evento_detalhe %}
+{% if tickets %}
+<ul class="ul_evento">
 
-    <ul class="ul_evento">
+{% for t in tickets %}
 
-    {% for ev in tickets[0].evento_detalhe.eventos %}
+    {% if t.evento_detalhe %}
 
-    <li>
-        <strong>{{ ev.cidade }} | {{ ev.servico }}</strong><br>
+        {% for ev in t.evento_detalhe.eventos %}
+        <li>
+            <strong>{{ ev.cidade }} | {{ ev.servico }}</strong><br>
 
-        Início: {{ tickets[0].evento_detalhe.inicio }}<br>
-        Final: {{ ev.final_evento }}<br>
+            Início: {{ t.evento_detalhe.inicio }}<br>
+            Final: {{ ev.final_evento }}<br>
 
-        Interrupção:
-        {% if ev.fases and ev.fases|length > 0 %}
-            {{ ev.fases | sum(attribute='tempo') }} min
-        {% else %}
-            0 min
-        {% endif %}
-        <br>
+            Interrupção:
+            {% if ev.fases and ev.fases|length > 0 %}
+                {{ ev.fases | sum(attribute='tempo') }} min
+            {% else %}
+                0 min
+            {% endif %}
+            <br>
 
-        Impacto:
-        {% if ev.fases and ev.fases|length > 0 %}
-            {{ ev.fases[0].impacto }} %
-        {% else %}
-            0 %
-        {% endif %}
-        <br>
+            Impacto:
+            {% if ev.fases and ev.fases|length > 0 %}
+                {{ ev.fases[0].impacto }} %
+            {% else %}
+                0 %
+            {% endif %}
+            <br>
 
-        VC: {{ ev.vc_evento }}
+            VC: {{ ev.vc_evento }}
 
-    </li>
-
-    {% endfor %}
-
-    </ul>
+        </li>
+        {% endfor %}
 
     {% endif %}
 
+{% endfor %}
+
+</ul>
+{% endif %}
 
     <form class="evento_form">
-
-        <label>Início Evento:</label>
-        <p>{{ tickets[0].data_inicio if tickets else '' }}</p>
-
+        <div class="ini_eve">
+            <label>Início Evento:</label>
+            <p>{{ tickets[0].data_inicio if tickets else '' }}</p>
+        </div>    
         <br>
 
-        <!-- ✅ CONTROLES -->
          <div class="label_mesmoHorario">
             <label>
                 Usar mesmo horário para todas as cidades
@@ -82,19 +83,23 @@
         </div>
         <br><br>
         <div id="impactoPorCidadeContainer" style="display:none;"></div>
-
-        <!-- ✅ FINAL GLOBAL -->
-        <label>Final Evento (global):</label>
-        <input type="datetime-local" id="data_final_global">
-
+        <div class="fim_eve">
+            <label>Final Evento (global):</label>
+            <input type="datetime-local" id="data_final_global">
+        </div>    
         <br><br>
         <hr>
-        <!-- ✅ EVENTOS DINÂMICOS -->
         <div id="eventosPorCidade"></div>
 
         <br>
 
-        <button class="evento_btn" type="submit">Salvar Evento</button>
+        <button id="btnSalvarEvento" class="evento_btn" type="submit">
+            {% if tickets and tickets[0].evento_detalhe %}
+                Editar Evento
+            {% else %}
+                Salvar Evento
+            {% endif %}
+        </button>
 
     </form>
 

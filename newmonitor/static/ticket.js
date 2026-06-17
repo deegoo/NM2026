@@ -472,110 +472,149 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ============================
-    // ✅ SUBMIT
+    //  SUBMIT
     // ============================
-    const formEvento = document.querySelector(".evento_form");
+let modoEdicao = false;
 
-    if (formEvento) {
-        formEvento.addEventListener("submit", function (e) {
+function bloquearCamposEvento(bloquear) {
+    document.querySelectorAll(
+        ".final_evento, .impacto, .impacto-cidade, .fase-tempo, .fase-impacto"
+    ).forEach(el => {
+        el.disabled = bloquear;
+    });
 
-            e.preventDefault();
+    document.querySelectorAll(".add-fase").forEach(btn => {
+        btn.disabled = bloquear;
+    });
+}
 
-            console.log("✅ submit rodando");
+const formEvento = document.querySelector(".evento_form");
+const temEventoSalvo = tickets.some(t => t.evento_detalhe);
 
-            const usarGlobal = document.getElementById("mesmoHorario")?.checked;
-            const global = document.getElementById("data_final_global")?.value;
-            const usarImpactoParcial = document.getElementById("impactoParcial")?.checked;
+if (formEvento) {
 
-            // ✅ MAPA POR CIDADE
-            let impactoCidadeMap = {};
-
-            if (document.getElementById("impactoCidade")?.checked) {
-
-                document.querySelectorAll(".impacto-cidade").forEach(inp => {
-                    const cidade = inp.dataset.cidade;
-                    impactoCidadeMap[cidade] = Number(inp.value || 0);
-                });
-
-                console.log("📊 impacto por cidade:", impactoCidadeMap);
-            }
-
-            const eventos = tickets.map(reg => {
-
-                const key = `${reg.cidade}-${reg.servico}`;
-
-                let final_evento = usarGlobal
-                    ? global
-                    : document.querySelector(`.final_evento[data-key="${key}"]`)?.value;
-
-                if (final_evento && final_evento.includes("T")) {
-                    const [data, hora] = final_evento.split("T");
-                    const [ano, mes, dia] = data.split("-");
-                    final_evento = `${dia}/${mes}/${ano} ${hora}`;
-                }
-
-                let fases = [];
-
-                if (usarImpactoParcial) {
-
-                    const tempos = document.querySelectorAll(`.fase-tempo[data-key="${key}"]`);
-                    const impactos = document.querySelectorAll(`.fase-impacto[data-key="${key}"]`);
-
-                    tempos.forEach((t, i) => {
-                        fases.push({
-                            tempo: Number(t.value || 0),
-                            impacto: Number(impactos[i]?.value || 0)
-                        });
-                    });
-
-                } else {
-
-                    const inicio = tickets[0]?.data_inicio;
-                    const tempo = calcularDuracao(inicio, final_evento);
-
-                    let impacto;
-
-                    if (document.getElementById("impactoCidade")?.checked) {
-                        impacto = impactoCidadeMap[reg.cidade] || 0;
-                    } else {
-                        impacto = Number(
-                            document.querySelector(`.impacto[data-key="${key}"]`)?.value || 0
-                        );
-                    }
-
-                    fases.push({ tempo, impacto });
-                }
-
-                const vc_total = calcularVCFases(fases, reg.cidade, reg.servico);
-
-                return {
-                    cidade: reg.cidade,
-                    servico: reg.servico,
-                    final_evento,
-                    fases,
-                    vc_evento: vc_total
-                };
-            });
-
-            const payload = {
-                inicio_evento: tickets[0]?.data_inicio,
-                eventos
-            };
-
-            console.log("📦 payload:", payload);
-
-            fetch("/salvar_evento/" + window.ID_TICKET, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                alert("✅ Eventos salvos");
-            });
-
-        });
+    if (temEventoSalvo) {
+        bloquearCamposEvento(true);
     }
 
+    formEvento.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        // ✅ PRIMEIRO CLIQUE (EDITAR)
+        if (temEventoSalvo && !modoEdicao) {
+
+            console.log("🔓 liberando edição");
+
+            bloquearCamposEvento(false);
+            modoEdicao = true;
+
+            const btn = document.getElementById("btnSalvarEvento");
+            if (btn) btn.textContent = "Salvar Alterações";
+
+            return;
+        }
+
+        console.log("✅ salvando evento");
+
+        const usarGlobal = document.getElementById("mesmoHorario")?.checked;
+        const global = document.getElementById("data_final_global")?.value;
+        const usarImpactoParcial = document.getElementById("impactoParcial")?.checked;
+
+        let impactoCidadeMap = {};
+
+        if (document.getElementById("impactoCidade")?.checked) {
+
+            document.querySelectorAll(".impacto-cidade").forEach(inp => {
+                const cidade = inp.dataset.cidade;
+                impactoCidadeMap[cidade] = Number(inp.value || 0);
+            });
+        }
+
+        const eventos = tickets.map(reg => {
+
+            const key = `${reg.cidade}-${reg.servico}`;
+
+            let final_evento = usarGlobal
+                ? global
+                : document.querySelector(`.final_evento[data-key="${key}"]`)?.value;
+
+            if (final_evento && final_evento.includes("T")) {
+                const [data, hora] = final_evento.split("T");
+                const [ano, mes, dia] = data.split("-");
+                final_evento = `${dia}/${mes}/${ano} ${hora}`;
+            }
+
+            let fases = [];
+
+            if (usarImpactoParcial) {
+
+                const tempos = document.querySelectorAll(`.fase-tempo[data-key="${key}"]`);
+                const impactos = document.querySelectorAll(`.fase-impacto[data-key="${key}"]`);
+
+                tempos.forEach((t, i) => {
+                    fases.push({
+                        tempo: Number(t.value || 0),
+                        impacto: Number(impactos[i]?.value || 0)
+                    });
+                });
+
+            } else {
+
+                const inicio = tickets[0]?.data_inicio;
+                const tempo = calcularDuracao(inicio, final_evento);
+
+                let impacto;
+
+                if (document.getElementById("impactoCidade")?.checked) {
+                    impacto = impactoCidadeMap[reg.cidade] || 0;
+                } else {
+                    impacto = Number(
+                        document.querySelector(`.impacto[data-key="${key}"]`)?.value || 0
+                    );
+                }
+
+                fases.push({ tempo, impacto });
+            }
+
+            const vc_total = calcularVCFases(fases, reg.cidade, reg.servico);
+
+            return {
+                cidade: reg.cidade,
+                servico: reg.servico,
+                final_evento,
+                fases,
+                vc_evento: vc_total
+            };
+        });
+
+        const payload = {
+            inicio_evento: tickets[0]?.data_inicio,
+            eventos
+        };
+
+        console.log("📦 payload:", payload);
+
+        fetch("/salvar_evento/" + window.ID_TICKET, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            alert("✅ Eventos salvos");
+
+            
+            bloquearCamposEvento(true);
+            modoEdicao = false;
+
+            const btn = document.getElementById("btnSalvarEvento");
+            if (btn) btn.textContent = "Editar Evento";
+
+            location.reload(); 
+        });
+
+    });
+}
         document.getElementById("btnFecharTudo")?.addEventListener("click", () => {
             const servicos = [...new Set(tickets.map(t => t.servico))];
 
@@ -700,6 +739,21 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+            function bloquearCamposEvento(bloquear) {
+
+            const campos = document.querySelectorAll(
+                ".final_evento, .impacto, .impacto-cidade, .fase-tempo, .fase-impacto"
+            );
+
+            campos.forEach(c => {
+                c.disabled = bloquear;
+            });
+
+            document.querySelectorAll(".add-fase").forEach(btn => {
+                btn.disabled = bloquear;
+            });
+        }
 
 
 });

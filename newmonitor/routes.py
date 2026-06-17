@@ -19,6 +19,16 @@ import requests
 UPLOAD_PATH = "newmonitor/static/uploads"
 DATA_PATH = "newmonitor/data/tickets.json"
 
+def ler_tickets():
+    if not os.path.exists(DATA_PATH):
+        return []
+    with open(DATA_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+def salvar_tickets(dados):
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+
 lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
 
 # Banco de dados temporário
@@ -124,7 +134,7 @@ def abrir_ticket():
 
     if not os.path.exists(DATA_PATH):
         with open(DATA_PATH, "w", encoding="utf-8") as f:
-            json.dump(lista, f, indent=2, ensure_ascii=False)
+            json.dump([], f, indent=2, ensure_ascii=False)
 
     try:
         with open(DATA_PATH, "r", encoding="utf-8") as f:
@@ -133,26 +143,25 @@ def abrir_ticket():
         lista = []
 
     id_ticket = gerar_id_ticket()
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M") 
-
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     if isinstance(dados, list):
 
         for t in dados:
             t["id_ticket"] = id_ticket
-
             t["data_inicio"] = formatar_data_br(t.get("data_inicio"))
-
             t["data_abertura"] = agora
+
+            t["status"] = "ABERTO"
 
         lista.extend(dados)
 
     else:
         dados["id_ticket"] = id_ticket
-
         dados["data_inicio"] = formatar_data_br(dados.get("data_inicio"))
-
         dados["data_abertura"] = agora
+
+        dados["status"] = "ABERTO" 
 
         lista.append(dados)
 
@@ -163,7 +172,6 @@ def abrir_ticket():
         "ok": True,
         "id_ticket": id_ticket
     })
-
 
 
 @app.route("/listar", methods=["GET"])
@@ -178,6 +186,7 @@ def listar():
 
 
 @app.route("/fechar", methods=["POST"])
+@login_required
 def fechar():
 
     if not os.path.exists(DATA_PATH):
@@ -198,20 +207,18 @@ def fechar():
 
     ticket = lista[index]
 
-    ticket["aberto"] = False
-    ticket["data_fim"] = dados.get("data_final")
+    if ticket.get("status") != "ABERTO":
+        return jsonify({"erro": "Só pode fechar ticket aberto"}), 400
+
+    ticket["status"] = "FECHADO"
+    ticket["data_fechamento"] = dados.get("data_final")
     ticket["causa"] = dados.get("causa")
     ticket["solucao"] = dados.get("solucao")
 
     with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(lista, f, indent=2)
+        json.dump(lista, f, indent=2, ensure_ascii=False)
 
     return jsonify({"ok": True})
-
-@app.route("/ticket_aberto")
-@login_required
-def ticket_aberto():
-    return render_template("ticket_aberto.html")
 
 
 @app.route("/ticket/<path:id_ticket>")
@@ -365,10 +372,10 @@ def fechar_ticket_multi(id_ticket):
     for t in tickets:
         if str(t.get("id_ticket")) == str(id_ticket):
 
-            # ✅ BLOQUEIA SE JÁ FECHADO
-            if not t.get("aberto", True):
+            if t.get("status") != "ABERTO":
                 print("⚠️ ticket já fechado:", id_ticket)
                 continue
+
 
             fechamento = next(
                 (f for f in fechamentos if f["servico"] == t["servico"]),
@@ -376,13 +383,13 @@ def fechar_ticket_multi(id_ticket):
             )
 
             if fechamento:
-                t["aberto"] = False
                 t["data_fechamento"] = agora
                 t["responsabilidade"] = fechamento.get("responsabilidade")
                 t["parte_rede"] = fechamento.get("parte")
                 t["causa"] = fechamento.get("causa")
                 t["solucao"] = fechamento.get("solucao")
                 t["sumario"] = fechamento.get("sumario")
+                t["status"] = "FECHADO"
 
                 atualizado = True
 
@@ -648,5 +655,152 @@ def api_meg_detalhe():
             "previsao": previsao,
             "status": status
         })
+
+    return jsonify(resultado)
+
+@app.route("/ticket/<path:id_ticket>/acao", methods=["POST"])
+@login_required
+def acao_ticket(id_ticket):
+
+    from urllib.parse import unquote
+    id_ticket = unquote(id_ticket)
+
+    dados = ler_tickets()
+
+    body = request.json or {}
+
+    acao = body.get("acao")
+    servico = body.get("servico")
+
+    if not acao:
+        return jsonify({"erro": "Ação não informada"}), 400
+
+    if not servico:
+        return jsonify({"erro": "Serviço não informado"}), 400
+
+    atualizado = False
+
+    for t in dados:
+        if (
+            str(t.get("id_ticket")) == str(id_ticket)
+            and t.get("servico") == servico
+        ):
+
+            status_atual = (t.get("status") or "").strip().upper()
+
+            # ================= CANCELAR =================
+            if acao == "cancelar":
+
+                if status_atual == "CANCELADO":
+                    return jsonify({"msg": "Já cancelado"}), 400
+
+                t["status"] = "CANCELADO"
+                t["data_cancelamento"] = datetime.now().strftime("%d/%m/%Y %H:%M")
+                t["cancelado_por"] = current_user.username
+
+                atualizado = True
+
+            # ================= REABRIR =================
+            elif acao == "reabrir":
+
+                if status_atual != "FECHADO":
+                    return jsonify({"msg": "Só pode reabrir fechado"}), 400
+
+                t["status"] = "ABERTO"
+                t["data_reabertura"] = datetime.now().strftime("%d/%m/%Y %H:%M")
+                t["reaberto_por"] = current_user.username
+
+                # limpa fechamento
+                t["data_fechamento"] = None
+                t["causa"] = None
+                t["solucao"] = None
+
+                atualizado = True
+
+            # ================= FECHAR =================
+            elif acao == "fechar":
+
+                if status_atual != "ABERTO":
+                    return jsonify({"msg": "Só pode fechar aberto"}), 400
+
+                if not t.get("evento_detalhe"):
+                    return jsonify({"msg": "Preencha o evento antes de fechar"}), 400
+
+                t["status"] = "FECHADO"
+                t["data_fechamento"] = datetime.now().strftime("%d/%m/%Y %H:%M")
+
+                atualizado = True
+
+            else:
+                return jsonify({"erro": "Ação inválida"}), 400
+
+    if not atualizado:
+        return jsonify({"erro": "Registro não encontrado (id + serviço)"}), 404
+
+    salvar_tickets(dados)
+
+    return jsonify({"ok": True, "acao": acao})
+
+
+@app.route("/gestao_tickets")
+@login_required
+def gestao_tickets():
+    return render_template("gestao_tickets.html")
+
+@app.route("/ticket_aberto")
+@login_required
+def ticket_aberto():
+    return render_template("ticket_aberto.html")
+
+@app.route("/buscar")
+def buscar():
+
+    termo = request.args.get("term", "").lower()
+    data_inicio = request.args.get("data_inicio")
+    data_fim = request.args.get("data_fim")
+
+    dados = ler_tickets()
+
+    resultado = []
+
+    for t in dados:
+
+        # ✅ FILTRO TEXTO
+        match_texto = (
+            termo in str(t.get("id_ticket","")).lower()
+            or termo in str(t.get("cidade","")).lower()
+            or termo in str(t.get("servico","")).lower()
+            or termo in str(t.get("descricao","")).lower()
+        ) if termo else True
+
+        # ✅ FILTRO DATA
+        match_data = True
+
+        data_abertura = t.get("data_abertura")
+
+        if data_abertura:
+
+            try:
+                from datetime import datetime
+
+                dt_ticket = datetime.strptime(data_abertura, "%d/%m/%Y %H:%M")
+
+                if data_inicio:
+                    dt_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+                    if dt_ticket < dt_inicio:
+                        match_data = False
+
+                if data_fim:
+                    dt_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+                    dt_fim = dt_fim.replace(hour=23, minute=59, second=59)
+
+                    if dt_ticket > dt_fim:
+                        match_data = False
+
+            except:
+                pass
+
+        if match_texto and match_data:
+            resultado.append(t)
 
     return jsonify(resultado)

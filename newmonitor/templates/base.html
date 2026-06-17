@@ -9,12 +9,17 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+   
+
     <!-- Sidebar fixa -->
     {% include 'sidebar.html' %}
 
     <!-- Área principal -->
     <div class="main-content">
-        {% block header %}{% endblock %}
+        {% block header %}
+         <!-- header fixo-->
+    {% include 'header.html' %}
+        {% endblock %}
         {% block body %}{% endblock %}
     </div>
 

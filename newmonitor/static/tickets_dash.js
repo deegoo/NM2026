@@ -20,7 +20,9 @@ function carregarTickets() {
 
         lista.forEach(t => {
 
-            if (!t.aberto) return;
+        const status = (t.status || "ABERTO").trim().toUpperCase();
+        if (status !== "ABERTO") return;
+
 
             if (!agrupados[t.id_ticket]) {
                 agrupados[t.id_ticket] = {

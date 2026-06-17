@@ -11,7 +11,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "aberto": false,
     "id_ticket": "70/2026",
     "data_abertura": "09/06/2026 19:25",
     "logs": [
@@ -56,8 +56,35 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "ALFENAS | NET FONE",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "evento_detalhe": {
+      "inicio": "09/06/2026 10:00",
+      "eventos": [
+        {
+          "cidade": "ALFENAS",
+          "servico": "NET FONE",
+          "final_evento": "09/06/2026 10:01",
+          "fases": [],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "16/06/2026 21:53",
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": "Links",
+    "solucao": "Fusão da fibra",
+    "sumario": "teste gestão de tickets",
+    "status": "FECHADO",
+    "data_reabertura": "16/06/2026 20:07",
+    "reaberto_por": "claro"
   },
   {
     "cidade": "MANAUS",
@@ -71,7 +98,7 @@
     "chamado_operadora": "75864253",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "71/2026",
     "data_abertura": "09/06/2026 20:39",
     "logs": [
@@ -104,6 +131,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -119,7 +152,7 @@
     "chamado_operadora": "357951",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "CANCELADO",
     "id_ticket": "72/2026",
     "data_abertura": "09/06/2026 20:44",
     "logs": [
@@ -152,8 +185,16 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "data_cancelamento": "16/06/2026 21:52",
+    "cancelado_por": "claro"
   },
   {
     "cidade": "ARAUCÁRIA",
@@ -167,7 +208,7 @@
     "chamado_operadora": "539571",
     "outage": 789456123,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "73/2026",
     "data_abertura": "09/06/2026 21:20",
     "logs": [
@@ -194,8 +235,31 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "evento_detalhe": {
+      "inicio": "15/05/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARAUCÁRIA",
+          "servico": "NET FONE",
+          "final_evento": "01/06/2026 15:00",
+          "fases": [
+            {
+              "tempo": 25380,
+              "impacto": 65
+            }
+          ],
+          "vc_evento": 72.30604801343789
+        }
+      ]
+    }
   },
   {
     "cidade": "ARAUCÁRIA",
@@ -209,7 +273,7 @@
     "chamado_operadora": "539571",
     "outage": 789456123,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "73/2026",
     "data_abertura": "09/06/2026 21:20",
     "logs": [
@@ -236,8 +300,31 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "evento_detalhe": {
+      "inicio": "15/05/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARAUCÁRIA",
+          "servico": "NET VIRTUA",
+          "final_evento": "",
+          "fases": [
+            {
+              "tempo": 0,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
   },
   {
     "cidade": "ARAUCÁRIA",
@@ -251,7 +338,7 @@
     "chamado_operadora": "539571",
     "outage": 789456123,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "73/2026",
     "data_abertura": "09/06/2026 21:20",
     "logs": [
@@ -278,8 +365,31 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "evento_detalhe": {
+      "inicio": "15/05/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARAUCÁRIA",
+          "servico": "NOW",
+          "final_evento": "",
+          "fases": [
+            {
+              "tempo": 0,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
   },
   {
     "cidade": "ARAUCÁRIA",
@@ -293,7 +403,7 @@
     "chamado_operadora": "539571",
     "outage": 789456123,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "73/2026",
     "data_abertura": "09/06/2026 21:20",
     "logs": [
@@ -320,8 +430,31 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:28"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
-    ]
+    ],
+    "evento_detalhe": {
+      "inicio": "15/05/2026 00:00",
+      "eventos": [
+        {
+          "cidade": "ARAUCÁRIA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "",
+          "fases": [
+            {
+              "tempo": 0,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    }
   },
   {
     "cidade": "AMERICO BRASILIENSE",
@@ -335,7 +468,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -350,6 +483,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -365,7 +504,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -380,6 +519,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -395,7 +540,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -410,6 +555,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -425,7 +576,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -440,6 +591,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -455,7 +612,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -470,6 +627,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -485,7 +648,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -500,6 +663,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -515,7 +684,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -530,6 +699,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -545,7 +720,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -560,6 +735,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -575,7 +756,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -590,6 +771,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -605,7 +792,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -620,6 +807,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -635,7 +828,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -650,6 +843,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
   },
@@ -665,7 +864,7 @@
     "chamado_operadora": "123",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
+    "status": "ABERTO",
     "id_ticket": "74/2026",
     "data_abertura": "10/06/2026 15:13",
     "logs": [
@@ -680,7 +879,159 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "10/06/2026 19:27"
+      },
+      {
+        "comentario": "teste comentários confecção",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "15/06/2026 17:49"
       }
     ]
+  },
+  {
+    "cidade": "BELFORD ROXO",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "QUEDA DE CABLES",
+    "data_inicio": "15/06/2026 16:40",
+    "categoria": "Infra Estrutura",
+    "ofensor": "REDE HFC",
+    "chamado_operadora": "",
+    "outage": 1952593,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "75/2026",
+    "data_abertura": "15/06/2026 17:46"
+  },
+  {
+    "cidade": "BELFORD ROXO",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "QUEDA DE CABLES",
+    "data_inicio": "15/06/2026 16:40",
+    "categoria": "Infra Estrutura",
+    "ofensor": "REDE HFC",
+    "chamado_operadora": "",
+    "outage": 1952593,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "75/2026",
+    "data_abertura": "15/06/2026 17:46"
+  },
+  {
+    "cidade": "BELFORD ROXO",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "QUEDA DE CABLES",
+    "data_inicio": "15/06/2026 16:40",
+    "categoria": "Infra Estrutura",
+    "ofensor": "REDE HFC",
+    "chamado_operadora": "",
+    "outage": 1952593,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "75/2026",
+    "data_abertura": "15/06/2026 17:46"
+  },
+  {
+    "cidade": "BELFORD ROXO",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "QUEDA DE CABLES",
+    "data_inicio": "15/06/2026 16:40",
+    "categoria": "Infra Estrutura",
+    "ofensor": "REDE HFC",
+    "chamado_operadora": "",
+    "outage": 1952593,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "75/2026",
+    "data_abertura": "15/06/2026 17:46"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste tela reabrir/cancelar ticket",
+    "data_inicio": "15/06/2026 18:00",
+    "categoria": "Links",
+    "ofensor": "BLM/IP/05570",
+    "chamado_operadora": "157359",
+    "outage": 852654,
+    "usuario": "Rodrigo",
+    "id_ticket": "76/2026",
+    "data_abertura": "15/06/2026 19:49",
+    "status": "ABERTO",
+    "evento_detalhe": {
+      "inicio": "15/06/2026 18:00",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "NET FONE",
+          "final_evento": "",
+          "fases": [
+            {
+              "tempo": 0,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": null,
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": null,
+    "solucao": null,
+    "sumario": "trh",
+    "data_reabertura": "15/06/2026 20:21",
+    "reaberto_por": "claro"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste tela reabrir/cancelar ticket",
+    "data_inicio": "15/06/2026 18:00",
+    "categoria": "Links",
+    "ofensor": "BLM/IP/05570",
+    "chamado_operadora": "157359",
+    "outage": 852654,
+    "usuario": "Rodrigo",
+    "id_ticket": "76/2026",
+    "data_abertura": "15/06/2026 19:49",
+    "status": "ABERTO",
+    "evento_detalhe": {
+      "inicio": "15/06/2026 18:00",
+      "eventos": [
+        {
+          "cidade": "BELÉM",
+          "servico": "NET VIRTUA",
+          "final_evento": "15/06/2026 18:30",
+          "fases": [
+            {
+              "tempo": 30,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": null,
+    "responsabilidade": "AKAMAI",
+    "parte_rede": "Links",
+    "causa": null,
+    "solucao": null,
+    "sumario": "gdfh",
+    "data_reabertura": "15/06/2026 20:44",
+    "reaberto_por": "claro"
   }
 ]
