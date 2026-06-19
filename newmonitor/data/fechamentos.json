@@ -412,14 +412,6 @@
     "responsavel": "Embratel",
     "parte": "Infraestrutura",
     "causa": "Queda de energia - POP EBT",
-    "solucao": "Comutado tráfego",
-    "natureza": "MANUTENÇÃO PROGRAMADA"
-  },
-  {
-    "servico": "NET VIRTUA",
-    "responsavel": "Embratel",
-    "parte": "Infraestrutura",
-    "causa": "Queda de energia - POP EBT",
     "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
     "natureza": "MANUTENÇÃO PROGRAMADA"
   },
@@ -3404,14 +3396,6 @@
     "responsavel": "Embratel",
     "parte": "Infraestrutura",
     "causa": "Queda de energia - POP EBT",
-    "solucao": "Comutado tráfego",
-    "natureza": "MANUTENÇÃO PROGRAMADA"
-  },
-  {
-    "servico": "NET FONE",
-    "responsavel": "Embratel",
-    "parte": "Infraestrutura",
-    "causa": "Queda de energia - POP EBT",
     "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
     "natureza": "MANUTENÇÃO PROGRAMADA"
   },
@@ -5052,14 +5036,6 @@
     "responsavel": "Embratel",
     "parte": "Infraestrutura",
     "causa": "Queda de energia - POP EBT",
-    "solucao": "Comutado tráfego",
-    "natureza": "MANUTENÇÃO PROGRAMADA"
-  },
-  {
-    "servico": "WI-FI",
-    "responsavel": "Embratel",
-    "parte": "Infraestrutura",
-    "causa": "Queda de energia - POP EBT",
     "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
     "natureza": "MANUTENÇÃO PROGRAMADA"
   },
@@ -6693,14 +6669,6 @@
     "parte": "Backbone NGN",
     "causa": "Soft Switch - HIQ 8000",
     "solucao": "Upgrade De IOS",
-    "natureza": "MANUTENÇÃO PROGRAMADA"
-  },
-  {
-    "servico": "BSOD",
-    "responsavel": "Embratel",
-    "parte": "Infraestrutura",
-    "causa": "Queda de energia - POP EBT",
-    "solucao": "Comutado tráfego",
     "natureza": "MANUTENÇÃO PROGRAMADA"
   },
   {

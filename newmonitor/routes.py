@@ -753,6 +753,7 @@ def ticket_aberto():
     return render_template("ticket_aberto.html")
 
 @app.route("/buscar")
+@login_required
 def buscar():
 
     termo = request.args.get("term", "").lower()

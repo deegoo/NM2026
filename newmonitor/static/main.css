@@ -10,7 +10,7 @@
             --shadow1: #777777;
             --backlink:#ffd4d4;
             --backside:#f4f4f4;
-            --header:#7a0000;
+            --header:#ff7d7d;
 }
 
 body {
@@ -21,13 +21,13 @@ body {
 
 /* Sidebar */
 .sidebar {
+  top: 100px;
   width: 250px;
   background-color: var(--backside);
   color: var(--primary);
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
   position: fixed;
   box-shadow: 3px 3px 7px var(--accent);
 }
@@ -60,6 +60,7 @@ body {
 
 /* Conteúdo principal */
 .main-content {
+  margin-top: 80px;
   margin-left: 250px;
   padding: 20px;
   flex: 1;
@@ -529,6 +530,7 @@ margin: 5px;
 .gestao_tickets_container{
 display: flex;
 flex-direction: column;
+margin-top: 20px;
 }
 .gestao_tickets{
   display: flex;
@@ -686,9 +688,23 @@ max-width: 170px;
     text-align: right;
 }
 .header{
-  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100px;
-  background-color: var(--header) ;
-  margin-bottom: 40px;
+  z-index: 9999;
+  display: flex;
+  background-color: var(--panel) ; 
+  box-shadow: 3px 5px 7px var(--accent);
+  justify-content: space-around;
+}
+.header h1{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 35px;
+  color: var(--bg);
+  text-shadow: 3px 3px 0px var(--header);
+}
+.ticket_btn{
+  margin-top: 30px;
 }
