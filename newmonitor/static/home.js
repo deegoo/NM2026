@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(lista => {
 
-                const abertos = lista.filter(t => t.aberto);
+                const abertos = lista.filter(t =>
+                    (t.status || "").toUpperCase() === "ABERTO"
+                );
 
                 atualizarCards(abertos);
             })
@@ -139,7 +141,11 @@ function atualizarCardNaoTratados(lista) {
 
         function atualizarCardComImpacto(lista) {
 
-            const filtrados = lista.filter(t => t.outage !== null && t.outage !== "");
+            const filtrados = lista.filter(t =>
+                (t.status || "").toUpperCase() === "ABERTO" &&
+                t.outage !== null &&
+                t.outage !== ""
+            );
 
             const ids = new Set(filtrados.map(t => t.id_ticket));
 
@@ -235,6 +241,7 @@ function iniciarSistema() {
         console.error("Erro ao iniciar sistema:", err);
     }
 }
+
 function atualizarTudo() {
 
     console.log("🔄 atualizando dashboard");
@@ -242,13 +249,19 @@ function atualizarTudo() {
     fetch("/listar")
         .then(r => r.json())
         .then(lista => {
-            atualizarCards(lista);
+
+            const abertos = lista.filter(t =>
+                (t.status || "").toUpperCase() === "ABERTO"
+            );
+
+            atualizarCards(abertos);
         })
         .catch(err => console.error("erro listar:", err));
 
     atualizarCardMEG();
     atualizarCardSIT();
 }
+
 /* =========================
 CARD: MEG
 ========================= */

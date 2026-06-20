@@ -11,10 +11,9 @@
     "chamado_operadora": "370719",
     "outage": null,
     "usuario": "Rodrigo",
-    "aberto": true,
     "id_ticket": "77/2026",
     "data_abertura": "19/06/2026 16:29",
-    "status": "ABERTO",
+    "status": "FECHADO",
     "logs": [
       {
         "comentario": "",
@@ -27,6 +26,89 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "19/06/2026 16:30"
+      }
+    ],
+    "evento_detalhe": {
+      "inicio": "19/06/2026 15:46",
+      "eventos": [
+        {
+          "cidade": "RIO BRANCO",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "19/06/2026 17:11",
+          "fases": [
+            {
+              "tempo": 85,
+              "impacto": 0
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "19/06/2026 20:40",
+    "responsabilidade": "EMBRATEL",
+    "parte_rede": "LINKS DE TRANSMISSÃO",
+    "causa": "TV - NÃO DEFINIDO",
+    "solucao": "NORMALIZADO SEM AÇÃO",
+    "sumario": ""
+  },
+  {
+    "cidade": "MOGI MIRIM",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "\tQUEDA DE LINKS:\n\nAMR HZ MMM TT3 DP*V 0027\nAMR HZ MMM TT3 DP*V 0017\nAMR HZ MMM TT3 DP*V 0021\nAMR HZ MMM TT3 10G 002",
+    "data_inicio": "19/06/2026 18:34",
+    "categoria": "Links",
+    "ofensor": "AMR HZ MMM TT3 DP*V 00021",
+    "chamado_operadora": "371066 371068 371069 371070",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "78/2026",
+    "data_abertura": "19/06/2026 22:11",
+    "logs": [
+      {
+        "comentario": "",
+        "imagem": "1781917904158_IMG1.png",
+        "usuario": "Sistema",
+        "data": "19/06/2026 22:11"
+      },
+      {
+        "comentario": "CIDADE: MOGI MIRIM\r<br>SERVIÇOS AFETADOS: VIRTUA\r<br>HI: 19/06/2026 18:34\r<br>IMP: 0%\r<br>FALHA: QUEDA DE LINKS 3 X 100G E 1X10G\r<br>PROTEGIDO: NÃO\r<br>RISCO OPERACIONAL: NÃO\r<br>RAL/INC: 371066 371068 371069 371070\r<br>OUTAGE: N/A\r<br>MEG: N/A\r<br>CAUSA: RUPTURA DE CABO ÓPTICO ENTRE: CAS2FJ-MMMTT3\r<br>STATUS: ACIONADO COP REDE FIBRA",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "19/06/2026 22:11"
+      }
+    ]
+  },
+  {
+    "cidade": "CAPÃO DA CANOA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "QUEDA DE LINK 1 X 500M",
+    "data_inicio": "19/06/2026 17:27",
+    "categoria": "Links",
+    "ofensor": "KDK/IP/00031",
+    "chamado_operadora": "370897",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "79/2026",
+    "data_abertura": "19/06/2026 22:38",
+    "logs": [
+      {
+        "comentario": "",
+        "imagem": "1781919641206_IMG2.png",
+        "usuario": "Sistema",
+        "data": "19/06/2026 22:40"
+      },
+      {
+        "comentario": "CIDADE: CAPÃO DA CANOA\r<br>SERVIÇOS AFETADOS: NETFONE\r<br>HI: 19/06/2026 17:27\r<br>IMP%: 0%\r<br>FALHA: QUEDA DE LINK 1 X 500M\r<br>PROTEGIDO: NÃO\r<br>RISCO OPERACIONAL: NÃO\r<br>RAL/INC: 370897\r<br>OUTAGE: N/A\r<br>MEG: N/A\r<br>CAUSA: RUPTURA DE CABO ÓPTICO ENTRE: GLIC02-PAETT DEVIDO A ACIDENTE DE TRÂNSITO COM INCÊNDIO EM POSTE NA AV. ASSIS BRASIL, BAIRRO PASSO DA AREIA - PORTO ALEGRE - RS.\r<br>STATUS: ACIONADO EQUIPE LOCAL",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "19/06/2026 22:40"
       }
     ]
   }

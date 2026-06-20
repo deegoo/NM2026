@@ -317,7 +317,7 @@ function cadastrar() {
                 chamado_operadora: document.getElementById("chamado_operadora").value,
                 outage: Number(document.getElementById("outage_ticket").value) || null,
                 usuario: window.USUARIO_LOGADO,
-                aberto: true
+                status: "ABERTO"
             });
         });
     });
