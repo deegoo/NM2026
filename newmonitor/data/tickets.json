@@ -79,6 +79,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "19/06/2026 22:11"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 17:21"
       }
     ]
   },
@@ -109,7 +115,559 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "19/06/2026 22:40"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 14:26"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 17:21"
       }
     ]
+  },
+  {
+    "cidade": "ALMENARA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMENARA",
+          "servico": "NET FONE",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 13
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Infraestrutura",
+    "causa": "Queda de energia - POP EBT",
+    "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
+    "sumario": "f"
+  },
+  {
+    "cidade": "ALMIRANTE TAMANDARÉ",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMIRANTE TAMANDARÉ",
+          "servico": "NET FONE",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 10
+            }
+          ],
+          "vc_evento": 0.0011612072367463808
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Infraestrutura",
+    "causa": "Queda de energia - POP EBT",
+    "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
+    "sumario": "f"
+  },
+  {
+    "cidade": "ALUMINIO",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALUMINIO",
+          "servico": "NET FONE",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 1
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Infraestrutura",
+    "causa": "Queda de energia - POP EBT",
+    "solucao": "RESTABELECIDO FORNECIMENTO DE ENERGIA NO POP EBT",
+    "sumario": "f"
+  },
+  {
+    "cidade": "ALMENARA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMENARA",
+          "servico": "NET VIRTUA",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 13
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Links",
+    "causa": "Link - Transmissão",
+    "solucao": "Fusão da fibra",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALMIRANTE TAMANDARÉ",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMIRANTE TAMANDARÉ",
+          "servico": "NET VIRTUA",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 10
+            }
+          ],
+          "vc_evento": 0.00011105745377752892
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Links",
+    "causa": "Link - Transmissão",
+    "solucao": "Fusão da fibra",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALUMINIO",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALUMINIO",
+          "servico": "NET VIRTUA",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 1
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Embratel",
+    "parte_rede": "Links",
+    "causa": "Link - Transmissão",
+    "solucao": "Fusão da fibra",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALMENARA",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMENARA",
+          "servico": "NOW",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 13
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Serviços Públicos",
+    "parte_rede": "Infra-Estrutura",
+    "causa": "Queda de energia - região",
+    "solucao": "Restabelecido fornecimento de energia na região",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALMIRANTE TAMANDARÉ",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMIRANTE TAMANDARÉ",
+          "servico": "NOW",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 10
+            }
+          ],
+          "vc_evento": 0.00011105745377752892
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Serviços Públicos",
+    "parte_rede": "Infra-Estrutura",
+    "causa": "Queda de energia - região",
+    "solucao": "Restabelecido fornecimento de energia na região",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALUMINIO",
+    "servico": "NOW",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALUMINIO",
+          "servico": "NOW",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 1
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "Serviços Públicos",
+    "parte_rede": "Infra-Estrutura",
+    "causa": "Queda de energia - região",
+    "solucao": "Restabelecido fornecimento de energia na região",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALMENARA",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMENARA",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 13
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "NET",
+    "parte_rede": "ENLACE",
+    "causa": "TV - FIBRA",
+    "solucao": "FUSÃO DE FIBRA",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALMIRANTE TAMANDARÉ",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALMIRANTE TAMANDARÉ",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 10
+            }
+          ],
+          "vc_evento": 9.39071297583354e-05
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "NET",
+    "parte_rede": "ENLACE",
+    "causa": "TV - FIBRA",
+    "solucao": "FUSÃO DE FIBRA",
+    "sumario": ""
+  },
+  {
+    "cidade": "ALUMINIO",
+    "servico": "PAY TV DIGITAL",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "20/06/2026 14:00",
+    "categoria": "Backbone IP",
+    "ofensor": "Roteador",
+    "chamado_operadora": "123456",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "FECHADO",
+    "id_ticket": "80/2026",
+    "data_abertura": "20/06/2026 14:31",
+    "evento_detalhe": {
+      "inicio": "20/06/2026 14:00",
+      "eventos": [
+        {
+          "cidade": "ALUMINIO",
+          "servico": "PAY TV DIGITAL",
+          "final_evento": "20/06/2026 14:10",
+          "fases": [
+            {
+              "tempo": 10,
+              "impacto": 1
+            }
+          ],
+          "vc_evento": 0
+        }
+      ]
+    },
+    "data_fechamento": "20/06/2026 14:35",
+    "responsabilidade": "NET",
+    "parte_rede": "ENLACE",
+    "causa": "TV - FIBRA",
+    "solucao": "FUSÃO DE FIBRA",
+    "sumario": ""
+  },
+  {
+    "cidade": "ADAMANTINA",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "teste som",
+    "data_inicio": "20/06/2026 15:35",
+    "categoria": "Links",
+    "ofensor": "GPON",
+    "chamado_operadora": "759321",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "81/2026",
+    "data_abertura": "20/06/2026 16:53",
+    "logs": [
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 17:21"
+      }
+    ]
+  },
+  {
+    "cidade": "ADAMANTINA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste username",
+    "data_inicio": "20/06/2026 18:30",
+    "categoria": "Links",
+    "ofensor": "GPON",
+    "chamado_operadora": "23456",
+    "outage": null,
+    "usuario": "",
+    "status": "ABERTO",
+    "id_ticket": "82/2026",
+    "data_abertura": "20/06/2026 18:50"
+  },
+  {
+    "cidade": "AMERICANA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "testes username",
+    "data_inicio": "20/06/2026 18:00",
+    "categoria": "Links",
+    "ofensor": "AMR/IP/00430",
+    "chamado_operadora": "3416817",
+    "outage": null,
+    "usuario": "Rodrigo",
+    "status": "ABERTO",
+    "id_ticket": "83/2026",
+    "data_abertura": "20/06/2026 19:03"
+  },
+  {
+    "cidade": "ARARAQUARA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste username",
+    "data_inicio": "20/06/2026 17:45",
+    "categoria": "Links",
+    "ofensor": "ARC HZ SRR GC 10G 004",
+    "chamado_operadora": "5234523",
+    "outage": null,
+    "usuario": "Ednilton",
+    "status": "ABERTO",
+    "id_ticket": "84/2026",
+    "data_abertura": "20/06/2026 19:05"
   }
 ]

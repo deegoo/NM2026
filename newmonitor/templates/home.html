@@ -2,7 +2,7 @@
 
 {% block body %}
     <!-- Conteúdo principal -->
-     <h1>Dashboard</h1>
+     <!--<h1>Dashboard</h1>-->
 
     <div class="dashboard">
 
@@ -86,6 +86,15 @@
         <p>0</p>
       </div>-->
     </div>
+    
+<div id="popup-alerta" class="popup-alerta">
+  <div id="popup-msg"></div>
+</div>
+<audio id="somGeral" src="/static/sounds/somGeral.mp3"></audio>
+<audio id="somCritico" src="/static/sounds/somCritico.mp3"></audio>
+<audio id="somMeg" src="/static/sounds/somMeg.mp3"></audio>
+<audio id="somSit" src="/static/sounds/somSit.mp3"></audio>
+
 
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 

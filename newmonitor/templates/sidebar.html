@@ -1,9 +1,9 @@
 <!-- Sidebar -->
   <div class="sidebar">
-    <img src="{{ url_for('static', filename='img/logo_sidebar.png')}}">
+    
     <ul><a href="/">
-      <li>Home</li>
-      <li>Página inicial</li></a>
+      <!--<li>Home</li>-->
+      <li>Dashboard</li></a>
       <li class="menu_main">Incidentes
         <ul class="menu_option">
           <li><a href="{{ url_for('consulta_incidentes')}}">Consultar</a></li>
@@ -50,11 +50,6 @@
       </li>
     </ul>
 
-  <ul>
-    <li>
-      <a href="{{ url_for('logout') }}">Sair</a>
-    </li>
-  </ul>
   </div>
 
  

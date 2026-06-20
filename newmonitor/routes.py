@@ -33,8 +33,10 @@ lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
 
 # Banco de dados temporário
 USUARIOS_DB = {
-    "1": {"username": "admin", "password": "123"},
-    "2": {"username": "claro", "password": "123"}
+    "1": {"username": "Edson", "password": "N123456"},
+    "2": {"username": "Rodrigo", "password": "F183209"},
+    "3": {"username": "Ednilton", "password": "N5945528"},
+
 }
 
 class User(UserMixin):
@@ -92,7 +94,7 @@ def registro():
 @app.route("/abrir_registro")
 @login_required
 def abrir_registro():
-    return render_template("abrir_registro.html", usuario ="Rodrigo")
+    return render_template("abrir_registro.html", usuario=current_user.username)
 
 @app.route("/consulta_regitro_falha")
 @login_required
@@ -805,3 +807,19 @@ def buscar():
             resultado.append(t)
 
     return jsonify(resultado)
+
+
+@app.route("/stream")
+def stream():
+
+    def gerar():
+        while True:
+            dados = ler_tickets()  # mesma função do /listar
+
+            payload = json.dumps(dados)
+
+            yield f"data: {payload}\n\n"
+
+            time.sleep(30)  # envia a cada 30s
+
+    return Response(gerar(), mimetype="text/event-stream")

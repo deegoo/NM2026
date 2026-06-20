@@ -1,3 +1,9 @@
+let ultimoAlerta = {
+  naoTratadoAmarelo: 0,
+  naoTratadoVermelho: 0,
+  meg: 0,
+  sit: 0
+};
 
 let cacheMEG = {
     valor: 0,
@@ -11,7 +17,7 @@ let cacheSIT = {
 
 document.addEventListener("DOMContentLoaded", () => {
     iniciarSistema();
-    atualizarTudo();
+    iniciarStream()
     setInterval(atualizarTudo, 120000);
 });
 
@@ -119,6 +125,20 @@ function atualizarCardNaoTratados(lista) {
         card.style.border = "5px solid #dc3545"; // 🔴 vermelho
     } else if (temAmarelo) {
         card.style.border = "5px solid #ffc107"; // 🟡 amarelo
+    }
+
+    const agoraMs = Date.now();
+
+    // 🔥 ALERTA 3H (CRÍTICO)
+    if (temVermelho && (agoraMs - ultimoAlerta.naoTratadoVermelho > 120000)) {
+        mostrarPopup(`🚨 ${total} tickets sem atualização crítica (>3h)`, "critico");
+        ultimoAlerta.naoTratadoVermelho = agoraMs;
+    }
+
+    // ⚠️ ALERTA 1.5H
+    else if (temAmarelo && (agoraMs - ultimoAlerta.naoTratadoAmarelo > 120000)) {
+        mostrarPopup(`⚠️ ${total} tickets sem atualização (>1.5h)`, "geral");
+        ultimoAlerta.naoTratadoAmarelo = agoraMs;
     }
 }
 
@@ -294,8 +314,16 @@ function atualizarCardMEG() {
                 document.getElementById("card_meg").textContent = total;
 
                 aplicarSLA_MEG(card, lista);
+
+                const agoraMs = Date.now();
+
+                if (total > 0 && (agoraMs - ultimoAlerta.meg > 120000)) {
+                    mostrarPopup(`🚨 MEG com ${total} chamados ativos`, "meg");
+                    ultimoAlerta.meg = agoraMs;
+                }
+
             })
-            .catch(err => console.error("erro MEG:", err));
+            .catch(err => console.error("❌ erro MEG:", err));
 }
 /* =========================
 CARD: SIT
@@ -328,8 +356,15 @@ function atualizarCardSIT() {
 
             aplicarBorda("card_sit_box", total);
 
+            const agoraMs = Date.now();
+
+            if (total > 0 && (agoraMs - ultimoAlerta.sit > 120000)) {
+                mostrarPopup(`🚨 SIT com ${total} chamados`, "sit");
+                ultimoAlerta.sit = agoraMs;
+            }
+
         })
-        .catch(err => console.error("erro SIT:", err));
+        .catch(err => console.error("❌ erro SIT:", err));
 }
 
 function aplicarBorda(cardId, total) {
@@ -404,6 +439,8 @@ function aplicarSLA_MEG(card, listaMeg) {
         }
     });
 
+
+
     card.classList.remove("piscar");
 
     if (menorTempo <= 15) {
@@ -414,4 +451,83 @@ function aplicarSLA_MEG(card, listaMeg) {
     } else {
         card.style.border = "5px solid #ffc107";
     }
+}
+
+    let silenciado = false;
+
+function mostrarPopup(msg, tipo = "geral") {
+
+    const popup = document.getElementById("popup-alerta");
+    const texto = document.getElementById("popup-msg");
+
+    const sons = {
+        geral: document.getElementById("somGeral"),
+        critico: document.getElementById("somCritico"),
+        meg: document.getElementById("somMeg"),
+        sit: document.getElementById("somSit")
+    };
+
+    if (!popup || !texto) return;
+
+    texto.innerHTML = msg;
+
+    popup.classList.add("show");
+
+    // 🔊 som por tipo
+    const som = sons[tipo] || sons.geral;
+
+    if (som && !silenciado) {
+        som.currentTime = 0;
+        som.play().catch(() => {});
+    }
+
+    setTimeout(() => {
+        popup.classList.remove("show");
+    }, 5000);
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btn = document.getElementById("btnSilenciar");
+
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+
+        silenciado = !silenciado;
+
+        if (silenciado) {
+            btn.textContent = "🔇 Silenciado";
+            btn.style.background = "#ffffff";
+        } else {
+            btn.textContent = "🔊 Som";
+            btn.style.background = "#ffffff";
+        }
+
+    });
+
+});
+
+function iniciarStream() {
+
+    const source = new EventSource("/stream");
+
+    source.onmessage = function (event) {
+
+        const lista = JSON.parse(event.data);
+
+        const abertos = lista.filter(t =>
+            (t.status || "").toUpperCase() === "ABERTO"
+        );
+
+        atualizarCards(abertos);
+
+        console.log("📡 atualização em tempo real");
+    };
+
+    source.onerror = function () {
+        console.log("⚠️ stream caiu, usando fallback");
+        source.close();
+    };
 }

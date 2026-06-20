@@ -1,1 +1,27 @@
-<div class="header"><h1>SISTEMA DE GESTÃO DE TICKETS</h1></div>
+<div class="header">
+
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo_sidebar.png')}}">  
+  </div>
+
+  <div class="header-center">
+    <h1>SISTEMA DE GESTÃO DE TICKETS</h1>
+  </div>
+
+  <div class="header-right">
+
+    <span class="usuario">
+      👤 {{ current_user.username }}
+    </span>
+
+    <button id="btnSilenciar" class="btn-som">
+      🔊 Som
+    </button>
+    <a href="{{ url_for('logout') }}">
+    <button class="btn-logout">Sair</button>
+    </a>
+  </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='home.js') }}"></script>
