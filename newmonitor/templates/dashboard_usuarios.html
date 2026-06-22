@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <h1 class="dash_user">📊 Dashboard de Performance por Usuário</h1>
+
+    <div id="dashboardUsuarios"></div>
+
+    <script src="{{ url_for('static', filename='dashboard_usuarios.js') }}"></script>
+
+{% endblock %}

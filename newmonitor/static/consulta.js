@@ -113,7 +113,11 @@ function renderTabela() {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td><a href="/ticket/${t.id_ticket}" target="_self">${t.id_ticket}</a></td>
+            <td>
+                <a href="/ticket/${t.id_ticket}" target="_self">
+                    ${t.id_ticket}
+                </a>
+            </td>
             <td>${t.cidade}</td>
             <td>${t.servico}</td>
             <td>${t.sintoma}</td>
@@ -235,7 +239,7 @@ function carregarMais() {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td><a t.id_ticket}" target="_self">${t.id_ticket}</a></td>
+            <td><a href="/ticket/${t.id_ticket}" target="_self">${t.id_ticket}</a></td>
             <td>${t.cidade}</td>
             <td>${t.servico}</td>
             <td>${t.sintoma}</td>

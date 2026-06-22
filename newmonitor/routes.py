@@ -36,6 +36,18 @@ USUARIOS_DB = {
     "1": {"username": "Edson", "password": "N123456"},
     "2": {"username": "Rodrigo", "password": "F183209"},
     "3": {"username": "Ednilton", "password": "N5945528"},
+    "4": {"username": "Cleiton", "password": "Noc@2026"},
+    "5": {"username": "Danilo", "password": "Noc@2026"},
+    "6": {"username": "Ane", "password": "Noc@2026"},
+    "7": {"username": "Eder", "password": "Noc@2026"},
+    "8": {"username": "Carlos", "password": "Noc@2026"},
+    "9": {"username": "Marcel", "password": "Noc@2026"},
+    "10": {"username": "Rose", "password": "Noc@2026"},
+    "11": {"username": "Marcio", "password": "Noc@2026"},
+    "12": {"username": "Robert", "password": "Noc@2026"},
+    "13": {"username": "Raphael", "password": "Noc@2026"},
+    "14": {"username": "Adimilson", "password": "Noc@2026"},
+    "15": {"username": "Fabiano", "password": "Noc@2026"},
 
 }
 
@@ -111,8 +123,6 @@ def fechar_registro():
 def registra_ofensor():
     return render_template("registra_ofensor.html") 
 
-
-
 @app.route("/abrir", methods=["POST"])
 @login_required
 def abrir_ticket():
@@ -147,12 +157,16 @@ def abrir_ticket():
     id_ticket = gerar_id_ticket()
     agora = datetime.now().strftime("%d/%m/%Y %H:%M")
 
+    usuario_logado = current_user.username
+
     if isinstance(dados, list):
 
         for t in dados:
             t["id_ticket"] = id_ticket
             t["data_inicio"] = formatar_data_br(t.get("data_inicio"))
             t["data_abertura"] = agora
+
+            t["usuario"] = usuario_logado
 
             t["status"] = "ABERTO"
 
@@ -163,7 +177,10 @@ def abrir_ticket():
         dados["data_inicio"] = formatar_data_br(dados.get("data_inicio"))
         dados["data_abertura"] = agora
 
-        dados["status"] = "ABERTO" 
+        # ✅ FORÇA USUÁRIO (IMPORTANTE)
+        dados["usuario"] = usuario_logado
+
+        dados["status"] = "ABERTO"
 
         lista.append(dados)
 
@@ -174,7 +191,6 @@ def abrir_ticket():
         "ok": True,
         "id_ticket": id_ticket
     })
-
 
 @app.route("/listar", methods=["GET"])
 @login_required
@@ -232,9 +248,20 @@ def visualizar_ticket(id_ticket):
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         lista = json.load(f)
 
+    
+
+    print("URL:", id_ticket)
+
+    for t in lista:
+        print("JSON:", t.get("id_ticket"))
+
+
     tickets = [t for t in lista if t.get("id_ticket") == id_ticket]
 
     return render_template("ticket.html", tickets=tickets)
+
+
+
 
 @app.route("/comentar/<path:id_ticket>", methods=["POST"])
 @login_required
@@ -246,12 +273,12 @@ def comentar(id_ticket):
 
     comentario = request.form.get("comentario") or ""
 
-    # ✅ protege encoding
     comentario = comentario.encode("utf-8", "ignore").decode("utf-8")
 
     comentario = comentario.replace("\n", "<br>")
 
-    usuario = request.form.get("usuario") or "Usuário Desconhecido"
+    usuario_logado = current_user.username
+
     arquivo = request.files.get("imagem")
 
     nome_arquivo = None
@@ -261,28 +288,28 @@ def comentar(id_ticket):
         caminho = os.path.join(UPLOAD_PATH, nome_arquivo)
         arquivo.save(caminho)
 
-    # ✅ leitura correta
     try:
         with open(DATA_PATH, "r", encoding="utf-8") as f:
             lista = json.load(f)
     except:
         lista = []
 
-    # ✅ aplica em TODOS os registros do ticket
     for t in lista:
         if str(t.get("id_ticket")) == str(id_ticket):
 
             if "logs" not in t:
                 t["logs"] = []
 
-            t["logs"].append({
+            # ✅ LOG COMPLETO COM USUÁRIO
+            log = {
                 "comentario": comentario,
                 "imagem": nome_arquivo,
-                "usuario": usuario,
+                "usuario": usuario_logado,
                 "data": datetime.now().strftime("%d/%m/%Y %H:%M")
-            })
+            }
 
-    # ✅ escrita correta
+            t["logs"].append(log)
+
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(lista, f, indent=2, ensure_ascii=False)
 
@@ -823,3 +850,72 @@ def stream():
             time.sleep(30)  # envia a cada 30s
 
     return Response(gerar(), mimetype="text/event-stream")
+
+@app.route("/dashboard_usuarios_view")
+@login_required
+def dashboard_usuarios_view():
+    return render_template("dashboard_usuarios.html")
+
+@app.route("/dashboard_usuarios")
+@login_required
+def dashboard_usuarios():
+
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        tickets = json.load(f)
+
+    usuarios = {}
+
+    for t in tickets:
+        user = t.get("usuario", "N/A")
+
+        if user not in usuarios:
+
+            usuarios[user] = {
+                "abertos": 0,
+                "fechados": 0,
+                "updates": 0,
+                "cancelados": 0
+            }
+
+        status = (t.get("status") or "").upper()
+
+        if status == "ABERTO":
+            usuarios[user]["abertos"] += 1
+        elif status == "FECHADO":
+            usuarios[user]["fechados"] += 1
+        elif status == "CANCELADO":
+
+            # 🔥 pega quem CANCELou no último log
+            logs = t.get("logs", [])
+
+            if logs:
+                ultimo_log = logs[-1]
+                usuario_cancelou = ultimo_log.get("usuario", user)
+            else:
+                usuario_cancelou = user
+
+            if usuario_cancelou not in usuarios:
+                usuarios[usuario_cancelou] = {
+                    "abertos": 0,
+                    "fechados": 0,
+                    "updates": 0,
+                    "cancelados": 0
+                }
+
+            usuarios[usuario_cancelou]["cancelados"] += 1
+
+        # logs
+        for log in t.get("logs", []):
+            u = log.get("usuario", user)
+
+            if u not in usuarios:
+                usuarios[u] = {
+                    "abertos": 0,
+                    "fechados": 0,
+                    "updates": 0,
+                    "cancelados": 0
+                }
+
+            usuarios[u]["updates"] += 1
+
+    return jsonify(usuarios)

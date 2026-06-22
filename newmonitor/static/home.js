@@ -5,6 +5,10 @@ let ultimoAlerta = {
   sit: 0
 };
 
+
+let filaAudio = [];
+let tocandoAudio = false;
+
 let cacheMEG = {
     valor: 0,
     time: 0
@@ -474,12 +478,16 @@ function mostrarPopup(msg, tipo = "geral") {
     popup.classList.add("show");
 
     // 🔊 som por tipo
+
     const som = sons[tipo] || sons.geral;
 
     if (som && !silenciado) {
-        som.currentTime = 0;
-        som.play().catch(() => {});
+
+        filaAudio.push(som);
+
+        tocarFila();
     }
+
 
     setTimeout(() => {
         popup.classList.remove("show");
@@ -529,5 +537,29 @@ function iniciarStream() {
     source.onerror = function () {
         console.log("⚠️ stream caiu, usando fallback");
         source.close();
+    };
+}
+
+function tocarFila() {
+
+    if (tocandoAudio) return;
+
+    if (filaAudio.length === 0) return;
+
+    tocandoAudio = true;
+
+    const som = filaAudio.shift();
+
+    som.currentTime = 0;
+
+    som.play()
+        .catch(() => {
+            tocandoAudio = false;
+            tocarFila();
+        });
+
+    som.onended = () => {
+        tocandoAudio = false;
+        tocarFila();
     };
 }

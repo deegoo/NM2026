@@ -22,7 +22,15 @@ const regras = {
     "PAY TV DIGITAL": {
         sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
         eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    }
+    },
+    "BSOD": {
+        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
+        eventos: ["INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
+    },
+    "WI-FI": {
+        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
+        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
+    },
 };
 
 
@@ -316,7 +324,6 @@ function cadastrar() {
                 ofensor: document.getElementById("ofensor").value,
                 chamado_operadora: document.getElementById("chamado_operadora").value,
                 outage: Number(document.getElementById("outage_ticket").value) || null,
-                usuario: window.USUARIO_LOGADO,
                 status: "ABERTO"
             });
         });
@@ -387,6 +394,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             renderConfigServicos(); 
         });
+    
+    const campoData = document.getElementById("data_inicio");
+
+        if (campoData) {
+
+            const agora = new Date();
+
+            const ano = agora.getFullYear();
+            const mes = String(agora.getMonth() + 1).padStart(2, "0");
+            const dia = String(agora.getDate()).padStart(2, "0");
+
+            const hora = String(agora.getHours()).padStart(2, "0");
+            const min = String(agora.getMinutes()).padStart(2, "0");
+
+            campoData.value = `${ano}-${mes}-${dia}T${hora}:${min}`;
+        }
+
 });
 
 /*======================== 

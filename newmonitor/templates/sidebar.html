@@ -4,48 +4,35 @@
     <ul><a href="/">
       <!--<li>Home</li>-->
       <li>Dashboard</li></a>
-      <li class="menu_main">Incidentes
+      <li class="menu_main">Abrir
         <ul class="menu_option">
-          <li><a href="{{ url_for('consulta_incidentes')}}">Consultar</a></li>
-          <li>Listar</li>
-          <li><a href="{{ url_for('ticket_aberto')}}">Incidentes abertos</a></li>
-          <li>Listar (Beta)</li>
-          <li>Incidentes abertos (Beta)</li>
-          <li>Novo</li>
+          <li><a href="{{ url_for('abrir_registro')}}">Novo Ticket</a></li>
         </ul>
       </li>
-      <li class="menu_main">Abrir Registro
-        <ul class="menu_option">
-          <li><a href="{{ url_for('abrir_registro')}}">Novo</a></li>
-        </ul>
-      </li> 
       <li class="menu_main">Consultas
         <ul class="menu_option">
-          <li>Consulta Incidentes Datacenter</li>
-          <li><a href="{{ url_for('consulta_incidentes')}}">Consulta Tickets</a></li>
-          <li>Consulta Manobras</li>
-          <li>Consulta Manobras abertas</li>
-          <li><a href="{{ url_for('ticket_aberto')}}">Tickets abertos</a></li>
+          <li><a href="{{ url_for('consulta_incidentes')}}">Pesquisar Ticket</a></li>
+          <li class="desativado">Consulta Incidentes Datacenter</li>
+          <li class="desativado">Consulta Manobras</li>
         </ul>
       </li> 
       <li class="menu_main">Painel
         <ul class="menu_option">
           <li><a href="https://newmonitor.claro.com.br/user/painel/outage_painel_consolidado_sgo.php" target="_blank">Painel de Outages</a></li>
-          <li>Painel Monitoração</li>
+          <li><a href="{{ url_for('ticket_aberto')}}">Painel Monitoração</a></li>
         </ul>
       </li> 
       <li class="menu_main">Relatórios
         <ul class="menu_option">
           <li><a href="{{ url_for('tela_relatorios')}}">Tickets</a></li>
-          <li>Manobeas</li>
-          <li>Outages</li>
-          <li>Outages x Manobras</li>
+          <li class="desativado">Manobras</li>
         </ul>
       </li>
       <li class="menu_main">Gerenciamento Monitor
         <ul class="menu_option">
           <li><a href="{{ url_for('gestao_tickets')}}">Gestão de Tickets</a></li>
           <li><a href="{{ url_for('registra_ofensor')}}">Ofensor</a></li>
+          <li><a href="{{ url_for('dashboard_usuarios_view')}}">Performance</a></li>
         </ul>
       </li>
     </ul>

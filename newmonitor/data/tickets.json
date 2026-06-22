@@ -64,7 +64,7 @@
     "chamado_operadora": "371066 371068 371069 371070",
     "outage": null,
     "usuario": "Rodrigo",
-    "status": "ABERTO",
+    "status": "CANCELADO",
     "id_ticket": "78/2026",
     "data_abertura": "19/06/2026 22:11",
     "logs": [
@@ -85,8 +85,22 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "20/06/2026 17:21"
+      },
+      {
+        "comentario": "Atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:34"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Danilo",
+        "data": "21/06/2026 17:40"
       }
-    ]
+    ],
+    "data_cancelamento": "21/06/2026 17:50",
+    "cancelado_por": "Ane"
   },
   {
     "cidade": "CAPÃO DA CANOA",
@@ -127,6 +141,12 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "20/06/2026 17:21"
+      },
+      {
+        "comentario": "Atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:34"
       }
     ]
   },
@@ -610,7 +630,7 @@
     "chamado_operadora": "759321",
     "outage": null,
     "usuario": "Rodrigo",
-    "status": "ABERTO",
+    "status": "CANCELADO",
     "id_ticket": "81/2026",
     "data_abertura": "20/06/2026 16:53",
     "logs": [
@@ -619,24 +639,22 @@
         "imagem": null,
         "usuario": "Sistema",
         "data": "20/06/2026 17:21"
+      },
+      {
+        "comentario": "Atualização.",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:35"
+      },
+      {
+        "comentario": "atualização",
+        "imagem": null,
+        "usuario": "Ane",
+        "data": "21/06/2026 17:46"
       }
-    ]
-  },
-  {
-    "cidade": "ADAMANTINA",
-    "servico": "NET VIRTUA",
-    "sintoma": "QUEDA NO TRAFEGO",
-    "evento": "DEGRADACAO",
-    "descricao": "teste username",
-    "data_inicio": "20/06/2026 18:30",
-    "categoria": "Links",
-    "ofensor": "GPON",
-    "chamado_operadora": "23456",
-    "outage": null,
-    "usuario": "",
-    "status": "ABERTO",
-    "id_ticket": "82/2026",
-    "data_abertura": "20/06/2026 18:50"
+    ],
+    "data_cancelamento": "21/06/2026 18:43",
+    "cancelado_por": "Ane"
   },
   {
     "cidade": "AMERICANA",
@@ -650,9 +668,19 @@
     "chamado_operadora": "3416817",
     "outage": null,
     "usuario": "Rodrigo",
-    "status": "ABERTO",
+    "status": "CANCELADO",
     "id_ticket": "83/2026",
-    "data_abertura": "20/06/2026 19:03"
+    "data_abertura": "20/06/2026 19:03",
+    "logs": [
+      {
+        "comentario": "Atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:34"
+      }
+    ],
+    "data_cancelamento": "21/06/2026 18:42",
+    "cancelado_por": "Ane"
   },
   {
     "cidade": "ARARAQUARA",
@@ -668,6 +696,214 @@
     "usuario": "Ednilton",
     "status": "ABERTO",
     "id_ticket": "84/2026",
-    "data_abertura": "20/06/2026 19:05"
+    "data_abertura": "20/06/2026 19:05",
+    "logs": [
+      {
+        "comentario": "Atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:34"
+      }
+    ]
+  },
+  {
+    "cidade": "ALEGRETE",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste user",
+    "data_inicio": "20/06/2026 18:00",
+    "categoria": "Links",
+    "ofensor": "Gpon",
+    "chamado_operadora": "7954",
+    "outage": null,
+    "status": "CANCELADO",
+    "id_ticket": "85/2026",
+    "data_abertura": "20/06/2026 19:27",
+    "usuario": "Ednilton",
+    "logs": [
+      {
+        "comentario": "Atualização",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 19:34"
+      }
+    ],
+    "data_cancelamento": "21/06/2026 18:01",
+    "cancelado_por": "Ane"
+  },
+  {
+    "cidade": "MANAUS",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "QUEDA DE LINK 1X10G",
+    "data_inicio": "20/06/2026 19:17",
+    "categoria": "Links",
+    "ofensor": "MNS/IP/02757",
+    "chamado_operadora": "372319",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "86/2026",
+    "data_abertura": "20/06/2026 20:01",
+    "usuario": "Rodrigo",
+    "logs": [
+      {
+        "comentario": "",
+        "imagem": "1781996489112_IMG1.png",
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:01"
+      },
+      {
+        "comentario": "B:agg04.bhe# show_ port 1/x1/1/c14/4\r<br>\r<br>===============================================================================\r<br>Ethernet Interface\r<br>===============================================================================\r<br>Description : NETSERVICOS | 10000M | MNS/IP/02757 | (MNS/IP/02757) -\r<br>lag-500\r<br>Interface : 1/x1/1/c14/4 Oper Speed : 10 Gbps\r<br>FP Number : 1 MAC Chip Number : 3\r<br>Link-level : Ethernet Config Speed : N/A\r<br>Admin State : up Oper Duplex : full\r<br>Oper State : down - Active in LAG 500\r<br>Config Duplex : N/A\r<br>Physical Link : No MTU : 1514\r<br>Single Fiber Mode : No Min Frame Length : 64 Bytes\r<br>IfIndex : 1610916740 Hold time up : 0 seconds\r<br>Last State Change : 06/20/2026 19:17:09 Hold time down : 0 seconds\r<br>Hold Time Down Rmng: 0 cs Hold Time Up Rmng: 0 cs\r<br>Last Cleared Time : 07/09/2025 04:55:02\r<br>Phys State Chng Cnt: 10704\r<br>RS-FEC Config Mode : None\r<br>RS-FEC Oper Mode : None",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:01"
+      },
+      {
+        "comentario": "CIDADE: MANAUS\r<br>SERVIÇOS AFETADOS: VIRTUA\r<br>HI: 20/06/2026 19:17\r<br>IMP%: 0\r<br>FALHA: 0\r<br>PROTEGIDO: SIM, MALHA LUCENT\r<br>RISCO OPERACIONAL: N/A\r<br>RAL/INC: 372319\r<br>OUTAGE: N/A\r<br>MEG: N/A\r<br>CAUSA: EM ANÁLISE\r<br>STATUS: ACIONADO NOC TX",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:01"
+      },
+      {
+        "comentario": "FATO: INOPERANTE. \r<br>CAUSA: NÃO DETERMINADA. \r<br>AÇÃO: SEM INTERVENÇÃO.",
+        "imagem": null,
+        "usuario": "Robert",
+        "data": "21/06/2026 17:45"
+      }
+    ]
+  },
+  {
+    "cidade": "GUARULHOS",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "QUEDA DE LINK 1X1G",
+    "data_inicio": "20/06/2026 19:42",
+    "categoria": "Links",
+    "ofensor": "GRSNET/SPOIGIT/1G/001",
+    "chamado_operadora": "372343",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "87/2026",
+    "data_abertura": "20/06/2026 20:22",
+    "usuario": "Rodrigo",
+    "logs": [
+      {
+        "comentario": "",
+        "imagem": "1781997769295_IMG1.png",
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:22"
+      },
+      {
+        "comentario": "iacc03.spo#ping vrf REALIP_CLIENTE:5581 200.246.235.10\r<br>Type escape sequence to abort.\r<br>Sending 5, 100-byte ICMP Echos to 200.246.235.10, timeout is 2 seconds:\r<br>.....\r<br>Success rate is 0 percent (0/5)\r<br>\r<br>\r<br>iacc03.spo#ping vrf REALIP_CLIENTE:5581 200.246.230.218\r<br>Type escape sequence to abort.\r<br>Sending 5, 100-byte ICMP Echos to 200.246.230.218, timeout is 2 seconds:\r<br>.....\r<br>Success rate is 0 percent (0/5)\r<br>\r<br>\r<br>iacc03.spo#ping vrf REALIP_CLIENTE:5581 200.246.173.34\r<br>Type escape sequence to abort.\r<br>Sending 5, 100-byte ICMP Echos to 200.246.173.34, timeout is 2 seconds:\r<br>.....\r<br>Success rate is 0 percent (0/5)",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:22"
+      },
+      {
+        "comentario": "CIDADE: GUARULHOS\r<br>SERVIÇOS AFETADOS: BSOD\r<br>HI: 20/06/2026 19:42\r<br>IMP%: 100\r<br>FALHA: QUEDA DE LINK 1X1G\r<br>PROTEGIDO: SIM, DWDM PADTEC\r<br>RISCO OPERACIONAL: N/A\r<br>RAL/INC: 372343\r<br>OUTAGE: N/A\r<br>MEG: N/A\r<br>CAUSA: EM ANÁLISE\r<br>STATUS: ACIONADO NOC TX",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:23"
+      },
+      {
+        "comentario": "F (FATO): LOSS. \r<br>C (CAUSA): FIBRA ÓPTICA \r<br>A (AÇÃO): DESLOCAMENTO.",
+        "imagem": null,
+        "usuario": "Rose",
+        "data": "21/06/2026 17:44"
+      }
+    ]
+  },
+  {
+    "cidade": "GUARULHOS",
+    "servico": "NET FONE",
+    "sintoma": "MUDO",
+    "evento": "INTERRUPCAO",
+    "descricao": "\tQUEDA DE LINK: GRS/IP/02662 - GRS 0WX SPO IG IT 500M 001",
+    "data_inicio": "20/06/2026 19:37",
+    "categoria": "Links",
+    "ofensor": "GRS/IP/02662",
+    "chamado_operadora": "372341",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "88/2026",
+    "data_abertura": "20/06/2026 20:24",
+    "usuario": "Ednilton",
+    "logs": [
+      {
+        "comentario": "",
+        "imagem": "1781997923703_IMG2.png",
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:25"
+      },
+      {
+        "comentario": "RP/0/RSP0/CPU0:nxacc02.spo#sh run int GIGABITETHERNET 0/2/0/11\r<br>Sat Jun 20 20:09:25.972 BRT\r<br>interface GigabitEthernet0/2/0/11\r<br>description NGN-NET | 500000K | GRS/IP/02662 | (GRS/IP/02662) | BGP_AS28573\r<br>bandwidth 500000\r<br>service-policy input MARCA-VOZ\r<br>vrf NGN-NET:1700\r<br>ipv4 address 10.254.37.65 255.255.255.252\r<br>ipv4 verify unicast source reachable-via any allow-default\r<br>ipv4 unreachables disable\r<br>negotiation auto\r<br>load-interval 30\r<br>ipv4 access-group ACL-NETFONE2 ingress\r<br>!\r<br>\r<br>RP/0/RSP0/CPU0:nxacc02.spo#ping vrf NGN-NET:1700 10.254.37.66\r<br>Sat Jun 20 20:09:41.700 BRT\r<br>Type escape sequence to abort.\r<br>Sending 5, 100-byte ICMP Echos to 10.254.37.66, timeout is 2 seconds:\r<br>UUUUU\r<br>Success rate is 0 percent (0/5)\r<br>RP/0/RSP0/CPU0:nxacc02.spo#",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:25"
+      },
+      {
+        "comentario": "CIDADE: GUARULHOS\r<br>SERVIÇOS AFETADOS: NETFONE\r<br>HI: 20/06/2026 17:37\r<br>IMP%: 0\r<br>FALHA: QUEDA DE LINK 1X500M\r<br>PROTEGIDO: SIM, ANEL DWDM\r<br>RISCO OPERACIONAL: NÃO\r<br>RAL/INC: 372341\r<br>OUTAGE: N/A\r<br>MEG: N/A\r<br>CAUSA: N/A\r<br>STATUS: ACIONADO NOC TX",
+        "imagem": null,
+        "usuario": "Sistema",
+        "data": "20/06/2026 20:25"
+      },
+      {
+        "comentario": "VIDE RAL-372343/2026# -- NOC REDES BHE: AFETADO POR GRS NET SPO IG OTS 001 RAL-368882/2026 QUE NO MOMENTO ESTA COM ALARME DE LOS E ELEMENTO DE GRSNET SEM SUPERVISÃO IMPOSSIBILITANDO ANALISE DE COMUTAÇÃO",
+        "imagem": null,
+        "usuario": "Fabiano",
+        "data": "21/06/2026 17:42"
+      }
+    ]
+  },
+  {
+    "cidade": "AGUAI",
+    "servico": "WI-FI",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "TESTE ",
+    "data_inicio": "21/06/2026 22:49",
+    "categoria": "Links",
+    "ofensor": "GPON",
+    "chamado_operadora": "465789",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "89/2026",
+    "data_abertura": "21/06/2026 22:50",
+    "usuario": "Ane"
+  },
+  {
+    "cidade": "GUARULHOS",
+    "servico": "BSOD",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "INTERRUPCAO",
+    "descricao": "TESTE",
+    "data_inicio": "21/06/2026 22:54",
+    "categoria": "Links",
+    "ofensor": "GRSNET/SPOIGIT/1G/001",
+    "chamado_operadora": "321456987",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "90/2026",
+    "data_abertura": "21/06/2026 22:55",
+    "usuario": "Ane"
+  },
+  {
+    "cidade": "BELÉM",
+    "servico": "WI-FI",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "INTERRUPCAO",
+    "descricao": "TESTE",
+    "data_inicio": "21/06/2026 22:56",
+    "categoria": "WiFi - Aeroporto",
+    "ofensor": "Access Point",
+    "chamado_operadora": "45785223",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "91/2026",
+    "data_abertura": "21/06/2026 22:56",
+    "usuario": "Ane"
   }
 ]

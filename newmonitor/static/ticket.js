@@ -385,6 +385,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     } 
 
+    
+    const campoFinal = document.getElementById("data_final_global");
+
+    if (campoFinal && !campoFinal.value) {
+
+        const agora = new Date();
+
+        const ano = agora.getFullYear();
+        const mes = String(agora.getMonth() + 1).padStart(2, "0");
+        const dia = String(agora.getDate()).padStart(2, "0");
+
+        const hora = String(agora.getHours()).padStart(2, "0");
+        const min = String(agora.getMinutes()).padStart(2, "0");
+
+        campoFinal.value = `${ano}-${mes}-${dia}T${hora}:${min}`;
+    }
+
+
     // ============================
     // ✅ BOTÕES
     // ============================
