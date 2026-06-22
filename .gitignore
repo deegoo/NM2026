@@ -1,3 +1,21 @@
-_pycache__
-venv
+# Cache do Python (Corrigido os sublinhados)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente Virtual 
+venv/
+.venv/
+ENV/
+
+# Arquivos de Configuração e Senhas
 .env
+
+# Banco de Dados Local para não subir o arquivo .db
+instance/
+*.db
+*.sqlite3
+
+# Arquivos temporários do sistema ou do VS Code
+.vscode/
+.DS_Store

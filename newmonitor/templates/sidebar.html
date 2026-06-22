@@ -37,9 +37,23 @@
       </li>
     </ul>
 
+
+
+    
+      
+        <ul>
+    <li><a href="{{ url_for('home') }}"></a></li>
+
+    {% if current_user.is_admin %}
+        <li>
+            <a href="{{ url_for('gerenciar_usuarios') }}">👤 Gerenciar Usuários</a>
+        </li>
+    {% endif %}
+</ul>
+
   </div>
 
- 
+
 
   
 

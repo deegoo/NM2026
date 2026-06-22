@@ -905,5 +905,21 @@
     "id_ticket": "91/2026",
     "data_abertura": "21/06/2026 22:56",
     "usuario": "Ane"
+  },
+  {
+    "cidade": "ADAMANTINA",
+    "servico": "NET VIRTUA",
+    "sintoma": "QUEDA NO TRAFEGO",
+    "evento": "DEGRADACAO",
+    "descricao": "teste",
+    "data_inicio": "22/06/2026 09:45",
+    "categoria": "Backbone IP",
+    "ofensor": "ROUTER",
+    "chamado_operadora": "123",
+    "outage": null,
+    "status": "ABERTO",
+    "id_ticket": "92/2026",
+    "data_abertura": "22/06/2026 09:46",
+    "usuario": "admin"
   }
 ]

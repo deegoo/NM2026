@@ -9,6 +9,8 @@ from requests_ntlm import HttpNtlmAuth
 from time import time
 from flask_login import login_required, UserMixin, login_required, current_user, login_user, logout_user
 
+from newmonitor import app, db
+from newmonitor.models import Usuario
 
 
 import json
@@ -29,39 +31,57 @@ def salvar_tickets(dados):
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
 
-lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
+# lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
+# ############################################
+# #
+# ##########################################
 
-# Banco de dados temporário
-USUARIOS_DB = {
-    "1": {"username": "Edson", "password": "N123456"},
-    "2": {"username": "Rodrigo", "password": "F183209"},
-    "3": {"username": "Ednilton", "password": "N5945528"},
-    "4": {"username": "Cleiton", "password": "Noc@2026"},
-    "5": {"username": "Danilo", "password": "Noc@2026"},
-    "6": {"username": "Ane", "password": "Noc@2026"},
-    "7": {"username": "Eder", "password": "Noc@2026"},
-    "8": {"username": "Carlos", "password": "Noc@2026"},
-    "9": {"username": "Marcel", "password": "Noc@2026"},
-    "10": {"username": "Rose", "password": "Noc@2026"},
-    "11": {"username": "Marcio", "password": "Noc@2026"},
-    "12": {"username": "Robert", "password": "Noc@2026"},
-    "13": {"username": "Raphael", "password": "Noc@2026"},
-    "14": {"username": "Adimilson", "password": "Noc@2026"},
-    "15": {"username": "Fabiano", "password": "Noc@2026"},
+# # Banco de dados temporário
+# USUARIOS_DB = {
+#     "1": {"username": "Edson", "password": "Noc@2026"},
+#     "2": {"username": "Rodrigo", "password": "Noc@2026"},
+#     "3": {"username": "Ednilton", "password": "Noc@2026"},
+#     "4": {"username": "Cleiton", "password": "Noc@2026"},
+#     "5": {"username": "Danilo", "password": "Noc@2026"},
+#     "6": {"username": "Ane", "password": "Noc@2026"},
+#     "7": {"username": "Eder", "password": "Noc@2026"},
+#     "8": {"username": "Carlos", "password": "Noc@2026"},
+#     "9": {"username": "Marcel", "password": "Noc@2026"},
+#     "10": {"username": "Rose", "password": "Noc@2026"},
+#     "11": {"username": "Marcio", "password": "Noc@2026"},
+#     "12": {"username": "Robert", "password": "Noc@2026"},
+#     "13": {"username": "Raphael", "password": "Noc@2026"},
+#     "14": {"username": "Adimilson", "password": "Noc@2026"},
+#     "15": {"username": "Fabiano", "password": "Noc@2026"},
 
-}
+# }
 
-class User(UserMixin):
-    def __init__(self, id, username):
-        self.id = id
-        self.username = username
+# class User(UserMixin):
+#     def __init__(self, id, username):
+#         self.id = id
+#         self.username = username
+# O Adaptador fica aqui no topo do arquivo de rotas
 
+class BancoUsuariosAdaptador:
+    def get(self, user_id):
+        usuario = Usuario.query.get(int(user_id))
+        if usuario:
+            return {"username": usuario.username, "password": usuario.password}
+        return None
+
+    def __getitem__(self, user_id):
+        resultado = self.get(user_id)
+        if resultado is None:
+            raise KeyError(user_id)
+        return resultado
+
+USUARIOS_DB = BancoUsuariosAdaptador()
+
+# @app.route aqui para baixo ...
 
 @login_manager.user_loader
 def load_user(user_id):
-    if user_id in USUARIOS_DB:
-        return User(id=user_id, username=USUARIOS_DB[user_id]["username"])
-    return None
+    return Usuario.query.get(int(user_id))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -74,12 +94,13 @@ def login():
         username_digitado = request.form.get('username')
         senha_digitada = request.form.get('password')
         
+        # Busca no banco se existe um usuário com esse username
+        usuario_banco = Usuario.query.filter_by(username=username_digitado).first()
         
-        for user_id, dados in USUARIOS_DB.items():
-            if dados["username"] == username_digitado and dados["password"] == senha_digitada:
-                usuario_obj = User(id=user_id, username=dados["username"])
-                login_user(usuario_obj) 
-                return redirect(url_for('home'))
+        # Valida se o usuário existe e se a senha está correta
+        if usuario_banco and usuario_banco.password == senha_digitada:
+            login_user(usuario_banco) 
+            return redirect(url_for('home'))
         
         # Se errou o login, exibe o aviso no HTML
         flash('Usuário ou senha incorretos.')
@@ -92,6 +113,88 @@ def logout():
     logout_user() 
     flash("Você saiu do sistema com sucesso!") 
     return redirect(url_for('home'))
+
+
+
+# 1. ROTA CENTRALIZADA: Lista os usuários e prepara a edição
+@app.route('/usuarios')
+@login_required
+def gerenciar_usuarios():
+    # Pega todos os usuários do banco para listar na tabela
+    todos_usuarios = Usuario.query.all()
+    
+    # Verifica se o admin clicou no botão para editar alguém
+    usuario_editando = None
+    id_para_editar = request.args.get('editar_id', type=int)
+    if id_para_editar:
+        usuario_editando = Usuario.query.get(id_para_editar)
+
+    return render_template('usuarios.html', 
+                           listagem_usuarios=todos_usuarios, 
+                           usuario_editando=usuario_editando)
+
+# 2. PROCESSA O CADASTRO
+@app.route('/usuarios/cadastrar', methods=['POST'])
+@login_required
+def cadastrar():
+    if not current_user.is_admin:
+        flash('Acesso negado!', 'danger')
+        return redirect(url_for('home'))
+        
+    username = request.form.get('username')
+    password = request.form.get('password')
+    is_admin = True if request.form.get('is_admin') else False # Captura o checkbox
+    
+    if Usuario.query.filter_by(username=username).first():
+        flash('Usuário já existe!', 'danger')
+    else:
+        novo = Usuario(username=username, password=password, is_admin=is_admin)
+        db.session.add(novo)
+        db.session.commit()
+        flash('Usuário cadastrado com sucesso!', 'success')
+        
+    return redirect(url_for('gerenciar_usuarios'))
+
+# 3. PROCESSA A EDIÇÃO
+@app.route('/usuarios/editar/<int:user_id>', methods=['POST'])
+@login_required
+def editar_usuario(user_id):
+    if not current_user.is_admin:
+        flash('Acesso negado!', 'danger')
+        return redirect(url_for('home'))
+        
+    usuario = Usuario.query.get_or_404(user_id)
+    usuario.username = request.form.get('username')
+    
+    nova_senha = request.form.get('password')
+    if nova_senha:
+        usuario.password = nova_senha
+        
+    usuario.is_admin = True if request.form.get('is_admin') else False
+    
+    db.session.commit()
+    flash('Usuário atualizado!', 'success')
+    return redirect(url_for('gerenciar_usuarios'))
+
+# 4. PROCESSA A EXCLUSÃO
+@app.route('/usuarios/deletar/<int:user_id>', methods=['POST'])
+@login_required
+def deletar_usuario(user_id):
+    if not current_user.is_admin:
+        flash('Acesso negado!', 'danger')
+        return redirect(url_for('home'))
+        
+    if current_user.id == user_id:
+        flash('Você não pode se autoexcluir!', 'danger')
+        return redirect(url_for('gerenciar_usuarios'))
+        
+    usuario = Usuario.query.get_or_404(user_id)
+    db.session.delete(usuario)
+    db.session.commit()
+    flash('Usuário removido!', 'success')
+    return redirect(url_for('gerenciar_usuarios'))
+
+
 
 @app.route("/")
 @login_required
