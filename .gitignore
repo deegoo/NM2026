@@ -12,9 +12,9 @@ ENV/
 .env
 
 # Banco de Dados Local para não subir o arquivo .db
-instance/
-*.db
-*.sqlite3
+# instance/
+# *.db
+# *.sqlite3
 
 # Arquivos temporários do sistema ou do VS Code
 .vscode/
