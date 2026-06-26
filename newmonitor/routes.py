@@ -116,7 +116,7 @@ def logout():
 
 
 
-# 1. ROTA CENTRALIZADA: Lista os usuários e prepara a edição
+# Lista os usuários e prepara a edição
 @app.route('/usuarios')
 @login_required
 def gerenciar_usuarios():
@@ -940,6 +940,7 @@ def buscar():
 
 
 @app.route("/stream")
+@login_required
 def stream():
 
     def gerar():

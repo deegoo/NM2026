@@ -1,0 +1,26 @@
+'''
+***DAR PERMISSÃO DE USUARIO POR LINHA DE COMANDO NO TERMINAL***
+
+1º - Pelo Terminal do VS Code, venv ativa e digite:
+
+python
+
+2º - Cole todo o código abaixo (subistituindo o nome do usuário que você quer promover):
+
+from main import app
+from newmonitor import db
+from newmonitor.models import Usuario
+
+with app.app_context():
+    # 1. Busca o usuário pelo nome que você quer dar poder de Admin
+    usuario = Usuario.query.filter_by(username="admin").first()
+    
+    if usuario:
+        usuario.is_admin = True  # 2. Ativa o poder de admin
+        db.session.commit()      # 3. Salva no banco de dados
+        print(f"{usuario.username} agora é um Administrador!")
+    else:
+        print("Usuário não encontrado.")
+
+exit()
+'''

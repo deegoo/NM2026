@@ -3,36 +3,38 @@
     
     <ul><a href="/">
       <!--<li>Home</li>-->
-      <li>Dashboard</li></a>
-      <li class="menu_main">Abrir
+      <li>🎛️ Dashboard</li></a>
+      <li class="menu_main">📩 Abrir
         <ul class="menu_option">
           <li><a href="{{ url_for('abrir_registro')}}">Novo Ticket</a></li>
         </ul>
       </li>
-      <li class="menu_main">Consultas
+      <li class="menu_main">&#128269 Consultas
         <ul class="menu_option">
           <li><a href="{{ url_for('consulta_incidentes')}}">Pesquisar Ticket</a></li>
           <li class="desativado">Consulta Incidentes Datacenter</li>
           <li class="desativado">Consulta Manobras</li>
         </ul>
       </li> 
-      <li class="menu_main">Painel
+      <li class="menu_main">&#128187 Painel
         <ul class="menu_option">
           <li><a href="https://newmonitor.claro.com.br/user/painel/outage_painel_consolidado_sgo.php" target="_blank">Painel de Outages</a></li>
           <li><a href="{{ url_for('ticket_aberto')}}">Painel Monitoração</a></li>
         </ul>
       </li> 
-      <li class="menu_main">Relatórios
+      <li class="menu_main">&#128200 Relatórios
         <ul class="menu_option">
           <li><a href="{{ url_for('tela_relatorios')}}">Tickets</a></li>
           <li class="desativado">Manobras</li>
         </ul>
+        {% if current_user.is_admin %}
       </li>
-      <li class="menu_main">Gerenciamento Monitor
+      <li class="menu_main">&#127915 Gerenciamento Monitor
         <ul class="menu_option">
           <li><a href="{{ url_for('gestao_tickets')}}">Gestão de Tickets</a></li>
           <li><a href="{{ url_for('registra_ofensor')}}">Ofensor</a></li>
           <li><a href="{{ url_for('dashboard_usuarios_view')}}">Performance</a></li>
+          {% endif %}
         </ul>
       </li>
     </ul>
