@@ -1,51 +1,52 @@
+console.log("ABERTURA.JS CARREGOU");
 /* =========================
-   REGRAS
+   REGRAS DE ABERTURA
 ========================= */
-
-const regras = {
-    "NET FONE": {
-        sintomas: ["MUDO", "MANOBRA"],
-        eventos: {
-            "MUDO": ["INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"],
-            "MANOBRA": ["PROGRAMADA"],
-
-        }
-    },
-    "NET VIRTUA": {
-        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    },
-    "NOW": {
-        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    },
-    "PAY TV DIGITAL": {
-        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    },
-    "BSOD": {
-        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    },
-    "WI-FI": {
-        sintomas: ["QUEDA NO TRAFEGO", "MANOBRA"],
-        eventos: ["DEGRADACAO", "INTERRUPCAO", "PROGRAMADA", "AVALIAÇÃO DE DESEMPENHO"]
-    },
-};
-
-
-/* =========================
-   DADOS (JSON)
-========================= */
-
 let estrutura = {};
+let regras = {};
+let categoriasMulticidade = [];
 
 async function carregarEstrutura() {
-    const res = await fetch("/data/estrutura.json");
+
+    const res = await fetch("/api/estrutura");
+
+    if (!res.ok) {
+        throw new Error("Erro ao carregar estrutura");
+    }
+
     estrutura = await res.json();
 }
+async function carregarRegras() {
 
+    const res =
+        await fetch("/api/regras_abertura");
 
+    if (!res.ok) {
+        throw new Error(
+            "Erro ao carregar regras"
+        );
+    }
+
+    regras = await res.json();
+
+}
+async function carregarCategoriasMulticidade() {
+
+    const res =
+        await fetch(
+            "/api/categorias_multicidade"
+        );
+
+    if (!res.ok) {
+        throw new Error(
+            "Erro ao carregar categorias multicidade"
+        );
+    }
+
+    categoriasMulticidade =
+        await res.json();
+
+}
 /* =========================
    CIDADES / DRAG DROP
 ========================= */
@@ -69,11 +70,20 @@ function criarLi(texto) {
 ========================= */
 
 function iniciarFormulario() {
-    const servicos = document.getElementById("servicosAfetados");
 
-    Object.keys(regras).forEach(s => {
-        servicos.add(new Option(s, s));
-    });
+    const servicos =
+        document.getElementById("servicosAfetados");
+
+    servicos.innerHTML = "";
+
+    Object.keys(regras)
+        .sort((a, b) => a.localeCompare(b, "pt-BR"))
+        .forEach(servico => {
+
+            servicos.add(
+                new Option(servico, servico)
+            );
+        });
 }
 
 function iniciarCidades() {
@@ -103,41 +113,74 @@ function getCidadeSelecionada() {
 
 function atualizarCategorias() {
 
-    const cidadesSelecionadas = [...document.querySelectorAll("#cidadesSelecionadas li")];
-    const categoria = document.getElementById("categoria");
+    const cidadesSelecionadas =
+        [...document.querySelectorAll(
+            "#cidadesSelecionadas li"
+        )];
+
+    const categoria =
+        document.getElementById("categoria");
 
     categoria.innerHTML = "";
 
-    if (!cidadesSelecionadas.length) return;
+    if (!cidadesSelecionadas.length) {
+        return;
+    }
 
-    const multiCidade = cidadesSelecionadas.length > 1;
+    const multiCidade =
+        cidadesSelecionadas.length > 1;
 
     if (multiCidade) {
 
-        const categoriasPermitidas = [
-            "Backbone IP",
-            "Infra Estrutura",
-            "CMTS",
-            "Links"
-        ];
+        categoriasMulticidade
+            .sort((a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+            )
+            .forEach(cat => {
 
-        categoriasPermitidas.forEach(cat => {
-            categoria.add(new Option(cat, cat));
-        });
+                categoria.add(
+                    new Option(
+                        cat,
+                        cat
+                    )
+                );
+
+            });
 
     } else {
 
-        const cidade = cidadesSelecionadas[0].textContent;
+        const cidade =
+            cidadesSelecionadas[0]
+                .textContent;
 
-        if (!estrutura[cidade]) return;
+        if (!estrutura[cidade]) {
+            return;
+        }
 
-        Object.keys(estrutura[cidade])
-            .sort((a, b) => a.localeCompare(b, "pt-BR"))
-            .forEach(cat => {
-                categoria.add(new Option(cat, cat));
-            });
+        Object.keys(
+            estrutura[cidade]
+        )
+        .sort((a, b) =>
+            a.localeCompare(
+                b,
+                "pt-BR"
+            )
+        )
+        .forEach(cat => {
+
+            categoria.add(
+                new Option(
+                    cat,
+                    cat
+                )
+            );
+
+        });
+
     }
-
     atualizarOfensores();
 }
 
@@ -168,18 +211,6 @@ function atualizarOfensores() {
 
     let listaFinal = [...ofensoresSet];
 
-    if (multiCidade) {
-
-        if (categoria === "Links") {
-            listaFinal = listaFinal.filter(o =>
-                o.toUpperCase().includes("BACKBONE") ||
-                o.toUpperCase().includes("GPON")
-            );
-        }
-
-        // outras categorias permanecem completas
-    }
-
     listaFinal
         .sort((a, b) => a.localeCompare(b, "pt-BR"))
         .forEach(o => {
@@ -206,13 +237,43 @@ function mover(origemId, destinoId) {
     const destino = document.getElementById(destinoId);
 
     [...origem.querySelectorAll(".selected")].forEach(li => {
+
         li.classList.remove("selected");
+
+        li.style.display = "block";
+        li.style.fontWeight = "normal";
+        li.style.backgroundColor = "";
+
         destino.appendChild(li);
     });
 
+    if (destinoId === "cidadesDisponiveis") {
+
+        [...destino.querySelectorAll("li")]
+            .sort((a, b) =>
+                a.textContent.localeCompare(
+                    b.textContent,
+                    "pt-BR"
+                )
+            )
+            .forEach(li =>
+                destino.appendChild(li)
+            );
+    }
+
+    const busca = document.getElementById("buscaCidades");
+
+    if (busca) {
+
+        busca.value = "";
+
+        busca.dispatchEvent(
+            new Event("input")
+        );
+    }
+
     atualizarCategorias();
 }
-
 
 /* =========================
    ✅ NOVO: CONFIG POR SERVIÇO
@@ -221,14 +282,17 @@ function mover(origemId, destinoId) {
 function renderConfigServicos() {
 
     const container = document.getElementById("configServicos");
+
     container.innerHTML = "";
 
-    const servicos = [...document.getElementById("servicosAfetados").selectedOptions]
-        .map(o => o.value);
+    const servicos = [
+        ...document.getElementById("servicosAfetados").selectedOptions
+    ].map(o => o.value);
 
     servicos.forEach(servico => {
 
         const div = document.createElement("div");
+
         div.style.border = "1px solid #ccc";
         div.style.padding = "10px";
         div.style.marginBottom = "10px";
@@ -245,73 +309,114 @@ function renderConfigServicos() {
 
         container.appendChild(div);
 
-        const sintomaSelect = div.querySelector(".sintoma-servico");
-        const eventoSelect = div.querySelector(".evento-servico");
+        const sintomaSelect =
+            div.querySelector(".sintoma-servico");
 
-        const regra = regras[servico];
+        const eventoSelect =
+            div.querySelector(".evento-servico");
 
-        regra.sintomas.forEach(s => {
-            sintomaSelect.add(new Option(s, s));
-        });
+        const regra = regras[servico] || {};
 
-        function atualizarEventos() {
+        Object.keys(regra)
+            .sort((a, b) => a.localeCompare(b, "pt-BR"))
+            .forEach(sintoma => {
+
+                sintomaSelect.add(
+                    new Option(
+                        sintoma,
+                        sintoma
+                    )
+                    
+                );
+                if (servico === "NET FONE") {
+
+                    sintomaSelect.value = "MUDO";
+
+                } else {
+
+                    sintomaSelect.value = "QUEDA NO TRAFEGO";
+
+                }
+            });
+
+        function atualizarEventosServico() {
 
             eventoSelect.innerHTML = "";
 
-            if (servico === "NET FONE") {
-                const lista = regra.eventos[sintomaSelect.value];
-                lista.forEach(e => eventoSelect.add(new Option(e, e)));
+            const eventos =
+                regra[sintomaSelect.value] || [];
+
+            eventos.forEach(evento => {
+
+                eventoSelect.add(
+                    new Option(
+                        evento,
+                        evento
+                    )
+                );
+
+            });
+            
+        if (servico === "NET FONE") {
+
+                if (
+                    [...eventoSelect.options]
+                        .some(o => o.value === "INTERRUPCAO")
+                ) {
+                    eventoSelect.value = "INTERRUPCAO";
+                }
+
+            } else if (servico === "BSOD") {
+
+                if (
+                    [...eventoSelect.options]
+                        .some(o => o.value === "INTERRUPCAO")
+                ) {
+                    eventoSelect.value = "INTERRUPCAO";
+                }
+
             } else {
-                regra.eventos.forEach(e => eventoSelect.add(new Option(e, e)));
+
+                if (
+                    [...eventoSelect.options]
+                        .some(o => o.value === "DEGRADACAO")
+                ) {
+                    eventoSelect.value = "DEGRADACAO";
+                }
             }
-        }
-
-        sintomaSelect.addEventListener("change", atualizarEventos);
-
-        atualizarEventos();
-    });
 }
+        sintomaSelect.addEventListener(
+            "change",
+            atualizarEventosServico
+        );
 
+        atualizarEventosServico();
 
+    });
+
+}
 /* =========================
    CADASTRAR (NOVO MODELO)
 ========================= */
 
-function cadastrar() {
-
-    
+function cadastrar() {    
     const dataInicio = document.getElementById("data_inicio").value;
-
     if (!dataInicio) {
         alert("Preencha a data de início");
         return;
     }
-
     const cidades = [...document.querySelectorAll("#cidadesSelecionadas li")]
         .map(li => li.textContent);
-
     const configs = document.querySelectorAll("#configServicos > div");
-
     if (!cidades.length || configs.length === 0) {
         alert("Selecione cidades e serviços");
         return;
     }
-
     const registros = [];
-
     configs.forEach(div => {
-
         const servico = div.querySelector("strong").textContent;
         const sintoma = div.querySelector(".sintoma-servico").value;
         const evento = div.querySelector(".evento-servico").value;
-
-        const erro = validarRegras(servico, sintoma, evento);
-
-        if (erro) {
-            alert(`❌ ${servico}: ${erro}`);
-            return;
-        }
-
         cidades.forEach(cidade => {
             registros.push({
                 cidade,
@@ -334,54 +439,36 @@ function cadastrar() {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(registros)
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(async res => {
+
+        const data = await res.json();
+
+        console.log("RESPOSTA:", data);
+
+        if (!res.ok) {
+
+            alert(data.erro);
+
+            return;
+        }
+
         alert("✅ Tickets gerados");
-        window.location.href = "/ticket/" + data.id_ticket;
+
+        window.location.href =
+            "/ticket/" + data.id_ticket;
+
     });
 }
 
-
-/* =========================
-   VALIDAÇÃO
-========================= */
-
-function validarRegras(servico, sintoma, evento) {
-
-    const regra = regras[servico];
-
-    if (!regra) return "Serviço inválido";
-
-    if (!regra.sintomas.includes(sintoma)) {
-        return `Sintoma inválido para ${servico}`;
-    }
-
-    if (servico === "NET FONE") {
-
-        const eventosValidos = regra.eventos[sintoma];
-
-        if (!eventosValidos || !eventosValidos.includes(evento)) {
-            return `Evento inválido para ${servico} / ${sintoma}`;
-        }
-
-    } else {
-
-        if (!regra.eventos.includes(evento)) {
-            return `Evento inválido para ${servico}`;
-        }
-    }
-
-    return null;
-}
-
-
-/* =========================
-   EVENTOS GERAIS (CORRIGIDO)
-========================= */
+//=========================
+//   DOM
+//=========================
 
 document.addEventListener("DOMContentLoaded", async () => {
 
     await carregarEstrutura();
+    await carregarRegras();
+    await carregarCategoriasMulticidade();
 
     iniciarFormulario();
     iniciarCidades();
@@ -391,54 +478,50 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("servicosAfetados")
         ?.addEventListener("change", () => {
-
-            renderConfigServicos(); 
+            renderConfigServicos();
         });
-    
+
     const campoData = document.getElementById("data_inicio");
 
-        if (campoData) {
+    if (campoData) {
 
-            const agora = new Date();
+        const agora = new Date();
 
-            const ano = agora.getFullYear();
-            const mes = String(agora.getMonth() + 1).padStart(2, "0");
-            const dia = String(agora.getDate()).padStart(2, "0");
+        const ano = agora.getFullYear();
+        const mes = String(agora.getMonth() + 1).padStart(2, "0");
+        const dia = String(agora.getDate()).padStart(2, "0");
 
-            const hora = String(agora.getHours()).padStart(2, "0");
-            const min = String(agora.getMinutes()).padStart(2, "0");
+        const hora = String(agora.getHours()).padStart(2, "0");
+        const min = String(agora.getMinutes()).padStart(2, "0");
 
-            campoData.value = `${ano}-${mes}-${dia}T${hora}:${min}`;
-        }
+        campoData.value =
+            `${ano}-${mes}-${dia}T${hora}:${min}`;
+    }
 
-});
-
-/*======================== 
-      Busca de cidades
-==========================*/
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const inputBusca = document.getElementById("buscaCidades");
+    const inputBusca =
+        document.getElementById("buscaCidades");
 
     if (!inputBusca) {
         console.log("❌ buscaCidades não encontrado");
         return;
     }
 
-    /*======================== 
-          Busca de cidades
-    ==========================*/
     inputBusca.addEventListener("input", function () {
 
-        const termo = this.value.toUpperCase();
-        const lista = document.querySelectorAll("#cidadesDisponiveis li");
+        const termo =
+            this.value.toUpperCase();
+
+        const lista =
+            document.querySelectorAll(
+                "#cidadesDisponiveis li"
+            );
 
         let primeiraMatch = null;
 
         lista.forEach(li => {
 
-            const texto = li.textContent.toUpperCase();
+            const texto =
+                li.textContent.toUpperCase();
 
             if (texto.startsWith(termo)) {
 
@@ -449,41 +532,54 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 li.style.fontWeight = "bold";
-                li.style.backgroundColor = "#e6f0ff";
+                li.style.backgroundColor =
+                    "#e6f0ff";
 
             } else {
+
                 li.style.display = "none";
                 li.style.fontWeight = "normal";
                 li.style.backgroundColor = "";
+
             }
 
         });
 
         if (primeiraMatch) {
+
             primeiraMatch.scrollIntoView({
                 behavior: "smooth",
                 block: "center"
             });
+
         }
+
     });
 
-    /*=================================== 
-          Selecionar cidades com enter
-    =====================================*/
     inputBusca.addEventListener("keydown", function (e) {
 
         if (e.key === "Enter") {
 
             e.preventDefault();
 
-            const lista = document.querySelectorAll("#cidadesDisponiveis li");
+            const lista =
+                document.querySelectorAll(
+                    "#cidadesDisponiveis li"
+                );
 
-            document.querySelectorAll("#cidadesDisponiveis li.selected")
-                .forEach(li => li.classList.remove("selected"));
+            document
+                .querySelectorAll(
+                    "#cidadesDisponiveis li.selected"
+                )
+                .forEach(li =>
+                    li.classList.remove("selected")
+                );
 
             for (let li of lista) {
 
-                if (li.style.display !== "none") {
+                if (
+                    li.style.display !== "none"
+                ) {
 
                     li.classList.add("selected");
 
@@ -491,14 +587,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     break;
                 }
+
             }
 
             this.value = "";
 
             lista.forEach(li => {
+
                 li.style.display = "block";
                 li.style.fontWeight = "normal";
                 li.style.backgroundColor = "";
+
             });
         }
     });

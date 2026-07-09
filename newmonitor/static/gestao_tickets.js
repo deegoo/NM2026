@@ -1,11 +1,20 @@
-const API = "/listar";
+function limpar() {
 
-async function carregar() {
+    document.getElementById(
+        "buscaTicket"
+    ).value = "";
 
-  const res = await fetch(API);
-  const dados = await res.json();
+    document.getElementById(
+        "dataInicio"
+    ).value = "";
 
-  renderTabela(dados);
+    document.getElementById(
+        "dataFim"
+    ).value = "";
+
+    document.getElementById(
+        "tabela"
+    ).innerHTML = "";
 }
 
 async function acao(id, servico, tipo) {
@@ -22,13 +31,12 @@ async function acao(id, servico, tipo) {
 
   if (res.ok) {
     alert(`✅ ${tipo} executado`);
-    carregar();
+    buscar();
   } else {
     alert("❌ " + (data.msg || data.erro));
   }
 }
 
-carregar();
 
 
 async function buscar() {
@@ -105,6 +113,9 @@ function renderTabela(dados) {
           <button class="btn-reabrir" onclick="acao('${t.id_ticket}','${t.servico}','reabrir')">
             Reabrir
           </button>
+          <button class="btn-editar" onclick="editarFechamento('${t.id_ticket}','${t.servico}')">
+            Editar
+          </button>
         `;
       } else {
         botoes = "-";
@@ -131,4 +142,11 @@ function renderTabela(dados) {
 
     tabela.appendChild(tr);
   });
+}
+
+function editarFechamento(idTicket, servico) {
+
+    window.location.href =
+        `/ticket/${encodeURIComponent(idTicket)}?editar=1&servico=${encodeURIComponent(servico)}`;
+
 }

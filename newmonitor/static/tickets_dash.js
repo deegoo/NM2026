@@ -7,7 +7,7 @@ let dadosAgrupados = [];
 ========================= */
 function carregarTickets() {
     
-    fetch("/listar")
+    fetch("/api/tickets")
         .then(r => r.json())
         .then(lista => {
             console.log("📦 lista recebida:", lista)

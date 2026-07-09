@@ -1,17 +1,50 @@
 
-from flask import render_template,  url_for, flash, request, jsonify, send_from_directory, session, redirect, url_for, request, Response
-from newmonitor import app, login_manager
+from flask import render_template,  url_for, flash, request, jsonify, send_from_directory, session, redirect, Response
+from newmonitor import app, login_manager, db
 from newmonitor.ticket_generator import gerar_id_ticket
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from fastapi import FastAPI
 from requests_ntlm import HttpNtlmAuth
 from time import time
-from flask_login import login_required, UserMixin, login_required, current_user, login_user, logout_user
+from flask_login import login_required, UserMixin, current_user, login_user, logout_user
 
-from newmonitor import app, db
 from newmonitor.models import Usuario
+from newmonitor.database import (
+    get_estrutura,
+    get_regras_abertura,
+    get_categorias_multicidade,
+    salvar_ticket,
+    get_ticket,
+    get_tickets,
+    registrar_atividade,
+    get_atividades,
+    get_comentarios,
+    salvar_comentario,
+    salvar_evento_ticket,
+    salvar_fase_evento,
+    excluir_eventos_ticket,
+    excluir_fases_evento,
+    get_eventos_ticket,
+    get_fases_evento,
+    salvar_fechamento_ticket,
+    excluir_fechamentos_ticket,
+    get_fechamentos_ticket,
+    fechar_ticket,
+    get_dashboard,
+    get_meg_total,
+    get_sit_total,
+    get_meg_detalhes,
+    buscar_tickets,
+    get_cidades,
+    get_dashboard_usuarios,
+    buscar_gestao_tickets,
+    cancelar_servico,
+    reabrir_servico,
+    get_fechamento_servico,
+    conectar,
+    get_relatorio    
 
+)
 
 import json
 import os
@@ -211,11 +244,6 @@ def registro():
 def abrir_registro():
     return render_template("abrir_registro.html", usuario=current_user.username)
 
-@app.route("/consulta_regitro_falha")
-@login_required
-def consulta_regitro_falha():
-    return render_template("consulta_incidentes.html")
-
 @app.route("/fechar_registro")
 @login_required
 def fechar_registro():
@@ -226,69 +254,117 @@ def fechar_registro():
 def registra_ofensor():
     return render_template("registra_ofensor.html") 
 
+
 @app.route("/abrir", methods=["POST"])
 @login_required
 def abrir_ticket():
 
     def formatar_data_br(dt_str):
+
         if not dt_str:
             return None
+
         try:
-            dt = datetime.strptime(dt_str, "%Y-%m-%dT%H:%M")
-            return dt.strftime("%d/%m/%Y %H:%M")
+
+            dt = datetime.strptime(
+                dt_str,
+                "%Y-%m-%dT%H:%M"
+            )
+
+            return dt.strftime(
+                "%d/%m/%Y %H:%M"
+            )
+
         except:
             return dt_str
 
     dados = request.get_json()
-    print("📦 RAW dados:", dados)
 
     if not dados:
-        return jsonify({"erro": "JSON inválido"}), 400
 
-    os.makedirs("newmonitor/data", exist_ok=True)
+        return jsonify({
+            "erro": "JSON inválido"
+        }), 400
 
-    if not os.path.exists(DATA_PATH):
-        with open(DATA_PATH, "w", encoding="utf-8") as f:
-            json.dump([], f, indent=2, ensure_ascii=False)
+    regras = get_regras_abertura()
 
-    try:
-        with open(DATA_PATH, "r", encoding="utf-8") as f:
-            lista = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        lista = []
+    registros = (
+        dados
+        if isinstance(dados, list)
+        else [dados]
+    )
+
+    for registro in registros:
+
+        servico = registro.get("servico")
+        sintoma = registro.get("sintoma")
+        evento = registro.get("evento")
+
+        print("SERVICO =", servico)
+        print("SINTOMA =", sintoma)
+        print("EVENTO =", evento)
+
+        if servico not in regras:
+
+            print("ERRO SERVICO")
+
+            return jsonify({
+                "erro": f"Serviço inválido: {servico}"
+            }), 400
+
+        if sintoma not in regras[servico]:
+            print("ERRO SINTOMA")
+
+            return jsonify({
+                "erro":
+                f"Sintoma inválido para {servico}: {sintoma}"
+            }), 400
+
+        eventos_validos = regras[servico][sintoma]
+
+        print("EVENTOS VALIDOS =", eventos_validos)
+
+        if evento not in eventos_validos:
+
+            print("ERRO EVENTO")
+
+            return jsonify({
+                "erro":
+                f"Evento inválido para {servico}/{sintoma}: {evento}"
+            }), 400
 
     id_ticket = gerar_id_ticket()
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M")
+
+    agora = datetime.now().strftime(
+        "%d/%m/%Y %H:%M"
+    )
 
     usuario_logado = current_user.username
 
-    if isinstance(dados, list):
+    for registro in registros:
 
-        for t in dados:
-            t["id_ticket"] = id_ticket
-            t["data_inicio"] = formatar_data_br(t.get("data_inicio"))
-            t["data_abertura"] = agora
+        registro["id_ticket"] = id_ticket
 
-            t["usuario"] = usuario_logado
+        registro["data_inicio"] = formatar_data_br(
+            registro.get("data_inicio")
+        )
 
-            t["status"] = "ABERTO"
+        registro["data_abertura"] = agora
 
-        lista.extend(dados)
+        registro["usuario"] = usuario_logado
 
-    else:
-        dados["id_ticket"] = id_ticket
-        dados["data_inicio"] = formatar_data_br(dados.get("data_inicio"))
-        dados["data_abertura"] = agora
+        registro["status"] = "ABERTO"
 
-        # ✅ FORÇA USUÁRIO (IMPORTANTE)
-        dados["usuario"] = usuario_logado
+    salvar_ticket(registros)
+    
+    registrar_atividade(
+    id_ticket=id_ticket,
+    usuario=usuario_logado,
+    acao="ABERTURA",
+    detalhes="Ticket aberto"
+)
 
-        dados["status"] = "ABERTO"
-
-        lista.append(dados)
-
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(lista, f, indent=2, ensure_ascii=False)
+    print("✅ TICKETS SALVOS")
 
     return jsonify({
         "ok": True,
@@ -299,11 +375,9 @@ def abrir_ticket():
 @login_required
 def listar():
 
-    if not os.path.exists(DATA_PATH):
-        return jsonify([])
-
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        return jsonify(json.load(f))
+    return jsonify(
+        get_tickets()
+    )
 
 
 @app.route("/fechar", methods=["POST"])
@@ -341,30 +415,16 @@ def fechar():
 
     return jsonify({"ok": True})
 
-
 @app.route("/ticket/<path:id_ticket>")
 @login_required
 def visualizar_ticket(id_ticket):
 
-    import json
+    tickets = get_ticket(id_ticket)
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        lista = json.load(f)
-
-    
-
-    print("URL:", id_ticket)
-
-    for t in lista:
-        print("JSON:", t.get("id_ticket"))
-
-
-    tickets = [t for t in lista if t.get("id_ticket") == id_ticket]
-
-    return render_template("ticket.html", tickets=tickets)
-
-
-
+    return render_template(
+        "ticket.html",
+        tickets=tickets
+    )
 
 @app.route("/comentar/<path:id_ticket>", methods=["POST"])
 @login_required
@@ -376,47 +436,44 @@ def comentar(id_ticket):
 
     comentario = request.form.get("comentario") or ""
 
-    comentario = comentario.encode("utf-8", "ignore").decode("utf-8")
+    comentario = comentario.encode(
+        "utf-8",
+        "ignore"
+    ).decode("utf-8")
 
-    comentario = comentario.replace("\n", "<br>")
-
-    usuario_logado = current_user.username
+    comentario = comentario.replace(
+        "\n",
+        "<br>"
+    )
 
     arquivo = request.files.get("imagem")
 
     nome_arquivo = None
 
-    if arquivo:
-        nome_arquivo = f"{int(time.time() * 1000)}_{secure_filename(arquivo.filename)}"
-        caminho = os.path.join(UPLOAD_PATH, nome_arquivo)
+    if arquivo and arquivo.filename:
+
+        nome_arquivo = (
+            f"{int(time.time() * 1000)}_"
+            f"{secure_filename(arquivo.filename)}"
+        )
+
+        caminho = os.path.join(
+            UPLOAD_PATH,
+            nome_arquivo
+        )
+
         arquivo.save(caminho)
 
-    try:
-        with open(DATA_PATH, "r", encoding="utf-8") as f:
-            lista = json.load(f)
-    except:
-        lista = []
+    salvar_comentario(
+        id_ticket=id_ticket,
+        usuario=current_user.username,
+        comentario=comentario,
+        imagem=nome_arquivo
+    )
 
-    for t in lista:
-        if str(t.get("id_ticket")) == str(id_ticket):
-
-            if "logs" not in t:
-                t["logs"] = []
-
-            # ✅ LOG COMPLETO COM USUÁRIO
-            log = {
-                "comentario": comentario,
-                "imagem": nome_arquivo,
-                "usuario": usuario_logado,
-                "data": datetime.now().strftime("%d/%m/%Y %H:%M")
-            }
-
-            t["logs"].append(log)
-
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(lista, f, indent=2, ensure_ascii=False)
-
-    return {"ok": True}
+    return jsonify({
+        "ok": True
+    })
 
 @app.route("/consulta_incidentes")
 @login_required
@@ -437,101 +494,105 @@ def salvar_evento(id_ticket):
     from urllib.parse import unquote
 
     id_ticket = unquote(id_ticket)
+
     dados = request.json
 
     print("✅ ID recebido:", id_ticket)
     print("📦 dados:", dados)
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        tickets = json.load(f)
+    inicio_evento = dados.get("inicio_evento")
 
-    atualizado = False
+    eventos = dados.get(
+        "eventos",
+        []
+    )
 
-    for t in tickets:
-        print("🔎 comparando:", t.get("id_ticket"), "vs", id_ticket)
+    excluir_eventos_ticket(id_ticket)
 
-        if str(t.get("id_ticket")) == str(id_ticket):
+    excluir_fases_evento(id_ticket)
 
-            inicio = dados.get("inicio_evento")
-            eventos = dados.get("eventos", [])
+    for evento in eventos:
 
-            for t in tickets:
+        cidade = evento.get("cidade")
+        servico = evento.get("servico")
+        final_evento = evento.get("final_evento")
+        vc_evento = evento.get("vc_evento", 0)
 
-                if str(t.get("id_ticket")) == str(id_ticket):
+        salvar_evento_ticket(
+            id_ticket=id_ticket,
+            cidade=cidade,
+            servico=servico,
+            inicio_evento=inicio_evento,
+            final_evento=final_evento,
+            vc_evento=vc_evento
+        )
 
-                    evento_match = next(
-                        (ev for ev in eventos
-                        if ev["cidade"] == t["cidade"]
-                        and ev["servico"] == t["servico"]),
-                        None
-                    )
+        for fase in evento.get("fases", []):
 
-                    if evento_match:
-                        t["evento_detalhe"] = {
-                            "inicio": inicio,
-                            "eventos": [evento_match]
-                        }
+            salvar_fase_evento(
+                id_ticket=id_ticket,
+                cidade=cidade,
+                servico=servico,
+                tempo=fase.get("tempo", 0),
+                impacto=fase.get("impacto", 0)
+            )
 
-            atualizado = True
-            print("✅ evento salvo nesse ticket")
+    registrar_atividade(
+        id_ticket=id_ticket,
+        usuario=current_user.username,
+        acao="EVENTO",
+        detalhes="Evento registrado"
+    )
 
-    if not atualizado:
-        print("🚨 nenhum ticket atualizado:", id_ticket)
-        return jsonify({"erro": "ticket não encontrado"}), 404
+    print("✅ evento salvo no SQLite")
 
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(tickets, f, indent=4, ensure_ascii=False)
-
-    return jsonify({"ok": True})
+    return jsonify({
+        "ok": True
+    })
 
 @app.route("/fechar_ticket_multi/<path:id_ticket>", methods=["POST"])
 @login_required
 def fechar_ticket_multi(id_ticket):
 
     from urllib.parse import unquote
+
     id_ticket = unquote(id_ticket)
 
     dados = request.json
-    fechamentos = dados.get("fechamentos", [])
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        tickets = json.load(f)
+    fechamentos = dados.get(
+        "fechamentos",
+        []
+    )
 
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M")
+    excluir_fechamentos_ticket(
+        id_ticket
+    )
 
-    atualizado = False
+    for fechamento in fechamentos:
 
-    for t in tickets:
-        if str(t.get("id_ticket")) == str(id_ticket):
+        salvar_fechamento_ticket(
+            id_ticket=id_ticket,
+            servico=fechamento.get("servico"),
+            responsabilidade=fechamento.get("responsabilidade"),
+            parte=fechamento.get("parte"),
+            causa=fechamento.get("causa"),
+            solucao=fechamento.get("solucao"),
+            sumario=fechamento.get("sumario"),
+            causa_raiz=fechamento.get("causa_raiz")
+        )
+    fechar_ticket(id_ticket)
 
-            if t.get("status") != "ABERTO":
-                print("⚠️ ticket já fechado:", id_ticket)
-                continue
+    registrar_atividade(
+        id_ticket=id_ticket,
+        usuario=current_user.username,
+        acao="FECHAMENTO",
+        detalhes="Ticket fechado"
+    )
 
-
-            fechamento = next(
-                (f for f in fechamentos if f["servico"] == t["servico"]),
-                None
-            )
-
-            if fechamento:
-                t["data_fechamento"] = agora
-                t["responsabilidade"] = fechamento.get("responsabilidade")
-                t["parte_rede"] = fechamento.get("parte")
-                t["causa"] = fechamento.get("causa")
-                t["solucao"] = fechamento.get("solucao")
-                t["sumario"] = fechamento.get("sumario")
-                t["status"] = "FECHADO"
-
-                atualizado = True
-
-    if not atualizado:
-        return jsonify({"erro": "nenhum ticket atualizado"}), 404
-
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(tickets, f, indent=2, ensure_ascii=False)
-
-    return jsonify({"ok": True})
+    return jsonify({
+        "ok": True
+    })
 
 
 @app.route("/relatorios")
@@ -593,211 +654,42 @@ def relatorios_dados():
 @app.route("/api/meg")
 @login_required
 def api_meg():
+    return jsonify({
+        "total": get_meg_total()
+    })
 
-    url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
-
-    usuario = "F183209"
-    senha = "Senh@idm01"
-
-    try:
-        r = requests.get(
-            url,
-            auth=HttpNtlmAuth(usuario, senha),
-            timeout=10
-        )
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
-
-    if r.status_code != 200:
-        return jsonify({"erro": f"status {r.status_code}"}), 500
-
-    if "<html" in r.text.lower():
-        return jsonify({"total": 0, "erro": "falha na autenticação"})
-
-    conteudo = r.content.decode("latin-1")
-    conteudo = conteudo.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-
-    linhas = conteudo.splitlines()
-
-    total = 0
-
-    for linha in linhas:
-
-        if not linha.strip():
-            continue
-
-        partes = linha.split(";")
-
-        for p in partes:
-            if "RESIDENCIAL" in p.upper():
-                total += 1
-                break
-
-    return jsonify({"total": total})
+    
 
 @app.route("/api/sit")
 @login_required
 def api_sit():
-
-    url = "http://10.53.5.77/Arcos/Arcossit.aspx"
-
-    usuario = "F183209"
-    senha = "Senh@idm01"
-
-    try:
-        r = requests.get(
-            url,
-            auth=HttpNtlmAuth(usuario, senha),
-            timeout=10
-        )
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
-
-    if r.status_code != 200:
-        return jsonify({"erro": f"status {r.status_code}"}), 500
-
-    # ✅ fallback se login falhar
-    if "<html" in r.text.lower():
-        return jsonify({"total": 0, "erro": "falha na autenticação"})
-
-    # ✅ trata CSV (igual MEG)
-    conteudo = r.content.decode("latin-1")
-    conteudo = conteudo.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-
-    linhas = conteudo.splitlines()
-
-    total = 0
-
-    for linha in linhas:
-
-        if not linha.strip():
-            continue
-
-        # ✅ limpeza da linha (mesmo padrão que funcionou)
-        linha = linha.strip().replace("\r", "")
-
-        partes = linha.split(";")
-
-        for p in partes:
-            if "NOC RES MON" in p.upper():
-                total += 1
-                break
-
-    return jsonify({"total": total})
+        return jsonify({
+        "total": get_sit_total()
+    })
 
 @app.route("/meg_detalhe")
 @login_required
 def meg_detalhe():
     return render_template("meg_detalhe.html")
 
+
+
 @app.route("/api/meg_detalhe")
 @login_required
 def api_meg_detalhe():
 
-    url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
-
-    usuario = "F183209"
-    senha = "Senh@idm01"
-
-    r = requests.get(
-        url,
-        auth=HttpNtlmAuth(usuario, senha),
-        timeout=10
+    return jsonify(
+        get_meg_detalhes()
     )
 
-    conteudo = r.content.decode("utf-8", errors="replace")
-
-    conteudo = conteudo.replace("<br />", "\n") \
-                       .replace("<br/>", "\n") \
-                       .replace("<br>", "\n")
-
-    linhas = conteudo.split("\n")
-
-    def eh_rede_residencial(partes):
-        for i in range(len(partes)):
-            valor = partes[i].strip().upper()
-
-            if valor == "RESIDENCIAL":
-                if i + 1 < len(partes):
-                    prox = partes[i + 1].strip().upper()
-
-                    if prox == "TRUE":
-                        anterior = partes[i - 1].strip() if i - 1 >= 0 else ""
-
-                        if anterior == "":
-                            return True
-        return False
-
-    # =========================
-    # AGRUPAMENTO POR MEG
-    # =========================
-    megs = {}
-
-    for linha in linhas:
-
-        if not linha.strip():
-            continue
-
-        partes = linha.split(";")
-
-        if len(partes) < 5:
-            continue
-
-        numero = partes[0]
-
-        if numero not in megs:
-            megs[numero] = {
-                "linhas": [],
-                "residencial": False
-            }
-
-        megs[numero]["linhas"].append(partes)
-
-        if not megs[numero]["residencial"]:
-            if eh_rede_residencial(partes):
-                megs[numero]["residencial"] = True
-
-    # =========================
-    # FILTRO FINAL
-    # =========================
-    resultado = []
-
-    for numero, dados in megs.items():
-
-        if not dados["residencial"]:
-            continue
-
-        partes_residencial = None
-
-        for l in dados["linhas"]:
-            if eh_rede_residencial(l):
-                partes_residencial = l
-                break
-
-        if not partes_residencial:
-            continue
-
-        evento = partes_residencial[9] if len(partes_residencial) > 9 else ""
-        previsao = partes_residencial[14] if len(partes_residencial) > 14 else ""
-        status = partes_residencial[15] if len(partes_residencial) > 15 else ""
-
-        resultado.append({
-            "numero": numero,
-            "evento": evento,
-            "previsao": previsao,
-            "status": status
-        })
-
-    return jsonify(resultado)
 
 @app.route("/ticket/<path:id_ticket>/acao", methods=["POST"])
 @login_required
 def acao_ticket(id_ticket):
 
     from urllib.parse import unquote
-    id_ticket = unquote(id_ticket)
 
-    dados = ler_tickets()
+    id_ticket = unquote(id_ticket)
 
     body = request.json or {}
 
@@ -805,73 +697,42 @@ def acao_ticket(id_ticket):
     servico = body.get("servico")
 
     if not acao:
-        return jsonify({"erro": "Ação não informada"}), 400
+        return jsonify({
+            "erro": "Ação não informada"
+        }), 400
 
     if not servico:
-        return jsonify({"erro": "Serviço não informado"}), 400
+        return jsonify({
+            "erro": "Serviço não informado"
+        }), 400
 
-    atualizado = False
+    if acao == "cancelar":
 
-    for t in dados:
-        if (
-            str(t.get("id_ticket")) == str(id_ticket)
-            and t.get("servico") == servico
-        ):
+        cancelar_servico(
+            id_ticket,
+            servico,
+            current_user.username
+        )
 
-            status_atual = (t.get("status") or "").strip().upper()
+    elif acao == "reabrir":
 
-            # ================= CANCELAR =================
-            if acao == "cancelar":
+        reabrir_servico(
+            id_ticket,
+            servico,
+            current_user.username
+        )
 
-                if status_atual == "CANCELADO":
-                    return jsonify({"msg": "Já cancelado"}), 400
+    else:
 
-                t["status"] = "CANCELADO"
-                t["data_cancelamento"] = datetime.now().strftime("%d/%m/%Y %H:%M")
-                t["cancelado_por"] = current_user.username
+        return jsonify({
+            "erro": "Ação inválida"
+        }), 400
 
-                atualizado = True
+    return jsonify({
+        "ok": True,
+        "acao": acao
+    })
 
-            # ================= REABRIR =================
-            elif acao == "reabrir":
-
-                if status_atual != "FECHADO":
-                    return jsonify({"msg": "Só pode reabrir fechado"}), 400
-
-                t["status"] = "ABERTO"
-                t["data_reabertura"] = datetime.now().strftime("%d/%m/%Y %H:%M")
-                t["reaberto_por"] = current_user.username
-
-                # limpa fechamento
-                t["data_fechamento"] = None
-                t["causa"] = None
-                t["solucao"] = None
-
-                atualizado = True
-
-            # ================= FECHAR =================
-            elif acao == "fechar":
-
-                if status_atual != "ABERTO":
-                    return jsonify({"msg": "Só pode fechar aberto"}), 400
-
-                if not t.get("evento_detalhe"):
-                    return jsonify({"msg": "Preencha o evento antes de fechar"}), 400
-
-                t["status"] = "FECHADO"
-                t["data_fechamento"] = datetime.now().strftime("%d/%m/%Y %H:%M")
-
-                atualizado = True
-
-            else:
-                return jsonify({"erro": "Ação inválida"}), 400
-
-    if not atualizado:
-        return jsonify({"erro": "Registro não encontrado (id + serviço)"}), 404
-
-    salvar_tickets(dados)
-
-    return jsonify({"ok": True, "acao": acao})
 
 
 @app.route("/gestao_tickets")
@@ -888,56 +749,13 @@ def ticket_aberto():
 @login_required
 def buscar():
 
-    termo = request.args.get("term", "").lower()
-    data_inicio = request.args.get("data_inicio")
-    data_fim = request.args.get("data_fim")
-
-    dados = ler_tickets()
-
-    resultado = []
-
-    for t in dados:
-
-        # ✅ FILTRO TEXTO
-        match_texto = (
-            termo in str(t.get("id_ticket","")).lower()
-            or termo in str(t.get("cidade","")).lower()
-            or termo in str(t.get("servico","")).lower()
-            or termo in str(t.get("descricao","")).lower()
-        ) if termo else True
-
-        # ✅ FILTRO DATA
-        match_data = True
-
-        data_abertura = t.get("data_abertura")
-
-        if data_abertura:
-
-            try:
-                from datetime import datetime
-
-                dt_ticket = datetime.strptime(data_abertura, "%d/%m/%Y %H:%M")
-
-                if data_inicio:
-                    dt_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
-                    if dt_ticket < dt_inicio:
-                        match_data = False
-
-                if data_fim:
-                    dt_fim = datetime.strptime(data_fim, "%Y-%m-%d")
-                    dt_fim = dt_fim.replace(hour=23, minute=59, second=59)
-
-                    if dt_ticket > dt_fim:
-                        match_data = False
-
-            except:
-                pass
-
-        if match_texto and match_data:
-            resultado.append(t)
-
-    return jsonify(resultado)
-
+    return jsonify(
+        buscar_gestao_tickets(
+            termo=request.args.get("term"),
+            data_inicio=request.args.get("data_inicio"),
+            data_fim=request.args.get("data_fim")
+        )
+    )
 
 @app.route("/stream")
 @login_required
@@ -945,7 +763,7 @@ def stream():
 
     def gerar():
         while True:
-            dados = ler_tickets()  # mesma função do /listar
+            dados = ler_tickets()
 
             payload = json.dumps(dados)
 
@@ -960,66 +778,286 @@ def stream():
 def dashboard_usuarios_view():
     return render_template("dashboard_usuarios.html")
 
+@app.route("/api/estrutura")
+@login_required
+def api_estrutura():
+
+    return jsonify(get_estrutura())
+
+
+@app.route("/api/regras_abertura")
+@login_required
+def api_regras_abertura():
+
+    return jsonify(get_regras_abertura())
+
+@app.route("/api/categorias_multicidade")
+@login_required
+def api_categorias_multicidade():
+
+    return jsonify(
+        get_categorias_multicidade()
+    )
+
+@app.route("/api/atividade/<path:id_ticket>")
+@login_required
+def api_atividade(id_ticket):
+
+    return jsonify(
+        get_atividades(id_ticket)
+    )
+
+
+@app.route("/api/tickets")
+@login_required
+def api_tickets():
+
+    return jsonify(
+        get_tickets()
+    )
+    
+@app.route("/api/comentarios/<path:id_ticket>")
+@login_required
+def api_comentarios(id_ticket):
+
+    return jsonify(
+        get_comentarios(id_ticket)
+    )
+    
+@app.route("/api/eventos/<path:id_ticket>")
+@login_required
+def api_eventos(id_ticket):
+
+    return jsonify({
+        "eventos": get_eventos_ticket(id_ticket),
+        "fases": get_fases_evento(id_ticket)
+    })
+    
+@app.route("/api/fechamentos/<path:id_ticket>")
+@login_required
+def api_fechamentos(id_ticket):
+
+    return jsonify({
+        "fechamentos": get_fechamentos_ticket(id_ticket)
+    })
+    
+
+@app.route("/api/dashboard")
+@login_required
+def api_dashboard():
+
+    return jsonify(
+        get_dashboard()
+    )
+
+
+@app.route("/api/consulta")
+@login_required
+def api_consulta():
+
+    return jsonify(
+        buscar_tickets(
+            ticket=request.args.get("ticket"),
+            cidade=request.args.get("cidade"),
+            data_inicio=request.args.get("data_inicio"),
+            data_fim=request.args.get("data_fim")
+        )
+    )
+
+@app.route("/api/cidades")
+@login_required
+def api_cidades():
+
+    return jsonify(
+        get_cidades()
+    )
+
 @app.route("/dashboard_usuarios")
 @login_required
 def dashboard_usuarios():
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        tickets = json.load(f)
+    return jsonify(
+        get_dashboard_usuarios()
+    )
+    
+@app.route("/api/fechamento")
+@login_required
+def api_fechamento():
 
-    usuarios = {}
+    id_ticket = request.args.get("id_ticket")
+    servico = request.args.get("servico")
 
-    for t in tickets:
-        user = t.get("usuario", "N/A")
+    return jsonify(
+        get_fechamento_servico(
+            id_ticket,
+            servico
+        )
+    )
+    
+    
+@app.route("/api/fechamento_servico")
+@login_required
+def api_fechamento_servico():
 
-        if user not in usuarios:
+    return jsonify(
+        get_fechamento_servico(
+            request.args.get("id_ticket"),
+            request.args.get("servico")
+        )
+    )
 
-            usuarios[user] = {
-                "abertos": 0,
-                "fechados": 0,
-                "updates": 0,
-                "cancelados": 0
-            }
+@app.route("/api/editar_fechamento", methods=["POST"])
+@login_required
+def api_editar_fechamento():
 
-        status = (t.get("status") or "").upper()
+    dados = request.json or {}
 
-        if status == "ABERTO":
-            usuarios[user]["abertos"] += 1
-        elif status == "FECHADO":
-            usuarios[user]["fechados"] += 1
-        elif status == "CANCELADO":
+    id_ticket = dados.get("id_ticket")
+    servico = dados.get("servico")
 
-            # 🔥 pega quem CANCELou no último log
-            logs = t.get("logs", [])
+    if not id_ticket:
+        return jsonify({
+            "erro": "Ticket não informado"
+        }), 400
 
-            if logs:
-                ultimo_log = logs[-1]
-                usuario_cancelou = ultimo_log.get("usuario", user)
-            else:
-                usuario_cancelou = user
+    if not servico:
+        return jsonify({
+            "erro": "Serviço não informado"
+        }), 400
 
-            if usuario_cancelou not in usuarios:
-                usuarios[usuario_cancelou] = {
-                    "abertos": 0,
-                    "fechados": 0,
-                    "updates": 0,
-                    "cancelados": 0
-                }
+    conn = conectar()
+    cur = conn.cursor()
 
-            usuarios[usuario_cancelou]["cancelados"] += 1
+    # =========================
+    # FECHAMENTO
+    # =========================
 
-        # logs
-        for log in t.get("logs", []):
-            u = log.get("usuario", user)
+    cur.execute("""
+        UPDATE fechamentos_ticket
+        SET
+            responsabilidade = ?,
+            parte = ?,
+            causa = ?,
+            solucao = ?,
+            sumario = ?,
+            causa_raiz = ?,
+            isolamento_olt_cmts = ?
+        WHERE id_ticket = ?
+          AND servico = ?
+    """, (
+        dados.get("responsabilidade"),
+        dados.get("parte"),
+        dados.get("causa"),
+        dados.get("solucao"),
+        dados.get("sumario"),
+        dados.get("causa_raiz"),
+        dados.get("isolamento_olt_cmts", 0),
+        id_ticket,
+        servico
+    ))
 
-            if u not in usuarios:
-                usuarios[u] = {
-                    "abertos": 0,
-                    "fechados": 0,
-                    "updates": 0,
-                    "cancelados": 0
-                }
+    # =========================
+    # EVENTO
+    # =========================
 
-            usuarios[u]["updates"] += 1
+    cur.execute("""
+        UPDATE eventos_ticket
+        SET
+            inicio_evento = ?,
+            final_evento = ?,
+            vc_evento = ?
+        WHERE id_ticket = ?
+          AND servico = ?
+    """, (
+        dados.get("inicio_evento"),
+        dados.get("final_evento"),
+        dados.get("vc_evento"),
+        id_ticket,
+        servico
+    ))
 
-    return jsonify(usuarios)
+    conn.commit()
+    conn.close()
+
+    registrar_atividade(
+        id_ticket,
+        current_user.username,
+        "EDICAO_FECHAMENTO",
+        f"Serviço {servico}"
+    )
+
+    return jsonify({
+        "ok": True
+    })
+    
+@app.route("/api/relatorio")
+@login_required
+def api_relatorio():
+
+    return jsonify(
+        get_relatorio(
+            data_inicio=request.args.get("data_inicio"),
+            data_fim=request.args.get("data_fim"),
+            cidade=request.args.get("cidade"),
+            servico=request.args.get("servico"),
+            evento=request.args.get("evento"),
+            responsavel=request.args.get("responsavel"),
+            natureza=request.args.get("natureza"),
+            causa_raiz=request.args.get("causa_raiz")
+        )
+    )
+    
+@app.route("/api/filtros_relatorio")
+@login_required
+def api_filtros_relatorio():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT DISTINCT cidade
+        FROM tickets
+        WHERE cidade IS NOT NULL
+          AND cidade != ''
+        ORDER BY cidade
+    """)
+    cidades = [r["cidade"] for r in cur.fetchall()]
+
+    cur.execute("""
+        SELECT DISTINCT servico
+        FROM tickets
+        WHERE servico IS NOT NULL
+          AND servico != ''
+        ORDER BY servico
+    """)
+    servicos = [r["servico"] for r in cur.fetchall()]
+
+    cur.execute("""
+        SELECT DISTINCT evento
+        FROM tickets
+        WHERE evento IS NOT NULL
+          AND evento != ''
+        ORDER BY evento
+    """)
+    eventos = [r["evento"] for r in cur.fetchall()]
+
+    cur.execute("""
+        SELECT DISTINCT responsabilidade
+        FROM fechamentos_ticket
+        WHERE responsabilidade IS NOT NULL
+          AND responsabilidade != ''
+        ORDER BY responsabilidade
+    """)
+    responsaveis = [
+        r["responsabilidade"]
+        for r in cur.fetchall()
+    ]
+
+    conn.close()
+
+    return jsonify({
+        "cidades": cidades,
+        "servicos": servicos,
+        "eventos": eventos,
+        "responsaveis": responsaveis
+    })

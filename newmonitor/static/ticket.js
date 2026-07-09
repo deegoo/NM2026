@@ -7,7 +7,59 @@ console.log("🚀 ticket.js carregado");
 let regras = [];
 let tickets = window.TICKETS || [];
 let baseClientes = {};
+let dadosEventoEdicao = null;
+let modoEdicao =
+    new URLSearchParams(
+        window.location.search
+    ).get("editar") === "1";
 
+let temEventoSalvo = false;
+let temFechamentoSalvo = false;
+const servicoEdicao =
+    new URLSearchParams(
+        window.location.search
+    ).get("servico");
+
+const CAUSAS_RAIZ = [
+    "AR CONDICIONADO",
+    "ATAQUE",
+    "BALANCEAMENTO DE TRAFEGO",
+    "BB IP NACIONAL - FOTONICO",
+    "CABEAMENTO",
+    "ENERGIA",
+    "ERRO OPERACIONAL",
+    "FALHA DE COMUTAÇÃO",
+    "FALHA DE HARDWARE",
+    "FALHA DE HARDWARE - CMTS",
+    "FALHA DE HARDWARE - EQUIPAMENTO TX",
+    "FALHA DE HARDWARE - ROTEADOR",
+    "FALHA DE HARDWARE - SERVIDOR",
+    "FALHA DE SOFTWARE",
+    "FALHA DE SOFTWARE - CMTS",
+    "FALHA DE SOFTWARE - EQUIPAMENTO TX",
+    "FALHA DE SOFTWARE - ROTEADOR",
+    "FALHA DE SOFTWARE - SERVIDOR",
+    "FALHA DUPLA",
+    "FALHA DUPLA COM LONGA DURAÇÃO",
+    "FALHA SIMPLES - CORDÃO OPTICO",
+    "FALHA SIMPLES - REDE HFC LINEAR",
+    "FALHA SIMPLES - ROTA LINEAR BACKBONE",
+    "FALHA SIMPLES - TRECHO LINEAR",
+    "FALHA SIMPLES COM SATURAÇÃO",
+    "FALHA TRIPLA",
+    "FENÔMENO NATURAL",
+    "HFC",
+    "HFC - PASSIVO DE REDE",
+    "INFRAESTRUTURA - FALHA DE ARCON",
+    "INFRAESTRUTURA - FALHA DE ENERGIA NO SITE",
+    "NÃO IDENTIFICADA",
+    "OUTROS",
+    "RUPTURA PARCIAL",
+    "SATURAÇÃO",
+    "SEM REDUNDÂNCIA",
+    "TEMPO DE COMUTAÇÃO",
+    "VIA DEGRADADA"
+];
 // ============================
 // ✅ Normaliza os serviços
 // ============================
@@ -264,15 +316,70 @@ function atualizarSolucaoServico(servico) {
 
 function calcularVC(tempo, impacto, cidade, servico) {
 
-    const dados = baseClientes[normalizarServico(servico)];
-    if (!dados) return 0;
+    const dados =
+        baseClientes[
+            normalizarServico(servico)
+        ];
 
-    const baseCidade = dados.cidades[cidade.toUpperCase()] || 0;
-    const baseBrasil = dados.base_brasil || 0;
+    console.log(
+        "CALCULAR VC",
+        {
+            tempo,
+            impacto,
+            cidade,
+            servico,
+            dados
+        }
+    );
 
-    if (!baseCidade || !baseBrasil) return 0;
+    if (!dados) {
 
-    return ((tempo * (impacto / 100)) * baseCidade) / baseBrasil;
+        console.log("SEM DADOS");
+
+        return 0;
+    }
+
+    const baseCidade =
+        dados.cidades[
+            cidade.toUpperCase()
+        ] || 0;
+
+    const baseBrasil =
+        dados.base_brasil || 0;
+
+    console.log(
+        "BASES",
+        {
+            cidade,
+            baseCidade,
+            baseBrasil
+        }
+    );
+
+    if (!baseCidade || !baseBrasil) {
+
+        console.log(
+            "BASE INVÁLIDA",
+            {
+                baseCidade,
+                baseBrasil
+            }
+        );
+
+        return 0;
+    }
+
+    const vc =
+        ((tempo * (impacto / 100))
+            * baseCidade)
+        / baseBrasil;
+
+    console.log(
+        "VC FINAL",
+        vc
+    );
+
+    return vc;
 }
 
 
@@ -298,6 +405,10 @@ let regrasFechamento = [];
 // ============================
 
 function gerarFechamentosPorServico() {
+    console.log(
+        "GERANDO FECHAMENTOS",
+        tickets
+        );
 
     const container = document.getElementById("fechamentosContainer");
     if (!container) return;
@@ -305,6 +416,10 @@ function gerarFechamentosPorServico() {
     container.innerHTML = "";
 
     const servicos = [...new Set(tickets.map(t => t.servico))];
+    console.log(
+        "SERVICOS",
+        servicos
+    );
 
     servicos.forEach(servico => {
 
@@ -325,15 +440,24 @@ function gerarFechamentosPorServico() {
             <label>Solução:</label>
             <select class="solucao" data-servico="${servico}"></select>
 
+            <label>Causa Raiz:</label>
+            <select class="causa_raiz" data-servico="${servico}"></select>
+
+            <label><input type="checkbox" class="isolamento_olt_cmts" data-servico="${servico}">Isolamento de OLT/CMTS</label>
+
             <label>Sumário:</label>
             <textarea class="sumario" data-servico="${servico}"></textarea>
 
             <hr>
         `;
-
+            console.log(
+                "CRIANDO BLOCO",
+                servico
+            );
         container.appendChild(bloco);
 
         iniciarFechamentoServico(servico);
+        atualizarCausaRaizServico(servico);
     });
 }
 
@@ -359,8 +483,693 @@ function iniciarFechamentoServico(servico) {
     atualizarParteServico(servico);
 }
 
+async function carregarHistorico() {
 
-    
+    const container = document.getElementById("lista_logs");
+
+    if (!container) return;
+
+    try {
+
+        const [atividades, comentarios] = await Promise.all([
+
+            fetch(
+                `/api/atividade/${window.ID_TICKET}`
+            ).then(r => r.json()),
+
+            fetch(
+                `/api/comentarios/${window.ID_TICKET}`
+            ).then(r => r.json())
+        ]);
+
+        let html = "";
+
+        atividades.forEach(item => {
+
+            html += `
+                <div style="
+                    border:1px solid #ccc;
+                    margin:10px;
+                    padding:10px;
+                ">
+                    <p>
+                        <strong>
+                            ${item.data} - ${item.usuario}
+                        </strong>
+                    </p>
+
+                    <p>
+                        ${item.acao}
+                    </p>
+
+                    <p>
+                        ${item.detalhes || ""}
+                    </p>
+                </div>
+            `;
+        });
+
+        comentarios.forEach(item => {
+
+    html += `
+        <div style="
+            border:1px solid #ccc;
+            margin:10px;
+            padding:10px;
+        ">
+
+            <p>
+                <strong>
+                    ${item.data} - ${item.usuario}
+                </strong>
+            </p>
+
+            <p>
+                ${item.comentario || ""}
+            </p>
+
+            ${
+                item.imagem
+                    ? `
+                        <img src="/static/uploads/${item.imagem}">
+                    `
+                    : ""
+            }
+
+        </div>
+    `;
+});
+
+        if (!html) {
+
+            html = `
+                <p>
+                    Sem histórico ainda
+                </p>
+            `;
+        }
+
+        container.innerHTML = html;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar histórico:",
+            erro
+        );
+
+        container.innerHTML = `
+            <p>
+                Erro ao carregar histórico
+            </p>
+        `;
+    }
+}
+
+async function carregarEventosSalvos() {
+
+    const container =
+        document.getElementById(
+            "eventosSalvosContainer"
+        );
+
+    if (!container) return;
+
+    try {
+
+        const resp = await fetch(
+            `/api/eventos/${window.ID_TICKET}`
+        );
+
+        const dados = await resp.json();
+
+        console.log(
+            "EVENTOS API",
+            dados
+        );
+
+        const eventos =
+            dados.eventos || [];
+
+        const fases =
+            dados.fases || [];
+
+        if (!eventos.length) {
+
+            temEventoSalvo = false;
+
+            container.innerHTML = "";
+
+            return;
+        }
+
+        temEventoSalvo = true;
+        modoEdicao = false;
+
+        bloquearCamposEvento(true);
+
+        const btn =
+            document.getElementById(
+                "btnSalvarEvento"
+            );
+
+        if (btn) {
+            btn.textContent =
+                "Editar Evento";
+        }
+
+        let html = "";
+
+        eventos.forEach(evento => {
+
+            const fasesEvento =
+                fases.filter(f =>
+                    f.cidade === evento.cidade &&
+                    f.servico === evento.servico
+                );
+
+            html += `
+                <div style="
+                    border:1px solid #ccc;
+                    border-radius:6px;
+                    padding:10px;
+                    margin-bottom:15px;
+                    background:#f8f9fa;
+                ">
+
+                    <h4>
+                        ${evento.cidade}
+                        |
+                        ${evento.servico}
+                    </h4>
+
+                    <p>
+                        <b>Início:</b>
+                        ${evento.inicio_evento}
+                    </p>
+
+                    <p>
+                        <b>Final:</b>
+                        ${evento.final_evento}
+                    </p>
+
+                    <p>
+                        <b>VC:</b>
+                        ${evento.vc_evento}
+                    </p>
+
+                    <p>
+                        <b>Fases:</b>
+                    </p>
+
+                    <ul>
+
+                        ${
+                            fasesEvento.map(f => `
+                                <li>
+                                    ${f.tempo} min
+                                    /
+                                    ${f.impacto}%
+                                </li>
+                            `).join("")
+                        }
+
+                    </ul>
+
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar eventos",
+            erro
+        );
+    }
+}
+
+function bloquearCamposEvento(bloquear) {
+
+    document.querySelectorAll(
+        ".final_evento, .impacto, .impacto-cidade, .fase-tempo, .fase-impacto"
+    ).forEach(el => {
+        el.disabled = bloquear;
+    });
+
+    document.getElementById("impactoParcial")?.toggleAttribute(
+        "disabled",
+        bloquear
+    );
+
+    document.getElementById("impactoCidade")?.toggleAttribute(
+        "disabled",
+        bloquear
+    );
+
+    document.getElementById("mesmoHorario")?.toggleAttribute(
+        "disabled",
+        bloquear
+    );
+
+    document.querySelectorAll(".add-fase").forEach(btn => {
+        btn.disabled = bloquear;
+    });
+}
+
+function bloquearCamposFechamento(bloquear) {
+
+    document.querySelectorAll(
+        ".responsabilidade, .parte_rede, .causa, .solucao, .sumario"
+    ).forEach(el => {
+        el.disabled = bloquear;
+    });
+
+    document.getElementById("btnFecharTudo")?.toggleAttribute(
+        "disabled",
+        bloquear
+    );
+}
+
+async function carregarFechamentosSalvos() {
+
+    const container =
+        document.getElementById(
+            "fechamentosSalvosContainer"
+        );
+
+    try {
+
+        const resp = await fetch(
+            `/api/fechamentos/${window.ID_TICKET}`
+        );
+
+        const dados = await resp.json();
+
+        console.log(
+            "FECHAMENTOS API",
+            dados
+        );
+
+        const fechamentos =
+            dados.fechamentos || [];
+
+        if (!fechamentos.length) {
+
+            temFechamentoSalvo = false;
+
+            if (container) {
+                container.innerHTML = "";
+            }
+
+            return;
+        }
+
+        temFechamentoSalvo = true;
+
+        bloquearCamposFechamento(true);
+
+        const formFechamento =
+            document.querySelector(
+                "#fechamentosContainer"
+            );
+
+        if (formFechamento) {
+            formFechamento.style.display = "none";
+        }
+
+        const btn =
+            document.getElementById(
+                "btnFecharTudo"
+            );
+
+        if (btn) {
+            btn.style.display = "none";
+        }
+
+        let html = "";
+
+        fechamentos.forEach(f => {
+
+            html += `
+                <div style="
+                    border:1px solid #ccc;
+                    border-radius:6px;
+                    padding:10px;
+                    margin-bottom:15px;
+                    background:#f8f9fa;
+                ">
+
+                    <h4>
+                        ${f.servico}
+                    </h4>
+                    <p>
+                        <b>Interrupção (min):</b>
+                        ${f.interrupcao ?? "-"}
+                    </p>
+
+                    <p>
+                        <b>Responsabilidade:</b>
+                        ${f.responsabilidade || "-"}
+                    </p>
+
+                    <p>
+                        <b>Parte:</b>
+                        ${f.parte || "-"}
+                    </p>
+
+                    <p>
+                        <b>Causa:</b>
+                        ${f.causa || "-"}
+                    </p>
+
+                    <p>
+                        <b>Solução:</b>
+                        ${f.solucao || "-"}
+                    </p>
+
+                    <p>
+                        <b>Causa Raiz:</b>
+                        ${f.causa_raiz || "-"}
+                    </p>
+
+                    <p>
+                        <b>Isolamento OLT/CMTS:</b>
+                        ${
+                            Number(f.isolamento_olt_cmts || 0) === 1
+                                ? "SIM"
+                                : "NÃO"
+                        }
+                    </p>
+
+                    <p>
+                        <b>Sumário:</b>
+                        ${f.sumario || "-"}
+                    </p>
+
+                </div>
+            `;
+
+            const servico =
+                f.servico;
+
+            const responsabilidade =
+                document.querySelector(
+                    `.responsabilidade[data-servico="${servico}"]`
+                );
+
+            if (responsabilidade) {
+                responsabilidade.value =
+                    f.responsabilidade || "";
+            }
+
+            atualizarParteServico(servico);
+
+            const parte =
+                document.querySelector(
+                    `.parte_rede[data-servico="${servico}"]`
+                );
+
+            if (parte) {
+                parte.value =
+                    f.parte || "";
+            }
+
+            atualizarCausaServico(servico);
+
+            const causa =
+                document.querySelector(
+                    `.causa[data-servico="${servico}"]`
+                );
+
+            if (causa) {
+                causa.value =
+                    f.causa || "";
+            }
+            const isolamento =
+                document.querySelector(
+                    `.isolamento_olt_cmts[data-servico="${servico}"]`
+                );
+
+            if (isolamento) {
+
+                isolamento.checked =
+                    Number(
+                        f.isolamento_olt_cmts || 0
+                    ) === 1;
+            }
+
+            atualizarSolucaoServico(servico);
+            atualizarCausaRaizServico(servico);
+            const causaRaiz =
+                document.querySelector(
+                    `.causa_raiz[data-servico="${servico}"]`
+                );
+
+            if (causaRaiz) {
+
+                causaRaiz.value =
+                    f.causa_raiz || "";
+            }
+
+            const solucao =
+                document.querySelector(
+                    `.solucao[data-servico="${servico}"]`
+                );
+
+            if (solucao) {
+                solucao.value =
+                    f.solucao || "";
+            }
+
+            const sumario =
+                document.querySelector(
+                    `.sumario[data-servico="${servico}"]`
+                );
+
+            if (sumario) {
+                sumario.value =
+                    f.sumario || "";
+            }
+        });
+
+        if (container) {
+            container.innerHTML = html;
+        }
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar fechamentos",
+            erro
+        );
+    }
+    console.log("FIM carregarFechamentosSalvos");
+}
+
+async function carregarEdicaoFechamento(servico) {
+
+    const resp =
+        await fetch(
+            `/api/fechamento_servico?id_ticket=${encodeURIComponent(window.ID_TICKET)}&servico=${encodeURIComponent(servico)}`
+        );
+
+    console.log(
+        "CARREGANDO EDIÇÃO",
+        servico
+    );
+
+    const dados =
+        await resp.json();
+
+    console.log(
+        "EDIÇÃO",
+        dados
+    );
+
+    console.log(
+        "FECHAMENTO RETORNADO",
+        dados.fechamento
+    );
+
+    console.log(
+        "EVENTO RETORNADO",
+        dados.evento
+    );
+
+    console.log(
+        "SERVICO EDIÇÃO",
+        servico
+    );
+
+    dadosEventoEdicao =
+        dados.evento || null;
+
+    bloquearCamposEvento(false);
+    bloquearCamposFechamento(false);
+
+    const containerSalvos =
+        document.getElementById(
+            "fechamentosSalvosContainer"
+        );
+
+    if (containerSalvos) {
+        containerSalvos.style.display = "none";
+    }
+
+    const formFechamento =
+        document.getElementById(
+            "fechamentosContainer"
+        );
+
+    if (formFechamento) {
+        formFechamento.style.display = "block";
+    }
+
+    const btn =
+        document.getElementById(
+            "btnFecharTudo"
+        );
+
+    if (btn) {
+
+        btn.style.display = "";
+
+        btn.textContent =
+            "Salvar Alterações";
+    }
+
+    const fechamento =
+        dados.fechamento || {};
+
+    const responsabilidade =
+        document.querySelector(
+            `.responsabilidade[data-servico="${servico}"]`
+        );
+
+    if (responsabilidade) {
+
+        responsabilidade.value =
+            fechamento.responsabilidade || "";
+
+        atualizarParteServico(servico);
+        atualizarCausaRaizServico(servico);
+        const causaRaiz =
+            document.querySelector(
+                `.causa_raiz[data-servico="${servico}"]`
+            );
+
+        if (causaRaiz) {
+
+            causaRaiz.value =
+                fechamento.causa_raiz || "";
+        }
+
+        const isolamento =
+            document.querySelector(
+                `.isolamento_olt_cmts[data-servico="${servico}"]`
+            );
+
+        if (isolamento) {
+
+            isolamento.checked =
+                Number(
+                    fechamento.isolamento_olt_cmts || 0
+                ) === 1;
+        }
+    }
+
+    const parte =
+        document.querySelector(
+            `.parte_rede[data-servico="${servico}"]`
+        );
+
+    if (parte) {
+
+        parte.value =
+            fechamento.parte || "";
+
+        atualizarCausaServico(servico);
+    }
+
+    const causa =
+        document.querySelector(
+            `.causa[data-servico="${servico}"]`
+        );
+
+    if (causa) {
+
+        causa.value =
+            fechamento.causa || "";
+
+        atualizarSolucaoServico(servico);
+    }
+
+    const solucao =
+        document.querySelector(
+            `.solucao[data-servico="${servico}"]`
+        );
+
+    if (solucao) {
+
+        solucao.value =
+            fechamento.solucao || "";
+    }
+
+    const sumario =
+        document.querySelector(
+            `.sumario[data-servico="${servico}"]`
+        );
+
+    if (sumario) {
+
+        sumario.value =
+            fechamento.sumario || "";
+    }
+    console.log(
+    "CONTAINER FECHAMENTO",
+    document.getElementById(
+        "fechamentosContainer"
+    )
+    );
+
+    console.log(
+        "HTML FECHAMENTOS",
+        document.getElementById(
+            "fechamentosContainer"
+        )?.innerHTML
+    );
+    modoEdicaoFechamento = true;
+
+    console.log(
+        "MOSTRANDO FORMULÁRIO EDIÇÃO"
+    );
+}
+function atualizarCausaRaizServico(servico) {
+
+    const select =
+        document.querySelector(
+            `.causa_raiz[data-servico="${servico}"]`
+        );
+
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    CAUSAS_RAIZ.forEach(item => {
+
+        const opt =
+            document.createElement("option");
+
+        opt.value = item;
+        opt.textContent = item;
+
+        select.appendChild(opt);
+
+    });
+}
 // ============================
 // ✅ DOM READY
 // ============================
@@ -422,23 +1231,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ============================
-    // ✅ BASE CLIENTES
-    // ============================
-    fetch("/data/base_clientes.json")
-        .then(r => r.json())
-        .then(data => {
-            baseClientes = data;
-            console.log("✅ base clientes carregada:", baseClientes);
-        });
-    fetch("/data/fechamentos.json")
-        .then(r => r.json())
-        .then(data => {
-            regrasFechamento = data;
-            console.log("✅ regras fechamento carregadas");
-            gerarFechamentosPorServico();
-        });
-
-    // ============================
     // ✅ GERAR EVENTOS
     // ============================
     gerarEventosPorRegistro();
@@ -492,34 +1284,25 @@ document.addEventListener("DOMContentLoaded", () => {
     // ============================
     //  SUBMIT
     // ============================
-let modoEdicao = false;
-
-function bloquearCamposEvento(bloquear) {
-    document.querySelectorAll(
-        ".final_evento, .impacto, .impacto-cidade, .fase-tempo, .fase-impacto"
-    ).forEach(el => {
-        el.disabled = bloquear;
-    });
-
-    document.querySelectorAll(".add-fase").forEach(btn => {
-        btn.disabled = bloquear;
-    });
-}
 
 const formEvento = document.querySelector(".evento_form");
-const temEventoSalvo = tickets.some(t => t.evento_detalhe);
+
 
 if (formEvento) {
 
-    if (temEventoSalvo) {
-        bloquearCamposEvento(true);
-    }
-
     formEvento.addEventListener("submit", function (e) {
+        bloquearCamposEvento(true);
 
         e.preventDefault();
 
         // ✅ PRIMEIRO CLIQUE (EDITAR)
+        console.log(
+            "MODO EVENTO",
+            {
+                temEventoSalvo,
+                modoEdicao
+            }
+        );
         if (temEventoSalvo && !modoEdicao) {
 
             console.log("🔓 liberando edição");
@@ -595,23 +1378,52 @@ if (formEvento) {
                 fases.push({ tempo, impacto });
             }
 
-            const vc_total = calcularVCFases(fases, reg.cidade, reg.servico);
-
-            return {
-                cidade: reg.cidade,
-                servico: reg.servico,
-                final_evento,
+            const vc_total = calcularVCFases(
                 fases,
-                vc_evento: vc_total
-            };
-        });
+                reg.cidade,
+                reg.servico
+            );
 
+        console.log(
+            "VC DEBUG",
+            "cidade=", reg.cidade,
+            "servico=", reg.servico,
+            "servicoNormalizado=", normalizarServico(reg.servico),
+            "base=", baseClientes[
+                normalizarServico(reg.servico)
+            ],
+            "fases=", fases,
+            "vc_total=", vc_total
+        );
+        
+        return {
+            cidade: reg.cidade,
+            servico: reg.servico,
+            final_evento,
+            fases,
+            vc_evento: vc_total
+        };
+
+    });
         const payload = {
             inicio_evento: tickets[0]?.data_inicio,
             eventos
         };
 
         console.log("📦 payload:", payload);
+
+        payload.eventos.forEach(ev => {
+
+            console.log(
+                "EVENTO",
+                ev.cidade,
+                ev.servico,
+                "VC=",
+                ev.vc_evento,
+                "FASES=",
+                ev.fases
+            );
+        });
 
         fetch("/salvar_evento/" + window.ID_TICKET, {
             method: "POST",
@@ -655,6 +1467,22 @@ if (formEvento) {
             alert("❌ Preencha todos os campos de fechamento para TODOS os serviços");
             return;
         }
+        if (
+            temFechamentoSalvo &&
+            !modoEdicaoFechamento
+        ) {
+
+            bloquearCamposFechamento(false);
+
+            modoEdicaoFechamento = true;
+
+            document.getElementById(
+                "btnFecharTudo"
+            ).textContent =
+                "Salvar Alterações";
+
+            return;
+        }
 
 
         const payload = [];
@@ -667,10 +1495,91 @@ if (formEvento) {
                 parte: document.querySelector(`.parte_rede[data-servico="${servico}"]`)?.value,
                 causa: document.querySelector(`.causa[data-servico="${servico}"]`)?.value,
                 solucao: document.querySelector(`.solucao[data-servico="${servico}"]`)?.value,
-                sumario: document.querySelector(`.sumario[data-servico="${servico}"]`)?.value
+                sumario: document.querySelector(`.sumario[data-servico="${servico}"]`)?.value,
+                causa_raiz: document.querySelector(`.causa_raiz[data-servico="${servico}"]`)?.value,
+                isolamento_olt_cmts: document.querySelector(`.isolamento_olt_cmts[data-servico="${servico}"]`)?.checked ? 1 : 0,
             });
 
         });
+        if (modoEdicaoFechamento) {
+
+            const fechamento = payload.find(
+                p => p.servico === servicoEdicao
+            );
+
+            fetch("/api/editar_fechamento", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+
+                    id_ticket: window.ID_TICKET,
+                    servico: servicoEdicao,
+
+                    responsabilidade:
+                        fechamento?.responsabilidade,
+
+                    parte:
+                        fechamento?.parte,
+
+                    causa:
+                        fechamento?.causa,
+
+                    solucao:
+                        fechamento?.solucao,
+
+                    sumario:
+                        fechamento?.sumario,
+
+                    inicio_evento:
+                        dadosEventoEdicao?.inicio_evento,
+
+                    final_evento:
+                        document.querySelector(
+                            `.final_evento[data-key]`
+                        )?.value,
+
+                    vc_evento:
+                        dadosEventoEdicao?.vc_evento,
+                    
+                    causa_raiz:
+                        document.querySelector(
+                            `.causa_raiz[data-servico="${servicoEdicao}"]`
+                        )?.value,
+
+                    isolamento_olt_cmts:
+                        document.querySelector(
+                            `.isolamento_olt_cmts[data-servico="${servicoEdicao}"]`
+                        )?.checked ? 1 : 0,
+
+                })
+            })
+            .then(res => {
+
+                if (!res.ok) {
+                    throw new Error(
+                        "Erro ao editar fechamento"
+                    );
+                }
+
+                return res.json();
+
+            })
+            .then(() => {
+
+                alert(
+                    "✅ Alterações salvas"
+                );
+
+                window.location.href =
+                    `/ticket/${encodeURIComponent(window.ID_TICKET)}`;
+
+            })
+            
+
+            return;
+        }
                 
                 fetch("/fechar_ticket_multi/" + window.ID_TICKET, {
             method: "POST",
@@ -757,21 +1666,22 @@ if (formEvento) {
             });
         });
     }
+        carregarHistorico();
+        carregarEventosSalvos();
+        carregarFechamentosSalvos();
+        gerarFechamentosPorServico();
 
-            function bloquearCamposEvento(bloquear) {
+        if (
+        modoEdicao &&
+        servicoEdicao
+    ) {
+        
+        console.log(
+            "MODO EDIÇÃO",
+            servicoEdicao
+        );
 
-            const campos = document.querySelectorAll(
-                ".final_evento, .impacto, .impacto-cidade, .fase-tempo, .fase-impacto"
-            );
-
-            campos.forEach(c => {
-                c.disabled = bloquear;
-            });
-
-            document.querySelectorAll(".add-fase").forEach(btn => {
-                btn.disabled = bloquear;
-            });
-        }
-
-
+        carregarEdicaoFechamento(servicoEdicao);
+    }
+        
 });

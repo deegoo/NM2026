@@ -346,6 +346,7 @@ small {
 #tela_evento{
   max-height: 500px;
   justify-content: space-around;
+  text-align: center;
 }
 .add-fase{
     flex: 1;
@@ -369,6 +370,7 @@ small {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  text-align: center;
 }
 .ul_evento{
   display: flex;
@@ -634,26 +636,71 @@ margin-top: 20px;
     border: 2px solid var(--accent);
     box-shadow: 3px 3px 6px var(--shadow0);
     }
+.btn-editar {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid var(--shadow1);
+    background: var(--bg);
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 5px 10px;
+    height: 30px;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.3s;
+    }
+.btn-editar:hover {
+    transform: scale(1.03);
+    background: var(--muted);
+    color: var(--bg);
+    border: 2px solid var(--accent);
+    box-shadow: 3px 3px 6px var(--shadow0);
+    }
 .status-aberto {
       color: var(--muted);
       font-weight: bold;
     }
 
-#eventosPorCidade {
+#eventosSalvosContainer {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    flex-wrap: wrap; /* importante pra não quebrar layout */
+    flex-wrap: wrap; /
 }
 
-#eventosPorCidade > div {
+#eventosSalvosContainer > div {
     border: 1px solid #ccc;
     padding: 10px;
-    min-width: 250px;
+    max-width: 250px;
     background: #fff;
     border-radius: 6px;
 }
+.resumo_evento{
+    display:grid;
+    grid-template-columns: 180px 250px 250px;
+    gap:20px;
+    justify-content: center;
+}
+.resumo_evento_item{
+  min-width:200px;
+}
 
+.resumo_evento_item ul{
+  margin-top:5px;
+}
+.resumo_fechamento{
+    display:grid;
+    grid-template-columns: 250px 250px;
+    gap:20px;
+    justify-content: center;
+}
+.resumo_fechamento_item{
+  min-width:200px;
+}
+#tela_fechamento{
+  text-align: center;
+}
 .ini_eve{
   display: flex;
   flex-direction: column;
@@ -817,3 +864,17 @@ max-width: 170px;
   color: var(--accent);
 }
 
+#fechamentosSalvosContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap; /
+}
+
+#fechamentosSalvosContainer > div {
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 250px;
+    background: #fff;
+    border-radius: 6px;
+}

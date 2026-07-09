@@ -27,67 +27,71 @@ function showLoading(show) {
 // ============================
 // ✅ BUSCAR
 // ============================
-function buscar() {
+async function buscar() {
 
-    const ticket = document.getElementById("filtro_ticket").value.trim();
-    const dataInicio = document.getElementById("filtro_data_inicio").value;
-    const dataFim = document.getElementById("filtro_data_fim").value;
-    const cidade = document.getElementById("filtro_cidade").value.toLowerCase();
+    const ticket =
+        document.getElementById(
+            "filtro_ticket"
+        ).value.trim();
+
+    const dataInicio =
+        document.getElementById(
+            "filtro_data_inicio"
+        ).value;
+
+    const dataFim =
+        document.getElementById(
+            "filtro_data_fim"
+        ).value;
+
+    const cidade =
+        document.getElementById(
+            "filtro_cidade"
+        ).value;
 
     showLoading(true);
 
-    fetch("/listar")
-        .then(r => r.json())
-        .then(lista => {
+    const params =
+        new URLSearchParams();
 
-            let filtrados = [];
+    if (ticket)
+        params.append(
+            "ticket",
+            ticket
+        );
 
-            // ✅ 1 — TICKET
-            if (ticket) {
-                filtrados = lista.filter(t =>
-                    String(t.id_ticket) === ticket
-                );
-            }
+    if (cidade)
+        params.append(
+            "cidade",
+            cidade
+        );
 
-            // ✅ 2 — PERÍODO + CIDADE
-            else if (dataInicio && dataFim && cidade) {
+    if (dataInicio)
+        params.append(
+            "data_inicio",
+            dataInicio
+        );
 
-                filtrados = lista.filter(t => {
+    if (dataFim)
+        params.append(
+            "data_fim",
+            dataFim
+        );
 
-                    const d = parseBR(t.data_inicio);
-                    if (!d) return false;
+    const resp =
+        await fetch(
+            `/api/consulta?${params}`
+        );
 
-                    const iso = d.toISOString().slice(0, 10);
+    listaGlobal =
+        await resp.json();
 
-                    return (
-                        iso >= dataInicio &&
-                        iso <= dataFim &&
-                        t.cidade.toLowerCase().includes(cidade)
-                    );
-                });
-            }
+    paginaAtual = 1;
 
-            else if (dataInicio || dataFim || cidade) {
-                alert("❌ Informe Cidade + Data início + Data fim");
-                showLoading(false);
-                return;
-            }
+    renderTabela();
+    renderPaginacao();
 
-            // ✅ ORDENA (MAIS RECENTE → ANTIGO)
-            filtrados.sort((a, b) => {
-                return parseBR(b.data_inicio) - parseBR(a.data_inicio);
-            });
-
-            listaGlobal = filtrados;
-            paginaAtual = 1;
-
-            document.getElementById("resultado").innerHTML = "";
-            paginaAtual = 1;
-            carregarMais();
-            renderPaginacao();
-
-            showLoading(false);
-        });
+    showLoading(false);
 }
 
 // ============================
@@ -122,8 +126,12 @@ function renderTabela() {
             <td>${t.servico}</td>
             <td>${t.sintoma}</td>
             <td>${t.data_inicio}</td>
-            <td style="color: ${t.aberto ? 'red' : 'green'}">
-                ${t.aberto ? 'ABERTO' : 'FECHADO'}
+            <td style="color:${
+                (t.status || "").toUpperCase() === "ABERTO"
+                    ? "red"
+                    : "green"
+            }">
+                ${t.status || ""}
             </td>
         `;
 
@@ -180,22 +188,31 @@ function limpar() {
 // ============================
 function carregarCidades() {
 
-    fetch("/listar")
+    fetch("/api/cidades")
         .then(r => r.json())
-        .then(lista => {
+        .then(cidades => {
 
-            const select = document.getElementById("filtro_cidade");
+            const select =
+                document.getElementById(
+                    "filtro_cidade"
+                );
 
-            const cidades = [...new Set(lista.map(t => t.cidade))].sort();
-
-            select.innerHTML = `<option value="">Selecione</option>`;
+            select.innerHTML =
+                '<option value="">Selecione</option>';
 
             cidades.forEach(c => {
-                const opt = document.createElement("option");
+
+                const opt =
+                    document.createElement(
+                        "option"
+                    );
+
                 opt.value = c;
                 opt.textContent = c;
+
                 select.appendChild(opt);
             });
+
         });
 }
 
@@ -214,44 +231,3 @@ document.addEventListener("keydown", function(e) {
 document.addEventListener("DOMContentLoaded", () => {
     carregarCidades();
 });
-
-
-// ============================
-// ✅ CARREGAR MAIS TICKETS
-// ============================
-function carregarMais() {
-
-    if (carregando) return;
-
-    carregando = true;
-
-    const inicio = (paginaAtual - 1) * itensPorPagina;
-    const fim = inicio + itensPorPagina;
-
-    const novos = listaGlobal.slice(inicio, fim);
-
-    if (novos.length === 0) return;
-
-    const tbody = document.getElementById("resultado");
-
-    novos.forEach(t => {
-
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-            <td><a href="/ticket/${t.id_ticket}" target="_self">${t.id_ticket}</a></td>
-            <td>${t.cidade}</td>
-            <td>${t.servico}</td>
-            <td>${t.sintoma}</td>
-            <td>${t.data_inicio}</td>
-            <td style="color:${t.aberto ? 'red' : 'green'}">
-                ${t.aberto ? 'ABERTO' : 'FECHADO'}
-            </td>
-        `;
-
-        tbody.appendChild(tr);
-    });
-
-    paginaAtual++;
-    carregando = false;
-}

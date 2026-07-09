@@ -15,98 +15,173 @@ function parseBR(data) {
 // ============================
 // ✅ BUSCAR RELATÓRIO
 // ============================
-function buscarRelatorio() {
+async function buscarRelatorio() {
 
-    const dIni = document.getElementById("f_data_inicio").value;
-    const dFim = document.getElementById("f_data_fim").value;
+    const dIni =
+        document.getElementById(
+            "f_data_inicio"
+        ).value;
 
-    const cidade = document.getElementById("f_cidade").value;
-    const servico = document.getElementById("f_servico").value;
-    const evento = document.getElementById("f_evento").value;
-    const responsavel = document.getElementById("f_responsavel").value;
+    const dFim =
+        document.getElementById(
+            "f_data_fim"
+        ).value;
+
+    const cidade =
+        document.getElementById(
+            "f_cidade"
+        ).value;
+
+    const servico =
+        document.getElementById(
+            "f_servico"
+        ).value;
+
+    const evento =
+        document.getElementById(
+            "f_evento"
+        ).value;
+
+    const responsavel =
+        document.getElementById(
+            "f_responsavel"
+        ).value;
 
     if (!dIni || !dFim) {
-        alert("❌ Informe Data Início e Fim");
+
+        alert(
+            "❌ Informe Data Início e Fim"
+        );
+
         return;
     }
 
-    fetch("/listar")
-        .then(r => r.json())
-        .then(lista => {
+    const params =
+        new URLSearchParams();
 
-            const filtrados = lista.filter(t => {
+    params.append(
+        "data_inicio",
+        dIni
+    );
 
-                if (!t.data_inicio) return false;
+    params.append(
+        "data_fim",
+        dFim
+    );
 
-                const partes = t.data_inicio.split(" ");
-                const dataBr = partes[0];
+    if (cidade)
+        params.append(
+            "cidade",
+            cidade
+        );
 
-                const [dia, mes, ano] = dataBr.split("/");
-                const iso = `${ano}-${mes}-${dia}`;
+    if (servico)
+        params.append(
+            "servico",
+            servico
+        );
 
-                if (!(iso >= dIni && iso <= dFim)) return false;
+    if (evento)
+        params.append(
+            "evento",
+            evento
+        );
 
-                if (cidade && t.cidade !== cidade) return false;
-                if (servico && t.servico !== servico) return false;
+    if (responsavel)
+        params.append(
+            "responsavel",
+            responsavel
+        );
 
-                if (evento && (t.evento || "SEM EVENTO") !== evento) return false;
-                if (responsavel && (t.responsabilidade || "N/A") !== responsavel) return false;
+    const resp =
+        await fetch(
+            `/api/relatorio?${params}`
+        );
 
-                return true;
-            });
+    dadosGlobal =
+        await resp.json();
 
-            dadosGlobal = filtrados;
-
-            renderRelatorio();
-        })
-        .catch(e => {
-            console.error("Erro na busca:", e);
-        });
+    renderRelatorio();
 }
-
 // ============================
 // ✅ RENDER RELATÓRIO
 // ============================
 
 function renderRelatorio() {
 
-    const tbody = document.getElementById("resultado_relatorio");
+    const tbody =
+        document.getElementById(
+            "resultado_relatorio"
+        );
+
     tbody.innerHTML = "";
 
-    if (!dadosGlobal || dadosGlobal.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="19">Nenhum resultado</td></tr>`;
+    if (
+        !dadosGlobal ||
+        dadosGlobal.length === 0
+    ) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="18">
+                    Nenhum resultado
+                </td>
+            </tr>`;
+
         return;
     }
 
     dadosGlobal.forEach(t => {
 
-        const tr = document.createElement("tr");
+        const tr =
+            document.createElement("tr");
 
         tr.innerHTML = `
-            <td><a href="/ticket/${t.id_ticket}" target="_self">${t.id_ticket}</a></td>
-            <td>${t.cidade || "0"}</td>
-            <td>${t.data_inicio || "0"}</td>
-            <td>${t.data_fim || "0"}</td>
-            <td>${t.interrupcao || "0"}</td>
+            <td>
+                /ticket/${t.id_ticket}
+                    ${t.id_ticket}
+                </a>
+            </td>
+
+            <td>${t.cidade || ""}</td>
+
+            <td>${t.data_inicio || ""}</td>
+
+            <td>${t.data_fim || ""}</td>
+
+            <td>${t.interrupcao || ""}</td>
+
             <td>${t.evento || "SEM EVENTO"}</td>
-            <td>${t.impacto || "0"}</td>
-            <td>${t.servico || "0"}</td>
-            <td>${t.responsabilidade || "N/A"}</td>
-            <td>${t.sintoma || "0"}</td>
-            <td>${t.natureza || "0"}</td>
-            <td>${t.parte_rede || "0"}</td>
-            <td>${t.causa || "0"}</td>
-            <td>${t.solucao || "0"}</td>
-            <td>${t.erro_operacional || "0"}</td>
-            <td>${t.num_manobra || "0"}</td>
-            <td>${t.num_outage || "0"}</td>
-            <td>${t.isolator || "0"}</td>
+
+            <td>${t.impacto ?? ""}</td>
+
+            <td>${t.servico || ""}</td>
+
+            <td>${t.responsabilidade || ""}</td>
+
+            <td>${t.sintoma || ""}</td>
+
+            <td>${t.natureza || ""}</td>
+
+            <td>${t.parte || ""}</td>
+
+            <td>${t.causa || ""}</td>
+
+            <td>${t.solucao || ""}</td>
+
+            <td>${t.outage || ""}</td>
+
+            <td>${t.causa_raiz || ""}</td>
+
+            <td>${Number(t.isolamento_olt_cmts || 0) === 1 ? "SIM" : "NÃO"}</td>
+
         `;
 
         tbody.appendChild(tr);
-    });
-}
 
+    });
+
+}
 
 // ============================
 // ✅ CSV
@@ -123,7 +198,8 @@ function exportarCSV() {
     csv.push([
         "Ticket","Cidade","Início","Fim","Interrupção (min)","Evento","Impacto (%)",
         "Serviço","Responsável","Sintoma","Nat. manut.","Parte rede",
-        "Causa","Solução","Erro operacional","Num. da manobra","Num. do Outage","Isolator"
+        "Causa","Solução","Num. do Outage", "Causa raiz", "Isolamento OLT/CMTS"
+
     ].join(";"));
 
     dadosGlobal.forEach(t => {
@@ -140,13 +216,12 @@ function exportarCSV() {
             t.responsabilidade || "0",
             t.sintoma || "0",
             t.natureza || "0",
-            t.parte_rede || "0",
+            t.parte || "0",
             t.causa || "0",
             t.solucao || "0",
-            t.erro_operacional || "0",
-            t.num_manobra || "0",
-            t.num_outage || "0",
-            t.isolator || "0",
+            t.outage || "0",
+            t.causa_raiz || "0",
+            Number(t.isolamento_olt_cmts || "0") === 1 ? "SIM" : "NÃO"
         ].join(";"));
 
     });
@@ -184,13 +259,12 @@ function exportarXLSX() {
         Responsavel: t.responsabilidade || "0",
         Sintoma: t.sintoma || "0",
         Natureza: t.natureza || "0",
-        ParteRede: t.parte_rede || "0",
+        ParteRede: t.parte || "0",
         Causa: t.causa || "0",
         Solucao: t.solucao || "0",
-        Erro: t.erro_operacional || "0",
-        Manobra: t.num_manobra || "0",
-        Outage: t.num_outage || "0",
-        Isolator: t.isolator || "0",
+        Outage: t.outage || "0",
+        Causa_Raiz: t.causa_raiz || "0",
+        Isolamento_OLT_CMTS: Number(t.isolamento_olt_cmts || "0") === 1 ? "SIM" : "NÃO"
     }));
 
     const ws = XLSX.utils.json_to_sheet(dados);
@@ -230,7 +304,7 @@ function preencherSelect(id, lista) {
 
 function carregarFiltros() {
 
-    fetch("/listar")
+    fetch("/api/filtros_relatorio")
         .then(r => r.json())
         .then(lista => {
 

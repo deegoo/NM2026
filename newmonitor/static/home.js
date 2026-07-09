@@ -1,23 +1,4 @@
-let ultimoAlerta = {
-  naoTratadoAmarelo: 0,
-  naoTratadoVermelho: 0,
-  meg: 0,
-  sit: 0
-};
-
-
-let filaAudio = [];
-let tocandoAudio = false;
-
-let cacheMEG = {
-    valor: 0,
-    time: 0
-};
-
-let cacheSIT = {
-    valor: 0,
-    time: 0
-};
+let silenciado = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     iniciarSistema();
@@ -25,212 +6,156 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(atualizarTudo, 120000);
 });
 
-        /* =========================
-        LOAD DASHBOARD
-        ========================= */
-        function carregarDashboard() {
+    /* =========================
+    LOAD DASHBOARD
+    ========================= */
+    async function carregarDashboard() {
 
-        fetch("/listar")
-            .then(r => {
-                if (!r.ok) throw new Error("Erro ao listar");
-                return r.json();
-            })
-            .then(lista => {
+        const resp =
+            await fetch("/api/dashboard");
 
-                const abertos = lista.filter(t =>
-                    (t.status || "").toUpperCase() === "ABERTO"
-                );
+        const dados =
+            await resp.json();
 
-                atualizarCards(abertos);
-            })
-            .catch(err => {
-                console.error("❌ erro ao carregar dashboard:", err);
-            });
-        }
+        document.getElementById(
+            "card_abertos"
+        ).textContent =
+            dados.abertos;
 
+        document.getElementById(
+            "card_com_impacto"
+        ).textContent =
+            dados.com_impacto;
 
-        /* =========================
-        ATUALIZAR TODOS OS CARDS
-        ========================= */
-        function atualizarCards(lista) {
+        // =========================
+        // NÃO TRATADOS
+        // =========================
 
-            atualizarCardNaoTratados(lista);
-            atualizarCardAbertos(lista);
-            atualizarCardComImpacto(lista);
-            atualizarCardMEG();
-            atualizarCardSIT();
-            // 👉 novos cards, adicionar aqui:
-            // atualizarCardCriticos(lista);
-            // atualizarCardHelix(lista);
-        }
-
-
-        /* =========================
-        CARD: NÃO TRATADOS
-        ========================= */
-function atualizarCardNaoTratados(lista) {
-
-    const agora = new Date();
-
-    let temAmarelo = false;
-    let temVermelho = false;
-    let total = 0;
-
-    lista.forEach(t => {
-
-        const ultima = getUltimaAtualizacao(t);
-
-        if (!(ultima instanceof Date) || isNaN(ultima)) return;
-
-        const diffMin = Math.floor((agora - ultima) / 60000);
-
-        const ev = (t.evento || "").toUpperCase();
-
-        // 🔹 REGRA ESPECIAL AVALIAÇÃO
-        if (ev.includes("AVALIAÇÃO")) {
-
-            if (diffMin >= 1440) {      // 24h
-                temVermelho = true;
-                total++;
-                return;
-            }
-
-            if (diffMin >= 720) {       // 12h
-                temAmarelo = true;
-                total++;
-                return;
-            }
-        }
-
-        // 🔹 REGRA PADRÃO
-        if (diffMin >= 180) {       
-            temVermelho = true;
-            total++;
-        } else if (diffMin >= 90) { 
-            temAmarelo = true;
-            total++;
-        }
-    });
-
-    const el = document.getElementById("card_nao_tratados");
-
-    if (!el) return;
-
-    el.textContent = total;
-
-    const card = el.parentElement;
-
-    // reset
-    card.style.border = "";
-    card.classList.remove("piscar");
-
-    // 🔥 PRIORIDADE VISUAL
-    if (temVermelho) {
-        card.style.border = "5px solid #dc3545"; // 🔴 vermelho
-    } else if (temAmarelo) {
-        card.style.border = "5px solid #ffc107"; // 🟡 amarelo
-    }
-
-    const agoraMs = Date.now();
-
-    // 🔥 ALERTA 3H (CRÍTICO)
-    if (temVermelho && (agoraMs - ultimoAlerta.naoTratadoVermelho > 120000)) {
-        mostrarPopup(`🚨 ${total} tickets sem atualização crítica (>3h)`, "critico");
-        ultimoAlerta.naoTratadoVermelho = agoraMs;
-    }
-
-    // ⚠️ ALERTA 1.5H
-    else if (temAmarelo && (agoraMs - ultimoAlerta.naoTratadoAmarelo > 120000)) {
-        mostrarPopup(`⚠️ ${total} tickets sem atualização (>1.5h)`, "geral");
-        ultimoAlerta.naoTratadoAmarelo = agoraMs;
-    }
-}
-
-        /* =========================
-        CARD: ABERTOS
-        ========================= */
-        function atualizarCardAbertos(lista) {
-
-            const total = lista.length;
-
-            const el = document.getElementById("card_abertos");
-
-            if (!el) return;
-
-            el.textContent = total;
-        }
-        /* =========================
-        CARD: COM IMPACTO
-        ========================= */
-
-        function atualizarCardComImpacto(lista) {
-
-            const filtrados = lista.filter(t =>
-                (t.status || "").toUpperCase() === "ABERTO" &&
-                t.outage !== null &&
-                t.outage !== ""
+        const elNaoTratados =
+            document.getElementById(
+                "card_nao_tratados"
             );
 
-            const ids = new Set(filtrados.map(t => t.id_ticket));
+        if (elNaoTratados) {
 
-            const total = ids.size;
+            elNaoTratados.textContent =
+                dados.nao_tratados;
 
-            const el = document.getElementById("card_com_impacto");
+            const card =
+                elNaoTratados.parentElement;
 
-            if (!el) return;
+            card.style.border =
+                "1px solid #ccc";
 
-            el.textContent = total;
-            
-            const card = el.parentElement;
+            card.classList.remove(
+                "piscar"
+            );
 
-            aplicarBordaCardElemento(card, total)
+            if (
+                (dados.nao_tratados_vermelho || 0) > 0
+            ) {
 
-        }
+                card.style.border =
+                    "5px solid #dc3545";
 
-        /* =========================
-        UTIL: ÚLTIMA ATUALIZAÇÃO
-        ========================= */
-        function getUltimaAtualizacao(t) {
-
-            if (t.logs && t.logs.length > 0) {
-                const ultimo = t.logs[t.logs.length - 1];
-                return parseBR(ultimo.data);
             }
+            else if (
+                (dados.nao_tratados_amarelo || 0) > 0
+            ) {
 
-            return parseBR(t.data_inicio);
+                card.style.border =
+                    "5px solid #ffc107";
+            }
         }
 
-        /* =========================
-        UTIL: PARSE DATA BR
-        ========================= */
-        function parseBR(data) {
+    // =========================
+    // MEG
+    // =========================
 
-            if (!data) return null;
+    const elMeg =
+        document.getElementById(
+            "card_meg"
+        );
 
-            if (data instanceof Date) return data;
+    if (elMeg) {
 
-            if (typeof data !== "string") return null;
+        elMeg.textContent =
+            dados.meg;
 
-            if (!data.includes("/")) return null;
+        const cardMeg =
+            document.getElementById(
+                "card_meg_box"
+            );
 
-            data = data.replace(",", "");
+        if (cardMeg) {
 
-            const partes = data.split(" ");
-            const d = partes[0];
-            const h = partes[1] || "00:00";
+            cardMeg.style.border =
+                "1px solid #ccc";
 
-            const [dia, mes, ano] = d.split("/").map(Number);
-            const [hora, min] = h.split(":").map(Number);
+            cardMeg.classList.remove(
+                "piscar"
+            );
 
-            return new Date(ano, mes - 1, dia, hora || 0, min || 0);
+            if (dados.meg_vermelho) {
+
+                cardMeg.style.border =
+                    "5px solid #dc3545";
+
+                cardMeg.classList.add(
+                    "piscar"
+                );
+            }
+            else if (
+                dados.meg_amarelo
+            ) {
+
+                cardMeg.style.border =
+                    "5px solid #ffc107";
+                }
         }
-/* =========================
-TELA INTERNA MEG
-========================= */
+    }
 
-function abrirTelaMEG() {
-    window.open("/meg_detalhe", "_self");
+    // =========================
+    // SIT
+    // =========================
+
+    const elSit =
+        document.getElementById(
+            "card_sit"
+        );
+
+    if (elSit) {
+
+        elSit.textContent =
+            dados.sit;
+
+        const cardSit =
+            document.getElementById(
+                "card_sit_box"
+            );
+
+        if (cardSit) {
+
+            cardSit.style.border =
+                "1px solid #ccc";
+
+            cardSit.classList.remove(
+                "piscar"
+            );
+
+            if (dados.sit > 0) {
+
+                cardSit.style.border =
+                    "5px solid #dc3545";
+
+                cardSit.classList.add(
+                    "piscar"
+                );
+            }
+        }
+    }
 }
+
 // ================= SISTEMA PRINCIPAL =================
 let sistemaIniciado = false;
 function iniciarSistema() {
@@ -268,268 +193,20 @@ function iniciarSistema() {
 
 function atualizarTudo() {
 
-    console.log("🔄 atualizando dashboard");
+    console.log(
+        "🔄 atualizando dashboard"
+    );
 
-    fetch("/listar")
-        .then(r => r.json())
-        .then(lista => {
-
-            const abertos = lista.filter(t =>
-                (t.status || "").toUpperCase() === "ABERTO"
-            );
-
-            atualizarCards(abertos);
-        })
-        .catch(err => console.error("erro listar:", err));
-
-    atualizarCardMEG();
-    atualizarCardSIT();
+    carregarDashboard();
 }
-
-/* =========================
-CARD: MEG
-========================= */
-function atualizarCardMEG() {
-
-    const agora = Date.now();
-
-    const card = document.getElementById("card_meg_box");
-
-    if (agora - cacheMEG.time < 120000) {
-
-        const total = cacheMEG.valor;
-
-        document.getElementById("card_meg").textContent = total;
-
-        aplicarBordaCardElemento(card, total); 
-
-        return;
-    }
-
-        fetch("/api/meg_detalhe")
-            .then(r => r.json())
-            .then(lista => {
-
-                const total = lista.length;
-
-                cacheMEG.valor = total;
-                cacheMEG.time = agora;
-
-                document.getElementById("card_meg").textContent = total;
-
-                aplicarSLA_MEG(card, lista);
-
-                const agoraMs = Date.now();
-
-                if (total > 0 && (agoraMs - ultimoAlerta.meg > 120000)) {
-                    mostrarPopup(`🚨 MEG com ${total} chamados ativos`, "meg");
-                    ultimoAlerta.meg = agoraMs;
-                }
-
-            })
-            .catch(err => console.error("❌ erro MEG:", err));
-}
-/* =========================
-CARD: SIT
-========================= */
-function atualizarCardSIT() {
-
-    const agora = Date.now();
-
-    if (agora - cacheSIT.time < 120000) {
-
-        const total = cacheSIT.valor;
-
-        document.getElementById("card_sit").textContent = total;
-
-        aplicarBorda("card_sit_box", total);
-
-        return;
-    }
-
-    fetch("/api/sit")
-        .then(r => r.json())
-        .then(d => {
-
-            const total = d.total || 0;
-
-            cacheSIT.valor = total;
-            cacheSIT.time = agora;
-
-            document.getElementById("card_sit").textContent = total;
-
-            aplicarBorda("card_sit_box", total);
-
-            const agoraMs = Date.now();
-
-            if (total > 0 && (agoraMs - ultimoAlerta.sit > 120000)) {
-                mostrarPopup(`🚨 SIT com ${total} chamados`, "sit");
-                ultimoAlerta.sit = agoraMs;
-            }
-
-        })
-        .catch(err => console.error("❌ erro SIT:", err));
-}
-
-function aplicarBorda(cardId, total) {
-
-    const card = document.getElementById(cardId);
-
-    if (!card) return;
-
-    if (total > 0) {
-        card.style.border = "5px solid #dc3545";
-        card.classList.add("piscar");  
-    } else {
-        card.style.border = "1px solid #ccc";
-        card.classList.remove("piscar"); 
-    }
-}
-
-function aplicarBordaCardElemento(card, total) {
-
-    if (!card) return;
-
-    card.style.border = total > 0
-        ? "5px solid #dc3545"  // 🔴 vermelho
-        : "1px solid #ccc";
-}
-
-function extrairDataPrevisao(texto) {
-
-    if (!texto) return null;
-
-    const regex = /(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})/;
-
-    const match = texto.match(regex);
-
-    if (!match) return null;
-
-    const [_, data, hora] = match;
-
-    return parseBR(`${data} ${hora}`);
-}            
-function aplicarSLA_MEG(card, listaMeg) {
-
-    if (!card) return;
-
-    if (!listaMeg || listaMeg.length === 0) {
-        card.style.border = "1px solid #ccc";
-        card.classList.remove("piscar");
-        return;
-    }
-
-    const agora = new Date();
-
-    let menorTempo = Infinity;
-
-
-    listaMeg.forEach(m => {
-
-    const previsao = extrairDataPrevisao(m.previsao);
-
-    if (!previsao) return;
-
-    let diffMin = Math.floor((previsao - agora) / 60000);
-
-    // 🔥 se já passou do SLA, vira 0 (crítico imediato)
-    if (diffMin < 0) {
-        diffMin = 0;
-    }
-
-    if (diffMin < menorTempo) {
-        menorTempo = diffMin;
-
-        }
-    });
-
-
-
-    card.classList.remove("piscar");
-
-    if (menorTempo <= 15) {
-        card.style.border = "5px solid #dc3545";
-        card.classList.add("piscar");
-    } else if (menorTempo <= 30) {
-        card.style.border = "5px solid #dc3545";
-    } else {
-        card.style.border = "5px solid #ffc107";
-    }
-}
-
-    let silenciado = false;
-
-function mostrarPopup(msg, tipo = "geral") {
-
-    const popup = document.getElementById("popup-alerta");
-    const texto = document.getElementById("popup-msg");
-
-    const sons = {
-        geral: document.getElementById("somGeral"),
-        critico: document.getElementById("somCritico"),
-        meg: document.getElementById("somMeg"),
-        sit: document.getElementById("somSit")
-    };
-
-    if (!popup || !texto) return;
-
-    texto.innerHTML = msg;
-
-    popup.classList.add("show");
-
-    // 🔊 som por tipo
-
-    const som = sons[tipo] || sons.geral;
-
-    if (som && !silenciado) {
-
-        filaAudio.push(som);
-
-        tocarFila();
-    }
-
-
-    setTimeout(() => {
-        popup.classList.remove("show");
-    }, 5000);
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const btn = document.getElementById("btnSilenciar");
-
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-
-        silenciado = !silenciado;
-
-        if (silenciado) {
-            btn.textContent = "🔇 Silenciado";
-            btn.style.background = "#ffffff";
-        } else {
-            btn.textContent = "🔊 Som";
-            btn.style.background = "#ffffff";
-        }
-
-    });
-
-});
 
 function iniciarStream() {
 
     const source = new EventSource("/stream");
 
-    source.onmessage = function (event) {
+    source.onmessage = function () {
 
-        const lista = JSON.parse(event.data);
-
-        const abertos = lista.filter(t =>
-            (t.status || "").toUpperCase() === "ABERTO"
-        );
-
-        atualizarCards(abertos);
+        carregarDashboard();
 
         console.log("📡 atualização em tempo real");
     };
@@ -540,26 +217,9 @@ function iniciarStream() {
     };
 }
 
-function tocarFila() {
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (tocandoAudio) return;
 
-    if (filaAudio.length === 0) return;
+});
 
-    tocandoAudio = true;
 
-    const som = filaAudio.shift();
-
-    som.currentTime = 0;
-
-    som.play()
-        .catch(() => {
-            tocandoAudio = false;
-            tocarFila();
-        });
-
-    som.onended = () => {
-        tocandoAudio = false;
-        tocarFila();
-    };
-}
