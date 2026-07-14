@@ -1588,3 +1588,114 @@ def get_relatorio(
         resultado.append(item)
 
     return resultado
+
+def get_cidades_estrutura():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT DISTINCT cidade
+        FROM estrutura
+        ORDER BY cidade
+    """)
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    return [
+        row["cidade"]
+        for row in rows
+    ]
+    
+def get_categorias_cidade(cidade):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT DISTINCT categoria
+        FROM estrutura
+        WHERE cidade = ?
+        ORDER BY categoria
+    """, (cidade,))
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    return [
+        row["categoria"]
+        for row in rows
+    ]
+    
+def get_ofensores_categoria(
+    cidade,
+    categoria
+):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            ofensor
+        FROM estrutura
+        WHERE cidade = ?
+          AND categoria = ?
+        ORDER BY ofensor
+    """, (
+        cidade,
+        categoria
+    ))
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    return [
+        dict(row)
+        for row in rows
+    ]
+    
+def incluir_ofensor(
+    cidade,
+    categoria,
+    ofensor
+):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO estrutura (
+            cidade,
+            categoria,
+            ofensor
+        )
+        VALUES (?, ?, ?)
+    """, (
+        cidade,
+        categoria,
+        ofensor
+    ))
+
+    conn.commit()
+    conn.close()
+    
+def excluir_ofensor(id_registro):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE
+        FROM estrutura
+        WHERE id = ?
+    """, (id_registro,))
+
+    conn.commit()
+    conn.close()
+    

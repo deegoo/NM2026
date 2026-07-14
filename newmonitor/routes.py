@@ -42,27 +42,19 @@ from newmonitor.database import (
     reabrir_servico,
     get_fechamento_servico,
     conectar,
-    get_relatorio    
+    get_cidades_estrutura,
+    get_categorias_cidade,
+    get_ofensores_categoria,
+    incluir_ofensor,
+    excluir_ofensor   
 
 )
 
-import json
 import os
 import time
 import requests
 
 UPLOAD_PATH = "newmonitor/static/uploads"
-DATA_PATH = "newmonitor/data/tickets.json"
-
-def ler_tickets():
-    if not os.path.exists(DATA_PATH):
-        return []
-    with open(DATA_PATH, encoding="utf-8") as f:
-        return json.load(f)
-
-def salvar_tickets(dados):
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(dados, f, ensure_ascii=False, indent=2)
 
 # lista_usuarios = ["Usuario1", "Usuario2", "Usuario3"]
 # ############################################
@@ -1060,4 +1052,62 @@ def api_filtros_relatorio():
         "servicos": servicos,
         "eventos": eventos,
         "responsaveis": responsaveis
+    })
+
+@app.route("/api/ofensores/filtros")
+@login_required
+def api_ofensores_filtros():
+
+    return jsonify({
+        "cidades": get_cidades_estrutura()
+    })
+
+@app.route("/api/ofensores/categorias")
+@login_required
+def api_ofensores_categorias():
+
+    cidade = request.args.get("cidade")
+
+    return jsonify(
+        get_categorias_cidade(cidade)
+    )
+
+@app.route("/api/ofensores")
+@login_required
+def api_ofensores():
+
+    cidade = request.args.get("cidade")
+    categoria = request.args.get("categoria")
+
+    return jsonify(
+        get_ofensores_categoria(
+            cidade,
+            categoria
+        )
+    )
+
+@app.route("/api/ofensores", methods=["POST"])
+@login_required
+def api_incluir_ofensor():
+
+    dados = request.json
+
+    incluir_ofensor(
+        cidade=dados["cidade"],
+        categoria=dados["categoria"],
+        ofensor=dados["ofensor"]
+    )
+
+    return jsonify({
+        "ok": True
+    })
+
+@app.route("/api/ofensores/<int:id_registro>", methods=["DELETE"])
+@login_required
+def api_excluir_ofensor(id_registro):
+
+    excluir_ofensor(id_registro)
+
+    return jsonify({
+        "ok": True
     })

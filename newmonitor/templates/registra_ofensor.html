@@ -1,27 +1,37 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<div class="ofensor_container">
+    <div class="ofensor_incluir">
+        <h3>Novo Ofensor</h3>
+        <label>Ofensor:</label>
+            <input type="text" id="novo_ofensor">
+        <label>Cidade:</label>  
+        <Select id="cidade_incluir"><option value="">Selecione a cidade</option></Select>
+        <label>Categoria</label>
+        <select id="categoria_incluir"><option value="">Selecione a categoria</option></select>
+        </br></br>
+            <button id="btnIncluirOfensor">Incluir</button>
+    </div>
+        <div class="ofensor_consultar">
 
-<div>
-    <label>Novo Ofensor</label>
-    <label>Ofensor:</label>
-    <input type="text">
-    <label for="cidades_lista">Cidade:</label>    
-        <select id="cidades_lista"></select>
-    <label>Categoria</label>
-    <select id="categoria">
-          <option>Não Definida</option>
-          <option>SoftSwitch</option>
-          <option>Servidores/Provisionamento</option>
-          <option>Links</option>
-          <option>Infra Estrutura</option>
-          <option>Backbone IP</option>
-          <option>Geradora</option>
-          <option>Canal indisponível</option>
-</select>
-</br></br>
-    <button>Incluir</button>
+        <h3>Consultar Ofensor</h3>
+
+        <label>Cidade:</label>
+        <select id="cidade_consulta"><option value="">Selecione a cidade</option></select>
+        <label>Categoria:</label>
+        <select id="categoria_consulta"><option value="">Selecione a categoria</option></select>
+        <label>Ofensor:</label>
+        <select id="ofensor_consulta"><option value="">Selecione o ofensor</option></select>
+        
+        <div id="resultado_ofensor"></div>
+
+        <br>
+
+        <button id="btnExcluirOfensor">Excluir</button>
+
+    </div>
+        
 </div>
-
-
+<script src="{{ url_for('static', filename='ofensor.js') }}"></script>
 {% endblock %}

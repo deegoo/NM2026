@@ -878,3 +878,24 @@ max-width: 170px;
     background: #fff;
     border-radius: 6px;
 }
+.ofensor_container{
+  display: flex;
+  flex-direction: row;
+  padding-top: 30px;
+  width: 100%;
+  justify-content: space-around;
+}
+
+#resultado_ofensor{
+
+    margin-top:15px;
+
+    padding:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:5px;
+
+    background:#f8f8f8;
+
+}
