@@ -12,9 +12,10 @@ let modoEdicao =
     new URLSearchParams(
         window.location.search
     ).get("editar") === "1";
-
+let regrasFechamento = [];
 let temEventoSalvo = false;
 let temFechamentoSalvo = false;
+let modoEdicaoFechamento = false;
 const servicoEdicao =
     new URLSearchParams(
         window.location.search
@@ -60,6 +61,28 @@ const CAUSAS_RAIZ = [
     "TEMPO DE COMUTAÇÃO",
     "VIA DEGRADADA"
 ];
+
+// ============================
+// ✅ FECHAMENTO (CASCATA)
+// ============================
+
+async function carregarRegrasFechamento() {
+
+    console.log("ENTROU carregarRegrasFechamento");
+
+    const resp =
+        await fetch("/api/regras_fechamento");
+
+    console.log("STATUS", resp.status);
+
+    regrasFechamento =
+        await resp.json();
+
+    console.log(
+        "REGRAS FECHAMENTO",
+        regrasFechamento.length
+    );
+}
 // ============================
 // ✅ Normaliza os serviços
 // ============================
@@ -394,11 +417,6 @@ function calcularVCFases(fases, cidade, servico) {
     }, 0);
 }
 
-// ============================
-// ✅ FECHAMENTO (CASCATA)
-// ============================
-
-let regrasFechamento = [];
 
 // ============================
 // ✅ CASCATA
@@ -454,10 +472,14 @@ function gerarFechamentosPorServico() {
                 "CRIANDO BLOCO",
                 servico
             );
-        container.appendChild(bloco);
+            container.appendChild(bloco);
 
-        iniciarFechamentoServico(servico);
-        atualizarCausaRaizServico(servico);
+            iniciarFechamentoServico(servico);
+
+            atualizarParteServico(servico);
+            atualizarCausaServico(servico);
+            atualizarSolucaoServico(servico);
+            atualizarCausaRaizServico(servico);
     });
 }
 
@@ -468,6 +490,14 @@ function iniciarFechamentoServico(servico) {
     const lista = regrasFechamento.filter(r =>
         normalizarServico(r.servico) === servicoNorm
     );
+
+    console.log(
+
+        "SERVICO",
+        servico,
+        "LISTA",
+        lista
+        );
 
     const respSelect = document.querySelector(`.responsabilidade[data-servico="${servico}"]`);
         if (!respSelect) return;
@@ -588,18 +618,13 @@ async function carregarHistorico() {
 
 async function carregarEventosSalvos() {
 
-    const container =
-        document.getElementById(
-            "eventosSalvosContainer"
-        );
+    const container = document.getElementById("eventosSalvosContainer");
 
     if (!container) return;
 
     try {
 
-        const resp = await fetch(
-            `/api/eventos/${window.ID_TICKET}`
-        );
+        const resp = await fetch(`/api/eventos/${window.ID_TICKET}`);
 
         const dados = await resp.json();
 
@@ -613,9 +638,11 @@ async function carregarEventosSalvos() {
 
         const fases =
             dados.fases || [];
-
+        console.log("EVENTOS:", eventos);
+        console.log("FASES:", fases);
+        console.log("QTD EVENTOS:", eventos.length);
         if (!eventos.length) {
-
+            console.log("SEM EVENTOS");
             temEventoSalvo = false;
 
             container.innerHTML = "";
@@ -1174,9 +1201,16 @@ function atualizarCausaRaizServico(servico) {
 // ✅ DOM READY
 // ============================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("🔥 DOM carregado");
+    await carregarRegrasFechamento();
+    carregarHistorico()
+    gerarEventosPorRegistro();
+    gerarFechamentosPorServico();
+    carregarEventosSalvos();
+    carregarFechamentosSalvos();
+    
 
     const chkImpactoCidade = document.getElementById("impactoCidade");
     const containerCidades = document.getElementById("impactoPorCidadeContainer");
@@ -1233,7 +1267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ============================
     // ✅ GERAR EVENTOS
     // ============================
-    gerarEventosPorRegistro();
+
 
     document.addEventListener("change", function (e) {
 
@@ -1666,10 +1700,7 @@ if (formEvento) {
             });
         });
     }
-        carregarHistorico();
-        carregarEventosSalvos();
-        carregarFechamentosSalvos();
-        gerarFechamentosPorServico();
+
 
         if (
         modoEdicao &&

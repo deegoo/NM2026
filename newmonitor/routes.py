@@ -7,6 +7,7 @@ from datetime import datetime
 from requests_ntlm import HttpNtlmAuth
 from time import time
 from flask_login import login_required, UserMixin, current_user, login_user, logout_user
+from urllib.parse import unquote
 
 from newmonitor.models import Usuario
 from newmonitor.database import (
@@ -46,7 +47,9 @@ from newmonitor.database import (
     get_categorias_cidade,
     get_ofensores_categoria,
     incluir_ofensor,
-    excluir_ofensor   
+    excluir_ofensor,
+    get_regras_fechamento,
+    get_relatorio  
 
 )
 
@@ -371,42 +374,6 @@ def listar():
         get_tickets()
     )
 
-
-@app.route("/fechar", methods=["POST"])
-@login_required
-def fechar():
-
-    if not os.path.exists(DATA_PATH):
-        return jsonify({"erro": "Arquivo não encontrado"}), 400
-
-    dados = request.get_json()
-
-    if not dados:
-        return jsonify({"erro": "JSON inválido"}), 400
-
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        lista = json.load(f)
-
-    index = dados.get("index")
-
-    if index is None or index >= len(lista):
-        return jsonify({"erro": "Index inválido"}), 400
-
-    ticket = lista[index]
-
-    if ticket.get("status") != "ABERTO":
-        return jsonify({"erro": "Só pode fechar ticket aberto"}), 400
-
-    ticket["status"] = "FECHADO"
-    ticket["data_fechamento"] = dados.get("data_final")
-    ticket["causa"] = dados.get("causa")
-    ticket["solucao"] = dados.get("solucao")
-
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(lista, f, indent=2, ensure_ascii=False)
-
-    return jsonify({"ok": True})
-
 @app.route("/ticket/<path:id_ticket>")
 @login_required
 def visualizar_ticket(id_ticket):
@@ -477,13 +444,12 @@ def consulta_incidentes():
 def servir_dados(filename):
     return send_from_directory('data', filename)
 
-from urllib.parse import unquote
 
 @app.route("/salvar_evento/<path:id_ticket>", methods=["POST"])
 @login_required
 def salvar_evento(id_ticket):
 
-    from urllib.parse import unquote
+    
 
     id_ticket = unquote(id_ticket)
 
@@ -546,8 +512,6 @@ def salvar_evento(id_ticket):
 @login_required
 def fechar_ticket_multi(id_ticket):
 
-    from urllib.parse import unquote
-
     id_ticket = unquote(id_ticket)
 
     dados = request.json
@@ -592,57 +556,6 @@ def fechar_ticket_multi(id_ticket):
 def tela_relatorios():
     return render_template("tela_relatorios.html")
 
-@app.route("/relatorios_dados", methods=["POST"])
-@login_required
-def relatorios_dados():
-
-    dados = request.json
-
-    d_ini = dados.get("data_inicio")
-    d_fim = dados.get("data_fim")
-
-    cidade = dados.get("cidade")
-    servico = dados.get("servico")
-    evento = dados.get("evento")
-    responsavel = dados.get("responsavel")
-
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        lista = json.load(f)
-
-    resultado = []
-
-    for t in lista:
-
-        data_inicio = t.get("data_inicio")
-
-        if not data_inicio:
-            continue
-
-        try:
-            dt = datetime.strptime(data_inicio, "%d/%m/%Y %H:%M")
-            iso = dt.strftime("%Y-%m-%d")
-        except:
-            continue
-
-        if not (iso >= d_ini and iso <= d_fim):
-            continue
-
-        if cidade and t.get("cidade") != cidade:
-            continue
-
-        if servico and t.get("servico") != servico:
-            continue
-
-        if evento and t.get("evento") != evento:
-            continue
-
-        if responsavel and t.get("responsabilidade") != responsavel:
-            continue
-
-        resultado.append(t)
-
-    return jsonify(resultado)
-
 @app.route("/api/meg")
 @login_required
 def api_meg():
@@ -678,8 +591,6 @@ def api_meg_detalhe():
 @app.route("/ticket/<path:id_ticket>/acao", methods=["POST"])
 @login_required
 def acao_ticket(id_ticket):
-
-    from urllib.parse import unquote
 
     id_ticket = unquote(id_ticket)
 
@@ -749,22 +660,6 @@ def buscar():
         )
     )
 
-@app.route("/stream")
-@login_required
-def stream():
-
-    def gerar():
-        while True:
-            dados = ler_tickets()
-
-            payload = json.dumps(dados)
-
-            yield f"data: {payload}\n\n"
-
-            time.sleep(30)  # envia a cada 30s
-
-    return Response(gerar(), mimetype="text/event-stream")
-
 @app.route("/dashboard_usuarios_view")
 @login_required
 def dashboard_usuarios_view():
@@ -819,6 +714,8 @@ def api_comentarios(id_ticket):
 @app.route("/api/eventos/<path:id_ticket>")
 @login_required
 def api_eventos(id_ticket):
+    
+    print("ID RECEBIDO:", repr(id_ticket))
 
     return jsonify({
         "eventos": get_eventos_ticket(id_ticket),
@@ -1111,3 +1008,11 @@ def api_excluir_ofensor(id_registro):
     return jsonify({
         "ok": True
     })
+    
+@app.route("/api/regras_fechamento")
+@login_required
+def api_regras_fechamento():
+
+    return jsonify(
+        get_regras_fechamento()
+    )

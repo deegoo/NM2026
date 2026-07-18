@@ -285,6 +285,14 @@ document.addEventListener(
                 "change",
                 carregarCategoriasInclusao
             );
+            document
+            .getElementById(
+                "ofensor_consulta"
+            )
+            .addEventListener(
+                "change",
+                exibirOfensorSelecionado
+            );
 
     }
 );

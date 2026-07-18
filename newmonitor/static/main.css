@@ -885,17 +885,56 @@ max-width: 170px;
   width: 100%;
   justify-content: space-around;
 }
-
-#resultado_ofensor{
-
-    margin-top:15px;
-
-    padding:10px;
-
-    border:1px solid #ccc;
-
-    border-radius:5px;
-
-    background:#f8f8f8;
-
+.ofensor_incluir{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+.ofensor_consultar{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#btnIncluirOfensor{
+      padding: 5px 10px;
+      margin-right: 5px;
+      border: 1px solid var(--shadow1);
+      background: var(--panel);
+      color: var(--bg);
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 5px 10px;
+      height: 30px;
+      white-space: nowrap;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+#btnExcluirOfensor:hover {
+    transform: scale(1.03);
+    background: var(--bg);
+    color: var(--panel);
+    border: 2px solid var(--accent);
+    box-shadow: 3px 3px 6px var(--shadow0);
+    }
+#btnExcluirOfensor{
+      padding: 5px 10px;
+      margin-right: 5px;
+      border: 1px solid var(--shadow1);
+      background: var(--panel);
+      color: var(--bg);
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 5px 10px;
+      height: 30px;
+      white-space: nowrap;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+#btnIncluirOfensor:hover {
+    transform: scale(1.03);
+    background: var(--bg);
+    color: var(--panel);
+    border: 2px solid var(--accent);
+    box-shadow: 3px 3px 6px var(--shadow0);
+    }
+

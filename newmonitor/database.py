@@ -369,6 +369,7 @@ def salvar_fase_evento(
     conn.close()
 
 def get_eventos_ticket(id_ticket):
+    print("BUSCANDO EVENTOS:", repr(id_ticket))
 
     conn = conectar()
     cur = conn.cursor()
@@ -1144,11 +1145,7 @@ def get_dashboard_usuarios():
 
     return usuarios
 
-def buscar_gestao_tickets(
-    termo=None,
-    data_inicio=None,
-    data_fim=None
-):
+def buscar_gestao_tickets(termo=None,data_inicio=None,data_fim=None):
 
     conn = conectar()
     cur = conn.cursor()
@@ -1699,3 +1696,26 @@ def excluir_ofensor(id_registro):
     conn.commit()
     conn.close()
     
+def get_regras_fechamento():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            servico,
+            responsavel,
+            parte,
+            causa,
+            solucao
+        FROM regras_fechamento
+    """)
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    return [
+        dict(row)
+        for row in rows
+    ]

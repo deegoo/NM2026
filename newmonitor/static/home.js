@@ -2,7 +2,6 @@ let silenciado = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     iniciarSistema();
-    iniciarStream()
     setInterval(atualizarTudo, 120000);
 });
 
@@ -199,27 +198,5 @@ function atualizarTudo() {
 
     carregarDashboard();
 }
-
-function iniciarStream() {
-
-    const source = new EventSource("/stream");
-
-    source.onmessage = function () {
-
-        carregarDashboard();
-
-        console.log("📡 atualização em tempo real");
-    };
-
-    source.onerror = function () {
-        console.log("⚠️ stream caiu, usando fallback");
-        source.close();
-    };
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-
-
-});
 
 
