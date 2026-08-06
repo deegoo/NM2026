@@ -766,8 +766,8 @@ def get_meg_total():
 
     url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
 
-    usuario = "F183209"
-    senha = "Senh@idm01"
+    usuario = "nocbrasilmonitoracao"
+    senha = "#K4pk#aD{Tx}QOV"
 
     try:
 
@@ -809,7 +809,13 @@ def get_meg_total():
 
         for p in partes:
 
-            if "RESIDENCIAL" in p.upper():
+            if any(
+                termo in p.upper() 
+                for termo in ["RESIDENCIAL", 
+                              "WI-FI", 
+                              "WIFI"
+                              ]
+                ):
 
                 total += 1
                 break
@@ -820,8 +826,8 @@ def get_sit_total():
     
     url = "http://10.53.5.77/Arcos/Arcossit.aspx"
 
-    usuario = "F183209"
-    senha = "Senh@idm01"
+    usuario = "nocbrasilmonitoracao"
+    senha = "#K4pk#aD{Tx}QOV"
 
     try:
 
@@ -876,8 +882,8 @@ def get_sit_total():
 def get_meg_detalhes():
     url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
 
-    usuario = "F183209"
-    senha = "Senh@idm01"
+    usuario = "nocbrasilmonitoracao"
+    senha = "#K4pk#aD{Tx}QOV"
 
     r = requests.get(
         url,
@@ -895,10 +901,20 @@ def get_meg_detalhes():
 
     def eh_rede_residencial(partes):
 
-        return any(
-            p.strip().upper() == "RESIDENCIAL"
-            for p in partes
-        )
+        for p in partes:
+
+            texto = p.strip().upper()
+
+            if (
+
+                "RESIDENCIAL" in texto
+                or "WI-FI" in texto
+                or "WIFI" in texto
+            ):
+
+                return True
+
+        return False
 
     # =========================
     # AGRUPAMENTO POR MEG
