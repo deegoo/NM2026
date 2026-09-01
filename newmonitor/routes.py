@@ -49,7 +49,9 @@ from newmonitor.database import (
     incluir_ofensor,
     excluir_ofensor,
     get_regras_fechamento,
-    get_relatorio  
+    get_relatorio,
+    get_base_assinantes,
+    get_regional_por_uf
 
 )
 
@@ -274,7 +276,7 @@ def abrir_ticket():
             return dt_str
 
     dados = request.get_json()
-
+    print(dados)
     if not dados:
 
         return jsonify({
@@ -349,6 +351,13 @@ def abrir_ticket():
         registro["usuario"] = usuario_logado
 
         registro["status"] = "ABERTO"
+        
+        uf = registro.get("uf", "")
+
+        dados_regional = get_regional_por_uf(uf)
+
+        registro["regional"] = dados_regional["regional"]
+        registro["nm_regional_cmv_bi"] = dados_regional["nm_regional_cmv_bi"]
 
     salvar_ticket(registros)
     
@@ -475,14 +484,20 @@ def salvar_evento(id_ticket):
         servico = evento.get("servico")
         final_evento = evento.get("final_evento")
         vc_evento = evento.get("vc_evento", 0)
-
+        minutos_ponderados = evento.get("minutos_ponderados", 0)
+        base_cidade = evento.get("base_cidade",0)
+        assinantes_impactados = evento.get("assinantes_impactados",0)
+        
         salvar_evento_ticket(
             id_ticket=id_ticket,
             cidade=cidade,
             servico=servico,
             inicio_evento=inicio_evento,
             final_evento=final_evento,
-            vc_evento=vc_evento
+            vc_evento=vc_evento,
+            minutos_ponderados=minutos_ponderados,
+            base_cidade=base_cidade,
+            assinantes_impactados=assinantes_impactados
         )
 
         for fase in evento.get("fases", []):
@@ -503,6 +518,7 @@ def salvar_evento(id_ticket):
     )
 
     print("✅ evento salvo no SQLite")
+    print("✅ fim salvar_evento")
 
     return jsonify({
         "ok": True
@@ -524,6 +540,15 @@ def fechar_ticket_multi(id_ticket):
     excluir_fechamentos_ticket(
         id_ticket
     )
+    
+    tecnologia_acesso = dados.get(
+    "tecnologia_acesso"
+    )
+
+    isolamento_olt_cmts = dados.get(
+        "isolamento_olt_cmts",
+        0
+    )
 
     for fechamento in fechamentos:
 
@@ -535,7 +560,9 @@ def fechar_ticket_multi(id_ticket):
             causa=fechamento.get("causa"),
             solucao=fechamento.get("solucao"),
             sumario=fechamento.get("sumario"),
-            causa_raiz=fechamento.get("causa_raiz")
+            causa_raiz=fechamento.get("causa_raiz"),
+            isolamento_olt_cmts=isolamento_olt_cmts,
+            tecnologia_acesso=tecnologia_acesso
         )
     fechar_ticket(id_ticket)
 
@@ -830,6 +857,7 @@ def api_editar_fechamento():
             solucao = ?,
             sumario = ?,
             causa_raiz = ?,
+            tecnologia_acesso = ?,
             isolamento_olt_cmts = ?
         WHERE id_ticket = ?
           AND servico = ?
@@ -840,6 +868,7 @@ def api_editar_fechamento():
         dados.get("solucao"),
         dados.get("sumario"),
         dados.get("causa_raiz"),
+        dados.get("tecnologia_acesso"),
         dados.get("isolamento_olt_cmts", 0),
         id_ticket,
         servico
@@ -1015,4 +1044,12 @@ def api_regras_fechamento():
 
     return jsonify(
         get_regras_fechamento()
+    )
+    
+@app.route("/api/base_assinantes")
+@login_required
+def api_base_assinantes():
+
+    return jsonify(
+        get_base_assinantes()
     )

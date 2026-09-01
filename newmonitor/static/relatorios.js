@@ -137,8 +137,10 @@ function renderRelatorio() {
             document.createElement("tr");
 
         tr.innerHTML = `
+            <td>${t.semana_evento || ""}</td>
+
             <td>
-                /ticket/${t.id_ticket}
+                <a href="/ticket/${t.id_ticket}" target="_self">
                     ${t.id_ticket}
                 </a>
             </td>
@@ -196,7 +198,7 @@ function exportarCSV() {
     let csv = [];
 
     csv.push([
-        "Ticket","Cidade","Início","Fim","Interrupção (min)","Evento","Impacto (%)",
+        "semana_evento","Ticket","Cidade","Início","Fim","Interrupção (min)","Evento","Impacto (%)",
         "Serviço","Responsável","Sintoma","Nat. manut.","Parte rede",
         "Causa","Solução","Num. do Outage", "Causa raiz", "Isolamento OLT/CMTS"
 
@@ -205,6 +207,7 @@ function exportarCSV() {
     dadosGlobal.forEach(t => {
 
         csv.push([
+            t.semana_evento || "0",
             t.id_ticket,
             t.cidade || "0",
             t.data_inicio || "0",
@@ -248,6 +251,7 @@ function exportarXLSX() {
     }
 
     const dados = dadosGlobal.map(t => ({
+        semana_evento: t.semana_evento || "0",
         Ticket: t.id_ticket,
         Cidade: t.cidade || "0",
         Inicio: t.data_inicio || "0",

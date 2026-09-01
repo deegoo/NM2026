@@ -412,6 +412,7 @@ function cadastrar() {
         alert("Selecione cidades e serviços");
         return;
     }
+    const uf =document.getElementById("uf")?.value || "";
     const registros = [];
     configs.forEach(div => {
         const servico = div.querySelector("strong").textContent;
@@ -423,6 +424,7 @@ function cadastrar() {
                 servico,
                 sintoma,
                 evento,
+                uf,
                 descricao: document.getElementById("descricao").value,
                 data_inicio: document.getElementById("data_inicio").value,
                 categoria: document.getElementById("categoria").value,
@@ -601,5 +603,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     });
+    const uf = document.getElementById("uf");
+
+    [
+        "AC","AL","AM","AP","BA","CE",
+        "DF","ES","GO","MA","MG","MS",
+        "MT","PA","PB","PE","PI","PR",
+        "RJ","RN","RO","RS","SC","SE",
+        "TO"
+    ].forEach(sigla => {
+
+        uf.innerHTML +=
+            `<option value="${sigla}">
+                ${sigla}
+            </option>`;
+    });
+
+    uf.innerHTML += `
+        <option value="SPC">SP Capital</option>
+        <option value="SPI">SP Interior</option>
+    `;
 
 });

@@ -193,24 +193,26 @@ function gerarEventosPorRegistro() {
         const bloco = document.createElement("div");
 
         bloco.innerHTML = `
-            <b>${reg.cidade} | ${reg.servico}</b><br><br>
+            <div id="eventosPorCidadeItem">
+                <b>${reg.cidade} | ${reg.servico}</b><br><br>
 
-            <label>Interrupção (min):</label><br>
-            <span class="tempo-view" data-key="${key}">0</span><br>
+                <label>Interrupção (min):</label><br>
+                <span class="tempo-view" data-key="${key}">0</span><br>
 
-            <label>Impacto (%):</label><br>
-            <input type="number" class="impacto" data-key="${key}"><br>
+                <label>Impacto (%):</label><br>
+                <input type="number" class="impacto" data-key="${key}"><br>
 
-            <label>Final Evento:</label><br>
-            <input type="datetime-local" class="final_evento" data-key="${key}"><br>
+                <label>Final Evento:</label><br>
+                <input type="datetime-local" class="final_evento" data-key="${key}"><br>
 
-            <div class="fases-container" data-key="${key}" style="display:none;"></div>
+                <div class="fases-container" data-key="${key}" style="display:none;"></div>
 
-            <button type="button" class="add-fase" data-key="${key}" style="display:none;">
-                + adicionar fase
-            </button>
+                <button type="button" class="add-fase" data-key="${key}" style="display:none;">
+                    + adicionar fase
+                </button>
 
-            <hr>
+                <hr>
+            <div>
         `;
 
         container.appendChild(bloco);
@@ -333,32 +335,97 @@ function atualizarSolucaoServico(servico) {
         select.add(new Option(v, v));
     });
 }
-// ============================
-// ✅ CÁLCULO VC SIMPLES
-// ============================
 
-function calcularVC(tempo, impacto, cidade, servico) {
+// ============================
+// ✅ CARREGAR BASE DE ASSINANTES
+// ============================
+function getBaseCidade(
+    cidade,
+    servico
+) {
 
     const dados =
         baseClientes[
             normalizarServico(servico)
         ];
 
+    if (!dados) {
+        return 0;
+    }
+
+    return (
+        dados.cidades[
+            cidade.toUpperCase()
+        ] || 0
+    );
+}
+// ============================
+// ✅ CALCULAR ASSINANTES IMPACTADOS
+// ============================
+function calcularAssinantesImpactados(
+    baseCidade,
+    impacto
+) {
+
+    return Math.round(
+        baseCidade *
+        (impacto / 100)
+    );
+}
+
+// ============================
+// ✅ CÁLCULO VC SIMPLES
+// ============================
+
+function calcularVC(tempo, impacto) {
+
+    const vc =
+        tempo * (impacto / 100);
+
     console.log(
-        "CALCULAR VC",
+        "VC FINAL",
         {
             tempo,
             impacto,
-            cidade,
-            servico,
-            dados
+            vc
         }
     );
 
+    return vc;
+}
+
+// ============================
+// ✅ CÁLCULO VC COM FASES
+// ============================
+
+function calcularVCFases(fases) {
+
+    return fases.reduce((total, fase) => {
+
+        return total + calcularVC(
+            fase.tempo,
+            fase.impacto
+        );
+
+    }, 0);
+
+}
+
+// ============================
+// ✅ CÁLCULO MINUTOS PONDERADOS
+// ============================
+function calcularMinutosPonderados(
+    fases,
+    cidade,
+    servico
+) {
+
+    const dados =
+        baseClientes[
+            normalizarServico(servico)
+        ];
+
     if (!dados) {
-
-        console.log("SEM DADOS");
-
         return 0;
     }
 
@@ -370,53 +437,31 @@ function calcularVC(tempo, impacto, cidade, servico) {
     const baseBrasil =
         dados.base_brasil || 0;
 
-    console.log(
-        "BASES",
-        {
-            cidade,
-            baseCidade,
-            baseBrasil
-        }
-    );
-
     if (!baseCidade || !baseBrasil) {
-
-        console.log(
-            "BASE INVÁLIDA",
-            {
-                baseCidade,
-                baseBrasil
-            }
-        );
-
         return 0;
     }
 
-    const vc =
-        ((tempo * (impacto / 100))
-            * baseCidade)
-        / baseBrasil;
+    let total = 0;
 
-    console.log(
-        "VC FINAL",
-        vc
+    fases.forEach(fase => {
+
+        const minutos =
+            Number(fase.tempo || 0);
+
+        const impacto =
+            Number(fase.impacto || 0);
+
+        total += (
+            (minutos * (impacto / 100))
+            * baseCidade
+        ) / baseBrasil;
+
+    });
+
+    return Number(
+        total.toFixed(6)
     );
-
-    return vc;
 }
-
-
-// ============================
-// ✅ CÁLCULO VC COM FASES
-// ============================
-
-function calcularVCFases(fases, cidade, servico) {
-
-    return fases.reduce((total, fase) => {
-        return total + calcularVC(fase.tempo, fase.impacto, cidade, servico);
-    }, 0);
-}
-
 
 // ============================
 // ✅ CASCATA
@@ -460,8 +505,6 @@ function gerarFechamentosPorServico() {
 
             <label>Causa Raiz:</label>
             <select class="causa_raiz" data-servico="${servico}"></select>
-
-            <label><input type="checkbox" class="isolamento_olt_cmts" data-servico="${servico}">Isolamento de OLT/CMTS</label>
 
             <label>Sumário:</label>
             <textarea class="sumario" data-servico="${servico}"></textarea>
@@ -668,7 +711,15 @@ async function carregarEventosSalvos() {
         let html = "";
 
         eventos.forEach(evento => {
+            const baseCidade =
+                Number(
+                    evento.base_cidade || 0
+                );
 
+            const assinantesImpactados =
+                Number(
+                    evento.assinantes_impactados || 0
+                );
             const fasesEvento =
                 fases.filter(f =>
                     f.cidade === evento.cidade &&
@@ -702,7 +753,26 @@ async function carregarEventosSalvos() {
 
                     <p>
                         <b>VC:</b>
-                        ${evento.vc_evento}
+                        ${Number(evento.vc_evento).toFixed(2)}
+                    </p>
+                    <p>
+                        <b>Minutos Ponderados:</b>
+                        ${Number(evento.minutos_ponderados).toLocaleString(
+                            "pt-BR",
+                            {
+                                minimumFractionDigits: 6,
+                                maximumFractionDigits: 6
+                            }
+                        )}
+                    </p>
+                    <p>
+                    <b>Base Cidade:</b>
+                        ${baseCidade.toLocaleString("pt-BR")}
+                    </p>
+
+                    <p>
+                        <b>Assinantes Impactados:</b>
+                        ${assinantesImpactados.toLocaleString("pt-BR")}
                     </p>
 
                     <p>
@@ -883,17 +953,22 @@ async function carregarFechamentosSalvos() {
                     </p>
 
                     <p>
-                        <b>Isolamento OLT/CMTS:</b>
-                        ${
-                            Number(f.isolamento_olt_cmts || 0) === 1
-                                ? "SIM"
-                                : "NÃO"
-                        }
+                        <b>Sumário:</b>
+                        ${f.sumario || "-"}
                     </p>
 
                     <p>
-                        <b>Sumário:</b>
-                        ${f.sumario || "-"}
+                        <b>Tecnologia de Acesso:</b>
+                        ${f.tecnologia_acesso || "-"}
+                    </p>
+
+                    <p>
+                        <b>Isolamento OLT/CMTS:</b>
+                        ${
+                            Number(f.isolamento_olt_cmts || 0) === 1
+                                ? "Sim"
+                                : "Não"
+                        }
                     </p>
 
                 </div>
@@ -934,18 +1009,6 @@ async function carregarFechamentosSalvos() {
             if (causa) {
                 causa.value =
                     f.causa || "";
-            }
-            const isolamento =
-                document.querySelector(
-                    `.isolamento_olt_cmts[data-servico="${servico}"]`
-                );
-
-            if (isolamento) {
-
-                isolamento.checked =
-                    Number(
-                        f.isolamento_olt_cmts || 0
-                    ) === 1;
             }
 
             atualizarSolucaoServico(servico);
@@ -1071,6 +1134,22 @@ async function carregarEdicaoFechamento(servico) {
     const fechamento =
         dados.fechamento || {};
 
+    const tecnologia =
+    document.getElementById("tecnologia_acesso");
+
+    if (tecnologia) {
+        tecnologia.value =
+            fechamento.tecnologia_acesso || "";
+    }
+
+    const isolamento =
+        document.getElementById("isolamento_olt_cmts");
+
+    if (isolamento) {
+        isolamento.checked =
+            Number(fechamento.isolamento_olt_cmts || 0) === 1;
+    }
+
     const responsabilidade =
         document.querySelector(
             `.responsabilidade[data-servico="${servico}"]`
@@ -1092,19 +1171,6 @@ async function carregarEdicaoFechamento(servico) {
 
             causaRaiz.value =
                 fechamento.causa_raiz || "";
-        }
-
-        const isolamento =
-            document.querySelector(
-                `.isolamento_olt_cmts[data-servico="${servico}"]`
-            );
-
-        if (isolamento) {
-
-            isolamento.checked =
-                Number(
-                    fechamento.isolamento_olt_cmts || 0
-                ) === 1;
         }
     }
 
@@ -1197,6 +1263,50 @@ function atualizarCausaRaizServico(servico) {
 
     });
 }
+
+async function carregarBaseAssinantes() {
+
+    const resp =
+        await fetch(
+            "/api/base_assinantes"
+        );
+
+    const dados =
+        await resp.json();
+
+    baseClientes = {};
+
+    dados.forEach(reg => {
+
+        const servico =
+            normalizarServico(
+                reg.servico
+            );
+
+        if (!baseClientes[servico]) {
+
+            baseClientes[servico] = {
+                base_brasil:
+                    reg.base_brasil,
+                cidades: {}
+            };
+
+        }
+
+        baseClientes[
+            servico
+        ].cidades[
+            reg.cidade.toUpperCase()
+        ] = reg.base_cidade;
+
+    });
+
+    console.log(
+        "BASE CLIENTES",
+        baseClientes
+    );
+
+}
 // ============================
 // ✅ DOM READY
 // ============================
@@ -1205,6 +1315,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("🔥 DOM carregado");
     await carregarRegrasFechamento();
+    await carregarBaseAssinantes();
     carregarHistorico()
     gerarEventosPorRegistro();
     gerarFechamentosPorServico();
@@ -1417,7 +1528,33 @@ if (formEvento) {
                 reg.cidade,
                 reg.servico
             );
+            const minutos_ponderados = calcularMinutosPonderados(
+                fases,
+                reg.cidade,
+                reg.servico
+            );
+            const baseCidade =
+                getBaseCidade(
+                    reg.cidade,
+                    reg.servico
+                );
 
+            const impactoAtual =
+                Number(
+                    fases.at(-1)?.impacto || 0
+                );
+
+            const assinantesImpactados =
+                calcularAssinantesImpactados(
+                    baseCidade,
+                    impactoAtual
+                );
+        console.log(
+            "MINUTOS PONDERADOS",
+            reg.cidade,
+            reg.servico,
+            minutos_ponderados
+        );
         console.log(
             "VC DEBUG",
             "cidade=", reg.cidade,
@@ -1429,13 +1566,25 @@ if (formEvento) {
             "fases=", fases,
             "vc_total=", vc_total
         );
+        console.log(
+            "BASE/IMPACTADOS",
+            reg.cidade,
+            reg.servico,
+            {
+                baseCidade,
+                assinantesImpactados
+            }
+        );
         
         return {
             cidade: reg.cidade,
             servico: reg.servico,
             final_evento,
             fases,
-            vc_evento: vc_total
+            vc_evento: vc_total,
+            minutos_ponderados,
+            base_cidade: baseCidade,
+            assinantes_impactados: assinantesImpactados
         };
 
     });
@@ -1531,7 +1680,6 @@ if (formEvento) {
                 solucao: document.querySelector(`.solucao[data-servico="${servico}"]`)?.value,
                 sumario: document.querySelector(`.sumario[data-servico="${servico}"]`)?.value,
                 causa_raiz: document.querySelector(`.causa_raiz[data-servico="${servico}"]`)?.value,
-                isolamento_olt_cmts: document.querySelector(`.isolamento_olt_cmts[data-servico="${servico}"]`)?.checked ? 1 : 0,
             });
 
         });
@@ -1582,11 +1730,11 @@ if (formEvento) {
                             `.causa_raiz[data-servico="${servicoEdicao}"]`
                         )?.value,
 
-                    isolamento_olt_cmts:
-                        document.querySelector(
-                            `.isolamento_olt_cmts[data-servico="${servicoEdicao}"]`
-                        )?.checked ? 1 : 0,
+                    tecnologia_acesso:
+                        document.getElementById("tecnologia_acesso")?.value || "",
 
+                    isolamento_olt_cmts:
+                        document.getElementById("isolamento_olt_cmts")?.checked ? 1 : 0,
                 })
             })
             .then(res => {
@@ -1614,11 +1762,14 @@ if (formEvento) {
 
             return;
         }
-                
+        
+        const tecnologia_acesso = document.getElementById("tecnologia_acesso")?.value || "";
+        const isolamento_olt_cmts = document.getElementById("isolamento_olt_cmts")?.checked ? 1 : 0;
+
                 fetch("/fechar_ticket_multi/" + window.ID_TICKET, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fechamentos: payload })
+            body: JSON.stringify({ fechamentos: payload, tecnologia_acesso, isolamento_olt_cmts})
         })
         .then(res => {
             if (!res.ok) {

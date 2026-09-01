@@ -691,9 +691,9 @@ margin-top: 20px;
 }
 .resumo_fechamento{
     display:grid;
-    grid-template-columns: 250px 250px;
+    grid-template-columns: 250px 250px 250px;
     gap:20px;
-    justify-content: center;
+    justify-content: space-between;
 }
 .resumo_fechamento_item{
   min-width:200px;
@@ -937,4 +937,18 @@ max-width: 170px;
     border: 2px solid var(--accent);
     box-shadow: 3px 3px 6px var(--shadow0);
     }
-
+  
+#eventosPorCidade{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+#eventosPorCidadeItem{
+  width: 100%;
+}
+.ini_eve_topo{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 30px;
+}

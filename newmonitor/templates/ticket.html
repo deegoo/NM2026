@@ -62,43 +62,43 @@
         </div>
 
         <br>
+        <div class="ini_eve_topo">
 
-        <label>
-            Usar mesmo horário para todas as cidades
-            <input type="checkbox" id="mesmoHorario">
-        </label>
+            <br><br>
+            <div class="ini_eve_item">
+                <label>
+                    Usar mesmo impacto por serviço/cidade
+                    <input type="checkbox" id="impactoCidade">
+                </label>
+            </div>
+            <br><br>
+            <div class="ini_eve_item">
+                <label>
+                    Evento com variação de impacto
+                    <input type="checkbox" id="impactoParcial">
+                </label>
+            </div>
+            <br><br>
+            <div class="ini_eve_item">
+                <div id="impactoPorCidadeContainer" style="display:none;"></div>
+            </div>
 
-        <br><br>
+                        <div class="ini_eve_item">
+                <label>
+                    Usar mesmo horário para todas as cidades
+                    <input type="checkbox" id="mesmoHorario">
+                </label>
+            </div>
 
-        <label>
-            Usar mesmo impacto por serviço/cidade
-            <input type="checkbox" id="impactoCidade">
-        </label>
+            <div class="ini_eve_item">
+                <label>
+                    Final Evento (global):
+                </label>
 
-        <br><br>
-
-        <label>
-            Evento com variação de impacto
-            <input type="checkbox" id="impactoParcial">
-        </label>
-
-        <br><br>
-
-        <div
-            id="impactoPorCidadeContainer"
-            style="display:none;"
-        ></div>
-
-        <label>
-            Final Evento (global):
-        </label>
-
-        <input
-            type="datetime-local"
-            id="data_final_global"
-        >
-
-        <hr>
+                <input type="datetime-local" id="data_final_global">
+            </div>
+            <hr>
+        </div>
 
         <div id="eventosPorCidade"></div>
 
@@ -124,6 +124,22 @@
                 {{ tickets|length }}
             </p>
         </div>
+        <div class="resumo_fechamento_item">
+            <label>Tecnologia de Acesso</label>
+            <select id="tecnologia_acesso">
+                <option value="">Selecione</option>
+                <option value="HFC+GPON">HFC + GPON</option>
+                <option value="HFC">HFC</option>
+                <option value="GPON">GPON</option>
+                <option value="REDE NEUTRA VTAL">REDE NEUTRA VTAL</option>
+                <option value="REDE NEUTRA ATC">REDE NEUTRA ATC</option>
+            </select>
+        </div>
+
+        <div class="resumo_fechamento_item">
+            <label><input type="checkbox" id="isolamento_olt_cmts">Isolamento de OLT/CMTS</label>
+        </div>
+
     </div>
     <hr>
 

@@ -4,6 +4,7 @@ import requests
 
 from requests_ntlm import HttpNtlmAuth
 from datetime import datetime
+from statistics import linear_regression
 
 DB_PATH = os.path.abspath(
     os.path.join(
@@ -113,9 +114,9 @@ def salvar_ticket(registros):
     print(registros)
     conn = conectar()
     cur = conn.cursor()
-
+    
     for ticket in registros:
-
+        print("ANTES DO INSERT")
         cur.execute("""
             INSERT INTO tickets (
                 id_ticket,
@@ -131,11 +132,13 @@ def salvar_ticket(registros):
                 chamado_operadora,
                 outage,
                 status,
-                usuario
+                usuario,
+                uf,
+                regional,
+                nm_regional_cmv_bi
+
             )
-            VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             ticket["id_ticket"],
             ticket["cidade"],
@@ -150,11 +153,15 @@ def salvar_ticket(registros):
             ticket.get("chamado_operadora"),
             ticket.get("outage"),
             ticket.get("status"),
-            ticket.get("usuario")
+            ticket.get("usuario"),
+            ticket.get("uf"),
+            ticket.get("regional"),
+            ticket.get("nm_regional_cmv_bi")
         ))
 
     conn.commit()
     conn.close()
+    print("DEPOIS DO INSERT")
     print("✅ salvar_ticket executado")
 
 def get_ticket(id_ticket):
@@ -298,14 +305,16 @@ def salvar_comentario (
     conn.commit()
     conn.close()
     
-
 def salvar_evento_ticket(
     id_ticket,
     cidade,
     servico,
     inicio_evento,
     final_evento,
-    vc_evento
+    vc_evento,
+    minutos_ponderados=0,
+    base_cidade=0,
+    assinantes_impactados=0
 ):
 
     conn = conectar()
@@ -318,19 +327,25 @@ def salvar_evento_ticket(
             servico,
             inicio_evento,
             final_evento,
-            vc_evento
+            vc_evento,
+            minutos_ponderados,
+            base_cidade,
+            assinantes_impactados
         )
         VALUES (
-            ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     """, (
-        id_ticket,
-        cidade,
-        servico,
-        inicio_evento,
-        final_evento,
-        vc_evento
-    ))
+            id_ticket,
+            cidade,
+            servico,
+            inicio_evento,
+            final_evento,
+            vc_evento,
+            minutos_ponderados,
+            base_cidade,
+            assinantes_impactados
+        ))
 
     conn.commit()
     conn.close()
@@ -441,7 +456,8 @@ def salvar_fechamento_ticket(
     solucao,
     sumario,    
     causa_raiz=None,
-    isolamento_olt_cmts=0
+    isolamento_olt_cmts=0,
+    tecnologia_acesso=None
 ):
 
     conn = conectar()
@@ -492,9 +508,10 @@ def salvar_fechamento_ticket(
             sumario,
             natureza,
             causa_raiz,
-            isolamento_olt_cmts
+            isolamento_olt_cmts,
+            tecnologia_acesso
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         id_ticket,
         servico,
@@ -505,7 +522,8 @@ def salvar_fechamento_ticket(
         sumario,
         natureza,
         causa_raiz,
-        isolamento_olt_cmts
+        isolamento_olt_cmts,
+        tecnologia_acesso
     ))
 
     conn.commit()
@@ -1352,7 +1370,8 @@ def get_fechamento_servico(
             sumario,            
             natureza,
             causa_raiz,
-            isolamento_olt_cmts
+            isolamento_olt_cmts,
+            tecnologia_acesso
 
         FROM fechamentos_ticket
         WHERE id_ticket = ?
@@ -1375,7 +1394,8 @@ def get_fechamento_servico(
             "sumario": row["sumario"],
             "natureza": row["natureza"],
             "causa_raiz": row["causa_raiz"],
-            "isolamento_olt_cmts": row["isolamento_olt_cmts"]
+            "isolamento_olt_cmts": row["isolamento_olt_cmts"],
+            "tecnologia_acesso": row["tecnologia_acesso"]
         }
 
     # =========================
@@ -1598,6 +1618,20 @@ def get_relatorio(
         except Exception:
             pass
 
+        try:
+            dt_evento = datetime.strptime(
+                row["data_inicio"],
+                "%d/%m/%Y %H:%M"
+            )
+
+            semana = dt_evento.isocalendar().week
+            ano = dt_evento.strftime("%y")
+
+            item["semana_evento"] = f"W{semana:02d}.{ano}"
+
+        except Exception:
+            item["semana_evento"] = ""
+
         resultado.append(item)
 
     return resultado
@@ -1735,3 +1769,144 @@ def get_regras_fechamento():
         dict(row)
         for row in rows
     ]
+    
+def get_base_assinantes():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            servico,
+            cidade,
+            base_cidade,
+            base_brasil
+        FROM base_assinantes
+    """)
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
+
+def get_regional_por_uf(uf):
+
+    REGIONAIS = {
+        "AC": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "AL": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "AM": {
+            "regional": "RNO",
+            "nm_regional_cmv_bi": "RNO - Regional Norte"
+        },
+        "AP": {
+            "regional": "RNO",
+            "nm_regional_cmv_bi": "RNO - Regional Norte"
+        },
+        "BA": {
+            "regional": "RBS",
+            "nm_regional_cmv_bi": "RBS - Regional Bahia e Sergipe"
+        },
+        "CE": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "DF": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "ES": {
+            "regional": "RRE",
+            "nm_regional_cmv_bi": "RRE - Regional Rio de Janeiro e Espírito Santo"
+        },
+        "GO": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "MA": {
+            "regional": "RNO",
+            "nm_regional_cmv_bi": "RNO - Regional Norte"
+        },
+        "MG": {
+            "regional": "RMG",
+            "nm_regional_cmv_bi": "RMG - Regional Minas Gerais"
+        },
+        "MS": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "MT": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "PA": {
+            "regional": "RNO",
+            "nm_regional_cmv_bi": "RNO - Regional Norte"
+        },
+        "PB": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "PE": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "PI": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "PR": {
+            "regional": "RPS",
+            "nm_regional_cmv_bi": "RPS - Regional Paraná e Santa Catarina"
+        },
+        "RJ": {
+            "regional": "RRE",
+            "nm_regional_cmv_bi": "RRE - Regional Rio de Janeiro e Espírito Santo"
+        },
+        "RN": {
+            "regional": "RNE",
+            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
+        },
+        "RO": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "RS": {
+            "regional": "RRS",
+            "nm_regional_cmv_bi": "RRS - Regional Rio Grande do Sul"
+        },
+        "SC": {
+            "regional": "RPS",
+            "nm_regional_cmv_bi": "RPS - Regional Paraná e Santa Catarina"
+        },
+        "SE": {
+            "regional": "RBS",
+            "nm_regional_cmv_bi": "RBS - Regional Bahia e Sergipe"
+        },
+        "TO": {
+            "regional": "RCO",
+            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
+        },
+        "SPC": {
+            "regional": "RSC",
+            "nm_regional_cmv_bi": "RSC - Regional São Paulo - Capital"
+        },
+        "SPI": {
+            "regional": "RSI",
+            "nm_regional_cmv_bi": "RSI - Regional São Paulo - Interior"
+        }
+    }
+
+    return REGIONAIS.get(
+        uf,
+        {
+            "regional": "",
+            "nm_regional_cmv_bi": ""
+        }
+    )
