@@ -17,7 +17,7 @@ DB_PATH = os.path.abspath(
 
 
 def conectar():
-
+    print("DB_PATH =", DB_PATH)
     conn = sqlite3.connect(
         DB_PATH,
         timeout=30
@@ -265,7 +265,7 @@ def get_comentarios(id_ticket):
         SELECT *
         FROM comentarios_ticket
         WHERE id_ticket = ?
-        ORDER BY id DESC
+        ORDER BY id ASC
     """, (id_ticket,))
 
     rows = cur.fetchall()
@@ -314,7 +314,8 @@ def salvar_evento_ticket(
     vc_evento,
     minutos_ponderados=0,
     base_cidade=0,
-    assinantes_impactados=0
+    assinantes_impactados=0,
+    impacto=0
 ):
 
     conn = conectar()
@@ -330,10 +331,11 @@ def salvar_evento_ticket(
             vc_evento,
             minutos_ponderados,
             base_cidade,
-            assinantes_impactados
+            assinantes_impactados,
+            impacto
         )
         VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     """, (
             id_ticket,
@@ -344,7 +346,8 @@ def salvar_evento_ticket(
             vc_evento,
             minutos_ponderados,
             base_cidade,
-            assinantes_impactados
+            assinantes_impactados,
+            impacto
         ))
 
     conn.commit()
@@ -1457,7 +1460,9 @@ def get_relatorio(
             t.data_inicio,
             e.inicio_evento,
             e.final_evento AS data_fim,
-            e.vc_evento AS impacto,
+            e.impacto,
+            e.vc_evento,
+            e.minutos_ponderados,
 
             f.responsabilidade,
             f.parte,

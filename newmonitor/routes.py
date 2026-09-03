@@ -487,6 +487,7 @@ def salvar_evento(id_ticket):
         minutos_ponderados = evento.get("minutos_ponderados", 0)
         base_cidade = evento.get("base_cidade",0)
         assinantes_impactados = evento.get("assinantes_impactados",0)
+        impacto = evento.get("impacto", 0)
         
         salvar_evento_ticket(
             id_ticket=id_ticket,
@@ -497,7 +498,8 @@ def salvar_evento(id_ticket):
             vc_evento=vc_evento,
             minutos_ponderados=minutos_ponderados,
             base_cidade=base_cidade,
-            assinantes_impactados=assinantes_impactados
+            assinantes_impactados=assinantes_impactados,
+            impacto=impacto
         )
 
         for fase in evento.get("fases", []):

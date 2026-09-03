@@ -155,7 +155,11 @@ function renderRelatorio() {
 
             <td>${t.evento || "SEM EVENTO"}</td>
 
-            <td>${t.impacto ?? ""}</td>
+            <td>${t.impacto || "0"}%</td>
+
+            <td>${Number(t.vc_evento || 0).toFixed(2)}</td>
+
+            <td>${Number(t.minutos_ponderados || 0).toFixed(2)}</td>
 
             <td>${t.servico || ""}</td>
 

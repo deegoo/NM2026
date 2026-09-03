@@ -392,6 +392,9 @@ function calcularVC(tempo, impacto) {
     );
 
     return vc;
+    return Number(
+    total.toFixed(0)
+    );
 }
 
 // ============================
@@ -459,7 +462,7 @@ function calcularMinutosPonderados(
     });
 
     return Number(
-        total.toFixed(6)
+        total.toFixed(0)
     );
 }
 
@@ -757,13 +760,7 @@ async function carregarEventosSalvos() {
                     </p>
                     <p>
                         <b>Minutos Ponderados:</b>
-                        ${Number(evento.minutos_ponderados).toLocaleString(
-                            "pt-BR",
-                            {
-                                minimumFractionDigits: 6,
-                                maximumFractionDigits: 6
-                            }
-                        )}
+                        ${Number(evento.minutos_ponderados).toFixed(2)}
                     </p>
                     <p>
                     <b>Base Cidade:</b>
@@ -1581,6 +1578,7 @@ if (formEvento) {
             servico: reg.servico,
             final_evento,
             fases,
+            impacto: impactoAtual,
             vc_evento: vc_total,
             minutos_ponderados,
             base_cidade: baseCidade,
