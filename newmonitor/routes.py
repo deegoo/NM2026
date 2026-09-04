@@ -51,7 +51,7 @@ from newmonitor.database import (
     get_regras_fechamento,
     get_relatorio,
     get_base_assinantes,
-    get_regional_por_uf
+    get_dados_cidade
 
 )
 
@@ -345,19 +345,31 @@ def abrir_ticket():
         registro["data_inicio"] = formatar_data_br(
             registro.get("data_inicio")
         )
+        dados_cidade = get_dados_cidade(
+            registro.get("cidade")
+        )
+
+        registro["uf"] = dados_cidade.get(
+            "uf",
+            ""
+        )
+
+        registro["regional"] = dados_cidade.get(
+            "regional",
+            ""
+        )
+
+        registro["nm_regional_cmv_bi"] = dados_cidade.get(
+            "nm_regional_cmv_bi",
+            ""
+        )
 
         registro["data_abertura"] = agora
 
         registro["usuario"] = usuario_logado
 
         registro["status"] = "ABERTO"
-        
-        uf = registro.get("uf", "")
 
-        dados_regional = get_regional_por_uf(uf)
-
-        registro["regional"] = dados_regional["regional"]
-        registro["nm_regional_cmv_bi"] = dados_regional["nm_regional_cmv_bi"]
 
     salvar_ticket(registros)
     
@@ -1055,3 +1067,11 @@ def api_base_assinantes():
     return jsonify(
         get_base_assinantes()
     )
+    
+@app.route("/api/dados_cidade/<path:cidade>")
+@login_required
+def api_dados_cidade(cidade):
+
+    dados = get_dados_cidade(cidade)
+
+    return jsonify(dados)

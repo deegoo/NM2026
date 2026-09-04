@@ -203,7 +203,7 @@ function exportarCSV() {
 
     csv.push([
         "semana_evento","Ticket","Cidade","Início","Fim","Interrupção (min)","Evento","Impacto (%)",
-        "Serviço","Responsável","Sintoma","Nat. manut.","Parte rede",
+        "VC","Min. Ponderados","Serviço","Responsável","Sintoma","Nat. manut.","Parte rede",
         "Causa","Solução","Num. do Outage", "Causa raiz", "Isolamento OLT/CMTS"
 
     ].join(";"));
@@ -219,6 +219,8 @@ function exportarCSV() {
             t.interrupcao || "0",
             t.evento || "0",
             t.impacto || "0",
+            Number(t.vc_evento || 0).toFixed(2),
+            Number(t.vc_evento || 0).toFixed(2),
             t.servico || "0",
             t.responsabilidade || "0",
             t.sintoma || "0",
@@ -263,6 +265,8 @@ function exportarXLSX() {
         Interrupcao: t.interrupcao || "0",
         Evento: t.evento || "0",
         Impacto: t.impacto || "0",
+        VC: Number(t.vc_evento || 0).toFixed(2),
+        Minutos_Ponderados: Number(t.minutos_ponderados || 0).toFixed(2),
         Servico: t.servico || "0",
         Responsavel: t.responsabilidade || "0",
         Sintoma: t.sintoma || "0",

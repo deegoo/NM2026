@@ -1794,124 +1794,24 @@ def get_base_assinantes():
     conn.close()
 
     return [dict(row) for row in rows]
+    
+    
+def get_dados_cidade(cidade):
+    conn = conectar()
+    cur = conn.cursor()
 
-def get_regional_por_uf(uf):
+    cur.execute("""
+        SELECT
+            uf,
+            regional,
+            nm_regional_cmv_bi
+        FROM estrutura
+        WHERE cidade = ?
+        LIMIT 1
+    """, (cidade,))
 
-    REGIONAIS = {
-        "AC": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "AL": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "AM": {
-            "regional": "RNO",
-            "nm_regional_cmv_bi": "RNO - Regional Norte"
-        },
-        "AP": {
-            "regional": "RNO",
-            "nm_regional_cmv_bi": "RNO - Regional Norte"
-        },
-        "BA": {
-            "regional": "RBS",
-            "nm_regional_cmv_bi": "RBS - Regional Bahia e Sergipe"
-        },
-        "CE": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "DF": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "ES": {
-            "regional": "RRE",
-            "nm_regional_cmv_bi": "RRE - Regional Rio de Janeiro e Espírito Santo"
-        },
-        "GO": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "MA": {
-            "regional": "RNO",
-            "nm_regional_cmv_bi": "RNO - Regional Norte"
-        },
-        "MG": {
-            "regional": "RMG",
-            "nm_regional_cmv_bi": "RMG - Regional Minas Gerais"
-        },
-        "MS": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "MT": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "PA": {
-            "regional": "RNO",
-            "nm_regional_cmv_bi": "RNO - Regional Norte"
-        },
-        "PB": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "PE": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "PI": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "PR": {
-            "regional": "RPS",
-            "nm_regional_cmv_bi": "RPS - Regional Paraná e Santa Catarina"
-        },
-        "RJ": {
-            "regional": "RRE",
-            "nm_regional_cmv_bi": "RRE - Regional Rio de Janeiro e Espírito Santo"
-        },
-        "RN": {
-            "regional": "RNE",
-            "nm_regional_cmv_bi": "RNE - Regional Nordeste"
-        },
-        "RO": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "RS": {
-            "regional": "RRS",
-            "nm_regional_cmv_bi": "RRS - Regional Rio Grande do Sul"
-        },
-        "SC": {
-            "regional": "RPS",
-            "nm_regional_cmv_bi": "RPS - Regional Paraná e Santa Catarina"
-        },
-        "SE": {
-            "regional": "RBS",
-            "nm_regional_cmv_bi": "RBS - Regional Bahia e Sergipe"
-        },
-        "TO": {
-            "regional": "RCO",
-            "nm_regional_cmv_bi": "RCO - Regional Centro Oeste"
-        },
-        "SPC": {
-            "regional": "RSC",
-            "nm_regional_cmv_bi": "RSC - Regional São Paulo - Capital"
-        },
-        "SPI": {
-            "regional": "RSI",
-            "nm_regional_cmv_bi": "RSI - Regional São Paulo - Interior"
-        }
-    }
+    row = cur.fetchone()
 
-    return REGIONAIS.get(
-        uf,
-        {
-            "regional": "",
-            "nm_regional_cmv_bi": ""
-        }
-    )
+    conn.close()
+
+    return dict(row) if row else {}

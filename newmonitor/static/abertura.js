@@ -156,6 +156,8 @@ function atualizarCategorias() {
             cidadesSelecionadas[0]
                 .textContent;
 
+        carregarDadosCidade(cidade);
+
         if (!estrutura[cidade]) {
             return;
         }
@@ -460,6 +462,24 @@ function cadastrar() {
             "/ticket/" + data.id_ticket;
 
     });
+}
+
+async function carregarDadosCidade(cidade) {
+
+    const resp = await fetch(
+        `/api/dados_cidade/${encodeURIComponent(cidade)}`
+    );
+
+    const dados = await resp.json();
+
+    document.getElementById("uf").value =
+        dados.uf || "";
+
+    document.getElementById("regional").value =
+        dados.regional || "";
+
+    document.getElementById("nm_regional_cmv_bi").value =
+        dados.nm_regional_cmv_bi || "";
 }
 
 //=========================
