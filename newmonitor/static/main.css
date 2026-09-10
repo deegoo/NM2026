@@ -952,3 +952,34 @@ max-width: 170px;
   flex-direction: row;
   margin-bottom: 30px;
 }
+
+.modal-cluster {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 9999;
+}
+
+.modal-cluster-content {
+    background: var(--bg);
+    width: 600px;
+    max-width: 90%;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#resultadoCluster{
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+#btnCluster{
+  width: 20px;
+  border-radius: 10px;
+  font-weight: bolder;
+  font-size: 15px;
+  background-color: var(--bg);
+  color: #D52B1E;
+  border: 1px solid var(--panel);
+}

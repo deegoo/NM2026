@@ -51,7 +51,8 @@ from newmonitor.database import (
     get_regras_fechamento,
     get_relatorio,
     get_base_assinantes,
-    get_dados_cidade
+    get_dados_cidade,
+    get_cluster_cidades
 
 )
 
@@ -1075,3 +1076,14 @@ def api_dados_cidade(cidade):
     dados = get_dados_cidade(cidade)
 
     return jsonify(dados)
+
+@app.route("/api/cluster_cidades/<path:cidade_hub>")
+@login_required
+def api_cluster_cidades(cidade_hub):
+
+    resultado = get_cluster_cidades(cidade_hub)
+
+    print("HUB =", cidade_hub)
+    print("RESULTADO =", resultado)
+
+    return jsonify(resultado)

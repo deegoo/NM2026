@@ -12,6 +12,53 @@
 
 <label>Cidades</label><br>
 
+<button
+    type="button"
+    id="btnCluster"
+    title="Selecionar Cluster"
+>
+    +
+</button>
+
+<div
+    id="modalCluster"
+    class="modal-cluster"
+    style="display:none;"
+>
+
+    <div class="modal-cluster-content">
+
+        <h3>Selecionar Cluster</h3>
+
+        <input
+            type="text"
+            id="cidadeHub"
+            placeholder="Digite a cidade hub"
+        >
+        <hr>
+
+        <div id="resultadoCluster"></div>
+
+        <hr>
+
+        <button
+            type="button"
+            id="confirmarCluster"
+        >
+            Confirmar
+        </button>
+
+        <button
+            type="button"
+            id="fecharCluster"
+        >
+            Fechar
+        </button>
+
+    </div>
+
+</div>
+
 <div class="dual-list">
 
   <div class="list-box">

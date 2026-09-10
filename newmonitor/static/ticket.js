@@ -355,7 +355,7 @@ function getBaseCidade(
 
     return (
         dados.cidades[
-            cidade.toUpperCase()
+            normalizarCidade(cidade)
         ] || 0
     );
 }
@@ -434,7 +434,7 @@ function calcularMinutosPonderados(
 
     const baseCidade =
         dados.cidades[
-            cidade.toUpperCase()
+            normalizarCidade(cidade)
         ] || 0;
 
     const baseBrasil =
@@ -461,9 +461,7 @@ function calcularMinutosPonderados(
 
     });
 
-    return Number(
-        total.toFixed(0)
-    );
+    return total;
 }
 
 // ============================
@@ -760,7 +758,7 @@ async function carregarEventosSalvos() {
                     </p>
                     <p>
                         <b>Minutos Ponderados:</b>
-                        ${Number(evento.minutos_ponderados).toFixed(2)}
+                        ${Number(evento.minutos_ponderados).toFixed(4)}
                     </p>
                     <p>
                     <b>Base Cidade:</b>
@@ -1293,7 +1291,7 @@ async function carregarBaseAssinantes() {
         baseClientes[
             servico
         ].cidades[
-            reg.cidade.toUpperCase()
+            normalizarCidade(reg.cidade)
         ] = reg.base_cidade;
 
     });
@@ -1304,6 +1302,16 @@ async function carregarBaseAssinantes() {
     );
 
 }
+
+function normalizarCidade(cidade) {
+
+    return String(cidade || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .trim();
+}
+
 // ============================
 // ✅ DOM READY
 // ============================

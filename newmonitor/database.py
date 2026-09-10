@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import requests
+import unicodedata
 
 from requests_ntlm import HttpNtlmAuth
 from datetime import datetime
@@ -1450,28 +1451,76 @@ def get_relatorio(
 
     sql = """
         SELECT
+
+            -- ======================
+            -- TICKET
+            -- ======================
+
             t.id_ticket,
+
+            t.nm_regional_cmv_bi,
+
             t.cidade,
+
             t.servico,
+
+            t.categoria,
+
+            t.ofensor,
+
             t.sintoma,
+
             t.evento,
-            t.outage,
+
+            t.descricao,
 
             t.data_inicio,
+
+            t.chamado_operadora,
+
+            t.outage,
+
+            t.status,
+
+            -- ======================
+            -- EVENTO
+            -- ======================
+
             e.inicio_evento,
+
             e.final_evento AS data_fim,
+
             e.impacto,
+
             e.vc_evento,
+
             e.minutos_ponderados,
 
+            e.base_cidade,
+
+            e.assinantes_impactados,
+
+            -- ======================
+            -- FECHAMENTO
+            -- ======================
+
             f.responsabilidade,
-            f.parte,
+
             f.natureza,
+
+            f.parte,
+
             f.causa,
+
             f.solucao,
+
             f.sumario,
+
             f.causa_raiz,
-            f.isolamento_olt_cmts
+
+            f.isolamento_olt_cmts,
+
+            f.tecnologia_acesso
 
         FROM tickets t
 
@@ -1815,3 +1864,76 @@ def get_dados_cidade(cidade):
     conn.close()
 
     return dict(row) if row else {}
+
+def get_cluster_cidades(cidade_hub):
+
+    hub_normalizado = normalizar_texto(
+        cidade_hub
+    )
+
+    print(
+        "HUB NORMALIZADO =",
+        hub_normalizado
+    )
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            cidade_hub,
+            cidade_cluster
+        FROM clusters_cidades
+    """)
+
+    rows = cur.fetchall()
+
+    print("TOTAL ROWS =", len(rows))
+
+    for row in rows:
+        print(
+            row["cidade_hub"],
+            "|",
+            row["cidade_cluster"]
+        )
+
+    conn.close()
+
+    resultado = []
+
+    for row in rows:
+
+        hub_banco = normalizar_texto(
+            row["cidade_hub"]
+        )
+
+        print(
+            f"{hub_normalizado} -> {hub_banco}"
+        )
+
+        if hub_normalizado in hub_banco:
+
+            print(
+                "MATCH:",
+                hub_normalizado,
+                "->",
+                hub_banco
+            )
+
+            resultado.append(
+                row["cidade_cluster"]
+            )
+
+    print("RESULTADO =", resultado)
+
+    return resultado
+        
+def normalizar_texto(texto):
+
+    return ''.join(
+        c for c in unicodedata.normalize(
+            'NFD',
+            texto.upper()
+        )
+        if unicodedata.category(c) != 'Mn'
+    )

@@ -156,8 +156,6 @@ function atualizarCategorias() {
             cidadesSelecionadas[0]
                 .textContent;
 
-        carregarDadosCidade(cidade);
-
         if (!estrutura[cidade]) {
             return;
         }
@@ -464,23 +462,24 @@ function cadastrar() {
     });
 }
 
-async function carregarDadosCidade(cidade) {
 
-    const resp = await fetch(
-        `/api/dados_cidade/${encodeURIComponent(cidade)}`
-    );
+document.getElementById("btnCluster").addEventListener("click", () => {document.getElementById("modalCluster").style.display = "block";});
+document    .getElementById("fecharCluster").addEventListener("click", () => {
 
-    const dados = await resp.json();
+        document
+            .getElementById("cidadeHub")
+            .value = "";
 
-    document.getElementById("uf").value =
-        dados.uf || "";
+        document
+            .getElementById("resultadoCluster")
+            .innerHTML = "";
 
-    document.getElementById("regional").value =
-        dados.regional || "";
+        document
+            .getElementById("modalCluster")
+            .style.display = "none";
 
-    document.getElementById("nm_regional_cmv_bi").value =
-        dados.nm_regional_cmv_bi || "";
-}
+    });
+
 
 //=========================
 //   DOM
@@ -623,25 +622,116 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     });
-    const uf = document.getElementById("uf");
 
-    [
-        "AC","AL","AM","AP","BA","CE",
-        "DF","ES","GO","MA","MG","MS",
-        "MT","PA","PB","PE","PI","PR",
-        "RJ","RN","RO","RS","SC","SE",
-        "TO"
-    ].forEach(sigla => {
+    
+    document
+    .getElementById("cidadeHub")
+    .addEventListener("input", async () => {
 
-        uf.innerHTML +=
-            `<option value="${sigla}">
-                ${sigla}
-            </option>`;
+        const cidadeHub =
+            document
+                .getElementById("cidadeHub")
+                .value
+                .trim();
+
+        if (cidadeHub.length < 2) {
+
+            document.getElementById(
+                "resultadoCluster"
+            ).innerHTML = "";
+
+            return;
+        }
+
+        const resp =
+            await fetch(
+                `/api/cluster_cidades/${encodeURIComponent(cidadeHub)}`
+            );
+
+        const cidades =
+            await resp.json();
+
+        const resultado =
+            document.getElementById(
+                "resultadoCluster"
+            );
+
+        resultado.innerHTML = "";
+
+        cidades.forEach(cidade => {
+
+            const div =
+                document.createElement("div");
+
+            div.innerHTML = `
+                <label>
+                    <input
+                        type="checkbox"
+                        class="cidade-cluster"
+                        value="${cidade}"
+                    >
+                    ${cidade}
+                </label>
+            `;
+
+            resultado.appendChild(div);
+
+        });
+
+    });
+    document
+    .getElementById("confirmarCluster")
+    .addEventListener("click", () => {
+
+        const selecionadas =
+            document.querySelectorAll(
+                ".cidade-cluster:checked"
+            );
+
+        selecionadas.forEach(item => {
+
+            const cidade =
+                item.value;
+
+            const jaExiste =
+                [...document.querySelectorAll(
+                    "#cidadesSelecionadas li"
+                )]
+                .some(li =>
+                    li.textContent.trim() === cidade
+                );
+
+            if (jaExiste) {
+                return;
+            }
+
+            document
+                .getElementById(
+                    "cidadesSelecionadas"
+                )
+                .appendChild(
+                    criarLi(cidade)
+                );
+
+        });
+
+        atualizarCategorias();
+
+        document
+            .getElementById("cidadeHub")
+            .value = "";
+
+        document
+            .getElementById("resultadoCluster")
+            .innerHTML = "";
+
+        document
+            .getElementById("modalCluster")
+            .style.display = "none";
+
     });
 
-    uf.innerHTML += `
-        <option value="SPC">SP Capital</option>
-        <option value="SPI">SP Interior</option>
-    `;
+
+
 
 });

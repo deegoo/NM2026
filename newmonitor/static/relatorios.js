@@ -123,7 +123,7 @@ function renderRelatorio() {
 
         tbody.innerHTML =
             `<tr>
-                <td colspan="18">
+                <td colspan="30">
                     Nenhum resultado
                 </td>
             </tr>`;
@@ -145,27 +145,45 @@ function renderRelatorio() {
                 </a>
             </td>
 
+            <td>${t.nm_regional_cmv_bi || ""}</td>
+
             <td>${t.cidade || ""}</td>
 
+            <td>${t.servico || ""}</td>
+
+            <td>${t.categoria || ""}</td>
+
+            <td>${t.ofensor || ""}</td>
+
+            <td>${t.sintoma || ""}</td>
+
+            <td>${t.evento || ""}</td>
+
+            <td>${t.descricao || ""}</td>
+
             <td>${t.data_inicio || ""}</td>
+
+            <td>${t.chamado_operadora || ""}</td>
+
+            <td>${t.outage || ""}</td>
+
+            <td>${t.status || ""}</td>
 
             <td>${t.data_fim || ""}</td>
 
             <td>${t.interrupcao || ""}</td>
 
-            <td>${t.evento || "SEM EVENTO"}</td>
+            <td>${Number(t.impacto ?? 0)}</td>
 
-            <td>${t.impacto || "0"}%</td>
+            <td>${Number(t.vc_evento || 0).toFixed(4)}</td>
 
-            <td>${Number(t.vc_evento || 0).toFixed(2)}</td>
+            <td>${Number(t.minutos_ponderados || 0).toFixed(4)}</td>
 
-            <td>${Number(t.minutos_ponderados || 0).toFixed(2)}</td>
+            <td>${t.base_cidade || ""}</td>
 
-            <td>${t.servico || ""}</td>
+            <td>${t.assinantes_impactados || ""}</td>
 
             <td>${t.responsabilidade || ""}</td>
-
-            <td>${t.sintoma || ""}</td>
 
             <td>${t.natureza || ""}</td>
 
@@ -175,12 +193,17 @@ function renderRelatorio() {
 
             <td>${t.solucao || ""}</td>
 
-            <td>${t.outage || ""}</td>
+            <td>${t.sumario || ""}</td>
 
             <td>${t.causa_raiz || ""}</td>
 
-            <td>${Number(t.isolamento_olt_cmts || 0) === 1 ? "SIM" : "NÃO"}</td>
+            <td>${
+                Number(t.isolamento_olt_cmts || 0) === 1
+                    ? "SIM"
+                    : "NÃO"
+            }</td>
 
+            <td>${t.tecnologia_acesso || ""}</td>
         `;
 
         tbody.appendChild(tr);
@@ -202,35 +225,71 @@ function exportarCSV() {
     let csv = [];
 
     csv.push([
-        "semana_evento","Ticket","Cidade","Início","Fim","Interrupção (min)","Evento","Impacto (%)",
-        "VC","Min. Ponderados","Serviço","Responsável","Sintoma","Nat. manut.","Parte rede",
-        "Causa","Solução","Num. do Outage", "Causa raiz", "Isolamento OLT/CMTS"
-
+        "Semana",
+        "Ticket",
+        "Regional",
+        "Cidade",
+        "Serviço",
+        "Categoria",
+        "Ofensor",
+        "Sintoma",
+        "Evento",
+        "Descrição",
+        "Data Início",
+        "Chamado Operadora",
+        "Outage",
+        "Status",
+        "Fim Evento",
+        "Interrupção (min)",
+        "Impacto (%)",
+        "VC",
+        "Minutos Ponderados",
+        "Base Cidade",
+        "Assinantes Impactados",
+        "Responsável",
+        "Natureza",
+        "Parte Rede",
+        "Causa",
+        "Solução",
+        "Sumário",
+        "Causa Raiz",
+        "Isolamento OLT/CMTS",
+        "Tecnologia Acesso"
     ].join(";"));
 
     dadosGlobal.forEach(t => {
 
         csv.push([
-            t.semana_evento || "0",
-            t.id_ticket,
-            t.cidade || "0",
-            t.data_inicio || "0",
-            t.data_fim || "0",
-            t.interrupcao || "0",
-            t.evento || "0",
-            t.impacto || "0",
+            t.semana_evento || "",
+            t.id_ticket || "",
+            t.nm_regional_cmv_bi || "",
+            t.cidade || "",
+            t.servico || "",
+            t.categoria || "",
+            t.ofensor || "",
+            t.sintoma || "",
+            t.evento || "",
+            t.descricao || "",
+            t.data_inicio || "",
+            t.chamado_operadora || "",
+            t.outage || "",
+            t.status || "",
+            t.data_fim || "",
+            t.interrupcao || "",
+            t.impacto ?? 0,
             Number(t.vc_evento || 0).toFixed(2),
-            Number(t.vc_evento || 0).toFixed(2),
-            t.servico || "0",
-            t.responsabilidade || "0",
-            t.sintoma || "0",
-            t.natureza || "0",
-            t.parte || "0",
-            t.causa || "0",
-            t.solucao || "0",
-            t.outage || "0",
-            t.causa_raiz || "0",
-            Number(t.isolamento_olt_cmts || "0") === 1 ? "SIM" : "NÃO"
+            Number(t.minutos_ponderados || 0).toFixed(2),
+            t.base_cidade || "",
+            t.assinantes_impactados || "",
+            t.responsabilidade || "",
+            t.natureza || "",
+            t.parte || "",
+            t.causa || "",
+            t.solucao || "",
+            t.sumario || "",
+            t.causa_raiz || "",
+            Number(t.isolamento_olt_cmts || 0) === 1 ? "SIM" : "NÃO",
+            t.tecnologia_acesso || ""
         ].join(";"));
 
     });
@@ -257,26 +316,39 @@ function exportarXLSX() {
     }
 
     const dados = dadosGlobal.map(t => ({
-        semana_evento: t.semana_evento || "0",
-        Ticket: t.id_ticket,
-        Cidade: t.cidade || "0",
-        Inicio: t.data_inicio || "0",
-        Fim: t.data_fim || "0",
-        Interrupcao: t.interrupcao || "0",
-        Evento: t.evento || "0",
-        Impacto: t.impacto || "0",
+        Semana: t.semana_evento || "",
+        Ticket: t.id_ticket || "",
+        Regional: t.nm_regional_cmv_bi || "",
+        Cidade: t.cidade || "",
+        Servico: t.servico || "",
+        Categoria: t.categoria || "",
+        Ofensor: t.ofensor || "",
+        Sintoma: t.sintoma || "",
+        Evento: t.evento || "",
+        Descricao: t.descricao || "",
+        Data_Inicio: t.data_inicio || "",
+        Chamado_Operadora: t.chamado_operadora || "",
+        Outage: t.outage || "",
+        Status: t.status || "",
+        Fim_Evento: t.data_fim || "",
+        Interrupcao_Min: t.interrupcao || "",
+        Impacto: t.impacto ?? 0,
         VC: Number(t.vc_evento || 0).toFixed(2),
         Minutos_Ponderados: Number(t.minutos_ponderados || 0).toFixed(2),
-        Servico: t.servico || "0",
-        Responsavel: t.responsabilidade || "0",
-        Sintoma: t.sintoma || "0",
-        Natureza: t.natureza || "0",
-        ParteRede: t.parte || "0",
-        Causa: t.causa || "0",
-        Solucao: t.solucao || "0",
-        Outage: t.outage || "0",
-        Causa_Raiz: t.causa_raiz || "0",
-        Isolamento_OLT_CMTS: Number(t.isolamento_olt_cmts || "0") === 1 ? "SIM" : "NÃO"
+        Base_Cidade: t.base_cidade || "",
+        Assinantes_Impactados: t.assinantes_impactados || "",
+        Responsavel: t.responsabilidade || "",
+        Natureza: t.natureza || "",
+        Parte_Rede: t.parte || "",
+        Causa: t.causa || "",
+        Solucao: t.solucao || "",
+        Sumario: t.sumario || "",
+        Causa_Raiz: t.causa_raiz || "",
+        Isolamento_OLT_CMTS:
+            Number(t.isolamento_olt_cmts || 0) === 1
+                ? "SIM"
+                : "NÃO",
+        Tecnologia_Acesso: t.tecnologia_acesso || ""
     }));
 
     const ws = XLSX.utils.json_to_sheet(dados);
