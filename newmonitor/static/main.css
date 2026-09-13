@@ -969,6 +969,28 @@ max-width: 170px;
     border-radius: 8px;
 }
 
+#confirmarCluster, #fecharCluster{
+      padding: 5px 10px;
+      margin-right: 5px;
+      border: 1px solid var(--shadow1);
+      background: var(--panel);
+      color: var(--bg);
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 5px 10px;
+      height: 30px;
+      white-space: nowrap;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+#confirmarCluster:hover, #fecharCluster:hover {
+    transform: scale(1.03);
+    background: var(--bg);
+    color: var(--panel);
+    border: 2px solid var(--accent);
+    box-shadow: 3px 3px 6px var(--shadow0);
+    }
+
 #resultadoCluster{
     max-height: 60vh;
     overflow-y: auto;

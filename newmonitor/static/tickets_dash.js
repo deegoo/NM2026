@@ -36,7 +36,7 @@ function carregarTickets() {
                     outage: t.outage,
                     usuario: t.usuario,
                     data_inicio: t.data_inicio,
-                    logs: t.logs || []
+                    ultima_atualizacao: t.ultima_atualizacao
                 };
             }
 
@@ -122,17 +122,17 @@ function formatarData(dataStr) {
 ========================= */
 function getUltimaAtualizacao(t) {
 
-    if (t.logs && t.logs.length > 0) {
-        const ultimoLog = t.logs[t.logs.length - 1];
+    if (t.ultima_atualizacao) {
 
-        if (ultimoLog.data instanceof Date) {
-            return ultimoLog.data;
-        }
+        return parseBR(
+            t.ultima_atualizacao
+        );
 
-        return parseBR(ultimoLog.data);
     }
 
-    return parseBR(t.data_inicio);
+    return parseBR(
+        t.data_inicio
+    );
 }
 
 
@@ -244,6 +244,10 @@ function renderTabela(lista) {
         `;
             
         tabela.appendChild(tr);
+        console.log(
+            t.id_ticket,
+            t.ultima_atualizacao
+        );
     });
 }
 

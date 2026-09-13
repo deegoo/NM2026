@@ -86,6 +86,7 @@ def get_regras_abertura():
 
         if sintoma not in regras[servico]:
             regras[servico][sintoma] = []
+            
         if evento not in regras[servico][sintoma]:
             regras[servico][sintoma].append(evento)
 
@@ -136,10 +137,11 @@ def salvar_ticket(registros):
                 usuario,
                 uf,
                 regional,
-                nm_regional_cmv_bi
+                nm_regional_cmv_bi,
+                cnl_net
 
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             ticket["id_ticket"],
             ticket["cidade"],
@@ -157,7 +159,8 @@ def salvar_ticket(registros):
             ticket.get("usuario"),
             ticket.get("uf"),
             ticket.get("regional"),
-            ticket.get("nm_regional_cmv_bi")
+            ticket.get("nm_regional_cmv_bi"),
+            ticket.get("cnl_net")
         ))
 
     conn.commit()
@@ -190,9 +193,19 @@ def get_tickets():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT *
-        FROM tickets
-        ORDER BY id DESC
+        SELECT
+            t.*,
+
+            (
+                SELECT data
+                FROM atividades_ticket a
+                WHERE a.id_ticket = t.id_ticket
+                ORDER BY a.id DESC
+                LIMIT 1
+            ) AS ultima_atualizacao
+
+        FROM tickets t
+        ORDER BY t.id DESC
     """)
 
     rows = cur.fetchall()
@@ -276,10 +289,10 @@ def get_comentarios(id_ticket):
     return [dict(row) for row in rows]
 
 
-def salvar_comentario (
-    id_ticket, 
-    usuario, 
-    comentario, 
+def salvar_comentario(
+    id_ticket,
+    usuario,
+    comentario,
     imagem=None
 ):
 
@@ -305,6 +318,13 @@ def salvar_comentario (
 
     conn.commit()
     conn.close()
+
+    registrar_atividade(
+        id_ticket=id_ticket,
+        usuario=usuario,
+        acao="COMENTARIO",
+        detalhes="Comentário adicionado"
+    )
     
 def salvar_evento_ticket(
     id_ticket,
@@ -458,25 +478,26 @@ def salvar_fechamento_ticket(
     parte,
     causa,
     solucao,
-    sumario,    
+    sumario,
     causa_raiz=None,
     isolamento_olt_cmts=0,
-    tecnologia_acesso=None
+    tecnologia_acesso=None,
+    usuario=None
 ):
 
     conn = conectar()
     cur = conn.cursor()
-    
+
     cur.execute("""
-    SELECT
-        sintoma,
-        evento
-    FROM tickets
-    WHERE id_ticket = ?
-      AND servico = ?
-""", (
-    id_ticket,
-    servico
+        SELECT
+            sintoma,
+            evento
+        FROM tickets
+        WHERE id_ticket = ?
+          AND servico = ?
+    """, (
+        id_ticket,
+        servico
     ))
 
     ticket = cur.fetchone()
@@ -513,9 +534,10 @@ def salvar_fechamento_ticket(
             natureza,
             causa_raiz,
             isolamento_olt_cmts,
-            tecnologia_acesso
+            tecnologia_acesso,
+            usuario
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         id_ticket,
         servico,
@@ -527,11 +549,21 @@ def salvar_fechamento_ticket(
         natureza,
         causa_raiz,
         isolamento_olt_cmts,
-        tecnologia_acesso
+        tecnologia_acesso,
+        usuario
     ))
 
     conn.commit()
     conn.close()
+
+    if usuario:
+
+        registrar_atividade(
+            id_ticket=id_ticket,
+            usuario=usuario,
+            acao="FECHAMENTO",
+            detalhes=f"Fechamento do serviço {servico}"
+        )
     
 def excluir_fechamentos_ticket(id_ticket):
 
@@ -1438,6 +1470,7 @@ def get_relatorio(
     data_inicio,
     data_fim,
     cidade=None,
+    cnl_net=None,
     servico=None,
     evento=None,
     responsavel=None,
@@ -1461,6 +1494,8 @@ def get_relatorio(
             t.nm_regional_cmv_bi,
 
             t.cidade,
+            
+            t.cnl_net,
 
             t.servico,
 
@@ -1937,3 +1972,35 @@ def normalizar_texto(texto):
         )
         if unicodedata.category(c) != 'Mn'
     )
+    
+def get_cnl_cidade(cidade):
+
+    cidade_normalizada = normalizar_texto(
+        cidade
+    )
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            cidade,
+            cnl_net
+        FROM cidades_cnl
+    """)
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    for row in rows:
+
+        if (
+            normalizar_texto(
+                row["cidade"]
+            ) == cidade_normalizada
+        ):
+
+            return row["cnl_net"]
+
+    return ""

@@ -149,6 +149,8 @@ function renderRelatorio() {
 
             <td>${t.cidade || ""}</td>
 
+            <td>${t.cnl_net || ""}</td>
+
             <td>${t.servico || ""}</td>
 
             <td>${t.categoria || ""}</td>
@@ -229,6 +231,7 @@ function exportarCSV() {
         "Ticket",
         "Regional",
         "Cidade",
+        "CNL NET",
         "Serviço",
         "Categoria",
         "Ofensor",
@@ -264,6 +267,7 @@ function exportarCSV() {
             t.id_ticket || "",
             t.nm_regional_cmv_bi || "",
             t.cidade || "",
+            t.cnl_net || "",
             t.servico || "",
             t.categoria || "",
             t.ofensor || "",
@@ -320,6 +324,7 @@ function exportarXLSX() {
         Ticket: t.id_ticket || "",
         Regional: t.nm_regional_cmv_bi || "",
         Cidade: t.cidade || "",
+        CNL_NET: t.cnl_net || "",
         Servico: t.servico || "",
         Categoria: t.categoria || "",
         Ofensor: t.ofensor || "",

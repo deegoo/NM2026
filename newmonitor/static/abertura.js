@@ -6,6 +6,16 @@ let estrutura = {};
 let regras = {};
 let categoriasMulticidade = [];
 
+function normalizarTexto(texto) {
+
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .trim();
+
+}
+
 async function carregarEstrutura() {
 
     const res = await fetch("/api/estrutura");
@@ -530,7 +540,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     inputBusca.addEventListener("input", function () {
 
         const termo =
-            this.value.toUpperCase();
+            normalizarTexto(
+                this.value
+            );
 
         const lista =
             document.querySelectorAll(
@@ -542,7 +554,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         lista.forEach(li => {
 
             const texto =
-                li.textContent.toUpperCase();
+                normalizarTexto(
+                    li.textContent
+                );
 
             if (texto.startsWith(termo)) {
 

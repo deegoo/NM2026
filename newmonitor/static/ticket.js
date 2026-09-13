@@ -1772,23 +1772,52 @@ if (formEvento) {
         const tecnologia_acesso = document.getElementById("tecnologia_acesso")?.value || "";
         const isolamento_olt_cmts = document.getElementById("isolamento_olt_cmts")?.checked ? 1 : 0;
 
+        if (!tecnologia_acesso) {
+
+            alert(
+                "Tecnologia de Acesso é obrigatória."
+            );
+
+            return;
+        }
+
                 fetch("/fechar_ticket_multi/" + window.ID_TICKET, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fechamentos: payload, tecnologia_acesso, isolamento_olt_cmts})
-        })
-        .then(res => {
-            if (!res.ok) {
-                console.error("❌ erro HTTP:", res.status);
-                alert("Erro ao fechar ticket");
-                return;
-            }
-            return res.json();
-        })
-        .then(() => {
-            alert("✅ Ticket fechado");
-            location.reload();
-        });
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        fechamentos: payload,
+                        tecnologia_acesso,
+                        isolamento_olt_cmts
+                    })
+                })
+                .then(async res => {
+
+                    if (!res.ok) {
+
+                        const erro = await res.json();
+
+                        alert(erro.erro || "Erro ao fechar ticket");
+
+                        throw new Error(
+                            erro.erro || "Erro ao fechar ticket"
+                        );
+                    }
+
+                    return res.json();
+
+                })
+                .then(() => {
+
+                    alert("✅ Ticket fechado");
+
+                    location.reload();
+
+                })
+                .catch(err => {
+
+                    console.error(err);
+
+                });
 
     });
         document.addEventListener("change", function(e) {

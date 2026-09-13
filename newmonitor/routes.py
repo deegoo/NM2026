@@ -52,7 +52,8 @@ from newmonitor.database import (
     get_relatorio,
     get_base_assinantes,
     get_dados_cidade,
-    get_cluster_cidades
+    get_cluster_cidades,
+    get_cnl_cidade
 
 )
 
@@ -364,6 +365,9 @@ def abrir_ticket():
             "nm_regional_cmv_bi",
             ""
         )
+        registro["cnl_net"] = get_cnl_cidade(
+            registro.get("cidade")
+        )
 
         registro["data_abertura"] = agora
 
@@ -544,6 +548,15 @@ def salvar_evento(id_ticket):
 def fechar_ticket_multi(id_ticket):
 
     id_ticket = unquote(id_ticket)
+    
+    if not ticket_possui_evento(id_ticket):
+
+        return jsonify({
+            "erro": (
+                "Não é possível fechar o ticket "
+                "sem registrar um evento."
+            )
+        }), 400
 
     dados = request.json
 
@@ -559,6 +572,13 @@ def fechar_ticket_multi(id_ticket):
     tecnologia_acesso = dados.get(
     "tecnologia_acesso"
     )
+    if not tecnologia_acesso:
+
+        return jsonify({
+            "erro": (
+                "Tecnologia de Acesso é obrigatória."
+            )
+        }), 400
 
     isolamento_olt_cmts = dados.get(
         "isolamento_olt_cmts",
@@ -1087,3 +1107,21 @@ def api_cluster_cidades(cidade_hub):
     print("RESULTADO =", resultado)
 
     return jsonify(resultado)
+
+        
+def ticket_possui_evento(id_ticket):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT COUNT(*)
+        FROM eventos_ticket
+        WHERE id_ticket = ?
+    """, (id_ticket,))
+
+    total = cur.fetchone()[0]
+
+    conn.close()
+
+    return total > 0
