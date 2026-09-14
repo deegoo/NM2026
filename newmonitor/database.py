@@ -730,6 +730,13 @@ def get_dashboard():
             agora - ultima
         ).total_seconds() / 60
 
+
+        print(
+            row["id_ticket"],
+            row["cidade"],
+            ultima,
+            round(diff_horas, 2)
+        )
         # =========================
         # REGRA AVALIAÇÃO
         # =========================
@@ -2004,3 +2011,267 @@ def get_cnl_cidade(cidade):
             return row["cnl_net"]
 
     return ""
+
+def get_dashboard_operacao():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    dashboard = {}
+
+    # =========================
+    # CARDS
+    # =========================
+
+    cur.execute("""
+        SELECT COUNT(DISTINCT id_ticket)
+        FROM tickets
+        WHERE status = 'ABERTO'
+    """)
+    dashboard["abertos"] = cur.fetchone()[0]
+
+    cur.execute("""
+        SELECT COUNT(DISTINCT id_ticket)
+        FROM tickets
+        WHERE status = 'FECHADO'
+    """)
+    dashboard["fechados"] = cur.fetchone()[0]
+
+    cur.execute("""
+        SELECT COUNT(DISTINCT id_ticket)
+        FROM tickets
+        WHERE status = 'CANCELADO'
+    """)
+    dashboard["cancelados"] = cur.fetchone()[0]
+
+    # =========================
+    # TOP CIDADES
+    # =========================
+
+    cur.execute("""
+        SELECT
+            cidade,
+            COUNT(*) AS total
+        FROM tickets
+        GROUP BY cidade
+        ORDER BY total DESC
+        LIMIT 10
+    """)
+
+    dashboard["top_cidades"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+
+    # =========================
+    # TOP OFENSORES
+    # =========================
+
+    cur.execute("""
+        SELECT
+            ofensor,
+            COUNT(*) AS total
+        FROM tickets
+        WHERE ofensor IS NOT NULL
+          AND ofensor <> ''
+        GROUP BY ofensor
+        ORDER BY total DESC
+        LIMIT 10
+    """)
+
+    dashboard["top_ofensores"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+
+    # =========================
+    # TOP SERVIÇOS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            servico,
+            COUNT(*) AS total
+        FROM tickets
+        GROUP BY servico
+        ORDER BY total DESC
+        LIMIT 10
+    """)
+
+    dashboard["top_servicos"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+
+    # =========================
+    # TOP REGIONAIS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            nm_regional_cmv_bi,
+            COUNT(*) AS total
+        FROM tickets
+        WHERE nm_regional_cmv_bi IS NOT NULL
+          AND nm_regional_cmv_bi <> ''
+        GROUP BY nm_regional_cmv_bi
+        ORDER BY total DESC
+        LIMIT 10
+    """)
+
+    dashboard["top_regionais"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+
+    # =========================
+    # TOP CNL
+    # =========================
+
+    cur.execute("""
+        SELECT
+            cnl_net,
+            COUNT(*) AS total
+        FROM tickets
+        WHERE cnl_net IS NOT NULL
+          AND cnl_net <> ''
+        GROUP BY cnl_net
+        ORDER BY total DESC
+        LIMIT 10
+    """)
+
+    dashboard["top_cnl"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+
+    # =========================
+    # TICKETS AMARELOS
+    # =========================
+
+    dashboard["tickets_amarelos"] = []
+
+    # =========================
+    # TICKETS VERMELHOS
+    # =========================
+
+    dashboard["tickets_vermelhos"] = []
+
+    cur.execute("""
+        SELECT
+            t.id_ticket,
+            t.cidade,
+            t.evento,
+
+            (
+                SELECT a.data
+                FROM atividades_ticket a
+                WHERE a.id_ticket = t.id_ticket
+                ORDER BY a.id DESC
+                LIMIT 1
+            ) AS ultima_atualizacao
+
+        FROM tickets t
+
+        WHERE t.status = 'ABERTO'
+
+        GROUP BY
+            t.id_ticket,
+            t.cidade,
+            t.evento
+    """)
+
+    rows = cur.fetchall()
+
+    agora = datetime.now()
+
+    for row in rows:
+
+        ultima = row["ultima_atualizacao"]
+
+        if not ultima:
+            continue
+
+        try:
+
+            dt_ultima = datetime.strptime(
+                ultima,
+                "%d/%m/%Y %H:%M"
+            )
+
+        except Exception:
+            continue
+
+        diff_horas = (
+            agora - dt_ultima
+        ).total_seconds() / 3600
+
+        evento = (
+            row["evento"] or ""
+        ).upper()
+
+        registro = {
+            "id_ticket": row["id_ticket"],
+            "cidade": row["cidade"],
+            "evento": row["evento"],
+            "ultima_atualizacao": ultima,
+            "horas": round(
+                diff_horas,
+                2
+            )
+        }
+
+        evento = (
+            row["evento"] or ""
+        ).upper()
+
+        registro = {
+            "id_ticket": row["id_ticket"],
+            "cidade": row["cidade"],
+            "evento": row["evento"],
+            "ultima_atualizacao": ultima,
+            "horas": round(
+                diff_horas,
+                2
+            )
+        }
+
+        # =========================
+        # AVALIAÇÃO
+        # =========================
+
+        if "AVALIA" in evento:
+
+            if diff_horas >= 24:
+
+                dashboard[
+                    "tickets_vermelhos"
+                ].append(registro)
+
+            elif diff_horas >= 12:
+
+                dashboard[
+                    "tickets_amarelos"
+                ].append(registro)
+
+        # =========================
+        # PADRÃO
+        # =========================
+
+        else:
+
+            if diff_horas >= 3:
+
+                dashboard[
+                    "tickets_vermelhos"
+                ].append(registro)
+
+            elif diff_horas >= 1.5:
+
+                dashboard[
+                    "tickets_amarelos"
+                ].append(registro)
+
+    conn.close()
+
+    return dashboard

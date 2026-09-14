@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1 class="dash_operacao">
+    📡 Dashboard Operacional
+</h1>
+
+<div id="cardsOperacao"></div>
+
+<hr>
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card">
+        <h3>🏙️ Top Cidades</h3>
+        <div id="topCidades"></div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>🔗 Top Ofensores</h3>
+        <div id="topOfensores"></div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>📺 Top Serviços</h3>
+        <div id="topServicos"></div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>🌎 Top Regionais</h3>
+        <div id="topRegionais"></div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>🏷️ Top CNL</h3>
+        <div id="topCnl"></div>
+    </div>
+
+    <div class="dashboard-card">
+
+        <h3>
+            🟡 Tickets em Atenção
+        </h3>
+
+        <div id="ticketsAmarelos"></div>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <h3>
+            🔴 Tickets Críticos
+        </h3>
+
+        <div id="ticketsVermelhos"></div>
+
+    </div>
+
+
+
+
+</div>
+
+<script src="{{ url_for('static', filename='dashboard_operacao.js') }}"></script>
+
+{% endblock %}

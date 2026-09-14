@@ -53,7 +53,8 @@ from newmonitor.database import (
     get_base_assinantes,
     get_dados_cidade,
     get_cluster_cidades,
-    get_cnl_cidade
+    get_cnl_cidade,
+    get_dashboard_operacao
 
 )
 
@@ -1125,3 +1126,16 @@ def ticket_possui_evento(id_ticket):
     conn.close()
 
     return total > 0
+
+@app.route("/dashboard_operacao_view")
+@login_required
+def dashboard_operacao_view():
+    return render_template("dashboard_operacao.html")
+
+@app.route("/dashboard_operacao")
+@login_required
+def dashboard_operacao():
+
+    return jsonify(
+        get_dashboard_operacao()
+    )
