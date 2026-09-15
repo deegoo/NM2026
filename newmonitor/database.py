@@ -836,7 +836,7 @@ def get_meg_total():
 
         r = requests.get(
             url,
-            timeout=10
+            timeout=1
         )
 
     except Exception as e:
@@ -901,7 +901,7 @@ def get_sit_total():
 
         r = requests.get(
             url,
-            timeout=10
+            timeout=1
         )
 
     except Exception as e:
@@ -961,7 +961,7 @@ def get_meg_detalhes():
     r = requests.get(
         url,
         auth=HttpNtlmAuth(usuario, senha),
-        timeout=10
+        timeout=1
     )
 
     conteudo = r.content.decode("utf-8", errors="replace")
