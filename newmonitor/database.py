@@ -730,13 +730,6 @@ def get_dashboard():
             agora - ultima
         ).total_seconds() / 60
 
-
-        print(
-            row["id_ticket"],
-            row["cidade"],
-            ultima,
-            round(diff_horas, 2)
-        )
         # =========================
         # REGRA AVALIAÇÃO
         # =========================
