@@ -843,7 +843,7 @@ def get_meg_total():
 
         print("ERRO MEG:", e)
 
-        return []
+        return 0
 
     except Exception:
 
@@ -908,7 +908,7 @@ def get_sit_total():
 
         print("ERRO SIT:", e)
 
-        return []
+        return 0
 
     except Exception:
 
