@@ -766,7 +766,16 @@ def get_dashboard():
     dashboard["nao_tratados_amarelo"] = amarelos
     dashboard["nao_tratados_vermelho"] = vermelhos
 
-    megs = get_meg_detalhes()
+    try:
+
+        megs = get_meg_detalhes()
+
+    except Exception as e:
+
+        print("ERRO MEG:", e)
+
+        megs = []
+
     dashboard["meg"] = len(megs)
     dashboard["meg_amarelo"] = False
     dashboard["meg_vermelho"] = False
