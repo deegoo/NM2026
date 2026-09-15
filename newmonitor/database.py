@@ -827,9 +827,14 @@ def get_meg_total():
 
         r = requests.get(
             url,
-            auth=HttpNtlmAuth(usuario, senha),
             timeout=10
         )
+
+    except Exception as e:
+
+        print("ERRO MEG:", e)
+
+        return []
 
     except Exception:
 
@@ -886,10 +891,15 @@ def get_sit_total():
     try:
 
         r = requests.get(
-            url,
-            auth=HttpNtlmAuth(usuario, senha),
+            URL,
             timeout=10
         )
+
+    except Exception as e:
+
+        print("ERRO SIT:", e)
+
+        return []
 
     except Exception:
 
