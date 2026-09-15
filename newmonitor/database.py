@@ -900,7 +900,7 @@ def get_sit_total():
     try:
 
         r = requests.get(
-            URL,
+            url,
             timeout=10
         )
 
