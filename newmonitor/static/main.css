@@ -11,6 +11,7 @@
             --backlink:#ffd4d4;
             --backside:#f4f4f4;
             --header:#ff7d7d;
+            --caution:#fbc02d;
 }
 
 body {
@@ -1027,19 +1028,36 @@ max-width: 170px;
 
 .dashboard-grid{
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
-
+    grid-template-columns: 1fr 1fr;
     gap:20px;
+    padding-bottom: 20px;
 }
 
 .dashboard-card{
     background:white;
     padding:15px;
     border-radius:8px;
+    min-height: 350px;
+    border: 3px solid var(--shadow1);
 }
 
 .linha-ranking{
     display:flex;
     justify-content:space-between;
     padding:5px 0;
+}
+
+.card-critico {
+    border-left: 5px solid var(--panel);
+}
+
+.card-atencao {
+    border-left: 5px solid var(--caution);
+}
+
+.linha_dash{
+  height: 5px;
+  width: 600px;
+  background-color: var(--shadow1);
+  justify-content: center;
 }
