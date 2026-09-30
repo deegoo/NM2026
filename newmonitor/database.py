@@ -736,12 +736,12 @@ def get_dashboard():
 
         if "AVALIA" in evento:
 
-            if diff_min >= 1440:
+            if diff_min >= 10080:
 
                 vermelhos += 1
                 total += 1
 
-            elif diff_min >= 720:
+            elif diff_min >= 7200:
 
                 amarelos += 1
                 total += 1
@@ -827,100 +827,60 @@ def get_dashboard():
 
 def get_meg_total():
 
-    url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
-
-    usuario = "nocbrasilmonitoracao"
-    senha = "#K4pk#aD{Tx}QOV"
-
     try:
 
-        r = requests.get(
-            url,
-            timeout=1
-        )
+        megs = get_meg_detalhes()
+
+        return len(megs)
 
     except Exception as e:
 
-        print("ERRO MEG:", e)
+        print(
+            "ERRO MEG TOTAL:",
+            e
+        )
 
         return 0
-
-    except Exception:
-
-        return 0
-
-    if r.status_code != 200:
-        return 0
-
-    if "<html" in r.text.lower():
-        return 0
-
-    conteudo = r.content.decode("latin-1")
-
-    conteudo = (
-        conteudo
-        .replace("<br>", "\n")
-        .replace("<br/>", "\n")
-        .replace("<br />", "\n")
-    )
-
-    linhas = conteudo.splitlines()
-
-    total = 0
-
-    for linha in linhas:
-
-        if not linha.strip():
-            continue
-
-        partes = linha.split(";")
-
-        for p in partes:
-
-            if any(
-                termo in p.upper() 
-                for termo in ["RESIDENCIAL", 
-                              "WI-FI", 
-                              "WIFI"
-                              ]
-                ):
-
-                total += 1
-                break
-
-    return total
 
 def get_sit_total():
-    
+
     url = "http://10.53.5.77/Arcos/Arcossit.aspx"
 
-    usuario = "nocbrasilmonitoracao"
+    usuario = r"CORP.CLAROBR\nocbrasilmonitoracao"
     senha = "#K4pk#aD{Tx}QOV"
 
     try:
 
-        r = requests.get(
+        session = requests.Session()
+
+        session.auth = HttpNtlmAuth(
+            usuario,
+            senha
+        )
+
+        r = session.get(
             url,
-            timeout=1
+            timeout=10
         )
 
     except Exception as e:
 
         print("ERRO SIT:", e)
-
-        return 0
-
-    except Exception:
-
         return 0
 
     if r.status_code != 200:
+
+        print(
+            "ERRO SIT HTTP:",
+            r.status_code
+        )
+
         return 0
 
-    if "<html" in r.text.lower():
-        return 0
-
-    conteudo = r.content.decode("latin-1")
+    conteudo = r.content.decode(
+        "utf-8",
+        errors="replace"
+    )
 
     conteudo = (
         conteudo
@@ -937,9 +897,7 @@ def get_sit_total():
 
         if not linha.strip():
             continue
-        
-        linha = linha.strip().replace("\r", "")
-        
+
         partes = linha.split(";")
 
         for p in partes:
@@ -950,9 +908,9 @@ def get_sit_total():
                 break
 
     return total
-
-
+    
 def get_meg_detalhes():
+
     url = "http://10.53.5.77/Arcos/Arcosmeg.aspx"
 
     usuario = "nocbrasilmonitoracao"
@@ -960,9 +918,18 @@ def get_meg_detalhes():
 
     r = requests.get(
         url,
-        auth=HttpNtlmAuth(usuario, senha),
-        timeout=1
+        auth=HttpNtlmAuth(
+            usuario,
+            senha
+        ),
+        timeout=10
     )
+
+    if r.status_code != 200:
+        raise Exception(
+            f"Erro HTTP MEG: {r.status_code}"
+        )
+
 
     conteudo = r.content.decode("utf-8", errors="replace")
 
@@ -2218,24 +2185,7 @@ def get_dashboard_operacao():
             agora - dt_ultima
         ).total_seconds() / 3600
 
-        evento = (
-            row["evento"] or ""
-        ).upper()
-
-        registro = {
-            "id_ticket": row["id_ticket"],
-            "cidade": row["cidade"],
-            "evento": row["evento"],
-            "ultima_atualizacao": ultima,
-            "horas": round(
-                diff_horas,
-                2
-            )
-        }
-
-        evento = (
-            row["evento"] or ""
-        ).upper()
+        evento = (row["evento"] or "").upper()
 
         registro = {
             "id_ticket": row["id_ticket"],
@@ -2283,7 +2233,556 @@ def get_dashboard_operacao():
                 dashboard[
                     "tickets_amarelos"
                 ].append(registro)
+        # =========================
+        # TOP VC
+        # =========================
 
+        cur.execute("""
+            SELECT
+                cidade,
+                SUM(
+                    COALESCE(vc_evento, 0)
+                ) AS total_vc
+
+            FROM eventos_ticket
+
+            GROUP BY cidade
+
+            HAVING total_vc > 0
+
+            ORDER BY total_vc DESC
+
+            LIMIT 10
+        """)
+
+        dashboard["top_vc"] = [
+            dict(row)
+            for row in cur.fetchall()
+        ]
+
+        # =========================
+        # TOP MINUTOS PONDERADOS
+        # =========================
+
+    cur.execute("""
+        SELECT
+            cidade,
+            SUM(
+                COALESCE(
+                    minutos_ponderados,
+                    0
+                )
+            ) AS total_mp
+
+        FROM eventos_ticket
+
+        GROUP BY cidade
+
+        HAVING total_mp > 0
+
+        ORDER BY total_mp DESC
+
+        LIMIT 10
+    """)
+
+    dashboard["top_mp"] = [
+        dict(row)
+        for row in cur.fetchall()
+]
+    
+    # =========================
+# CIDADES REINCIDENTES
+# =========================
+
+    cur.execute("""
+        SELECT
+            cidade,
+            COUNT(*) AS tickets
+        FROM tickets
+        WHERE cidade IS NOT NULL
+        AND cidade <> ''
+        GROUP BY cidade
+    """)
+
+    base_cidades = {}
+
+    for row in cur.fetchall():
+
+        cidade = row["cidade"]
+
+        base_cidades[cidade] = {
+            "cidade": cidade,
+            "tickets": row["tickets"],
+            "vc": 0,
+            "mp": 0
+        }
+
+    cur.execute("""
+        SELECT
+            cidade,
+            SUM(COALESCE(vc_evento,0)) AS vc,
+            SUM(COALESCE(minutos_ponderados,0)) AS mp
+        FROM eventos_ticket
+        GROUP BY cidade
+    """)
+
+    for row in cur.fetchall():
+
+        cidade = row["cidade"]
+
+        if cidade not in base_cidades:
+            continue
+
+        base_cidades[cidade]["vc"] = row["vc"] or 0
+        base_cidades[cidade]["mp"] = row["mp"] or 0
+
+    ranking = []
+
+    for cidade, info in base_cidades.items():
+
+        score = (
+            info["tickets"] * 1
+            + info["vc"] * 0.1
+            + info["mp"] * 0.001
+        )
+
+        ranking.append({
+            "cidade": cidade,
+            "score": round(score, 2)
+        })
+
+    ranking.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    dashboard["cidades_reincidentes"] = ranking[:10]
+    
+    # =========================
+    # OFENSORES POR REGIONAL
+    # =========================
+
+    cur.execute("""
+        SELECT
+            nm_regional_cmv_bi,
+            ofensor,
+            COUNT(*) AS total
+
+        FROM tickets
+
+        WHERE nm_regional_cmv_bi IS NOT NULL
+        AND nm_regional_cmv_bi <> ''
+        AND ofensor IS NOT NULL
+        AND ofensor <> ''
+
+        GROUP BY
+            nm_regional_cmv_bi,
+            ofensor
+
+        ORDER BY
+            nm_regional_cmv_bi,
+            total DESC
+    """)
+
+    regionais = {}
+
+    for row in cur.fetchall():
+
+        regional = row["nm_regional_cmv_bi"]
+
+        if regional not in regionais:
+            regionais[regional] = []
+
+        regionais[regional].append({
+            "ofensor": row["ofensor"],
+            "total": row["total"]
+        })
+
+    dashboard["ofensores_regionais"] = regionais
+    
+    # =========================
+    # SERVIÇOS POR REGIONAL
+    # =========================
+
+    cur.execute("""
+        SELECT
+            nm_regional_cmv_bi,
+            servico,
+            COUNT(*) AS total
+
+        FROM tickets
+
+        WHERE nm_regional_cmv_bi IS NOT NULL
+        AND nm_regional_cmv_bi <> ''
+        AND servico IS NOT NULL
+        AND servico <> ''
+
+        GROUP BY
+            nm_regional_cmv_bi,
+            servico
+
+        ORDER BY
+            nm_regional_cmv_bi,
+            total DESC
+    """)
+
+    regionais = {}
+
+    for row in cur.fetchall():
+
+        regional = row["nm_regional_cmv_bi"]
+
+        if regional not in regionais:
+            regionais[regional] = []
+
+        regionais[regional].append({
+            "servico": row["servico"],
+            "total": row["total"]
+        })
+
+    dashboard["servicos_regionais"] = regionais
+    
+    # =========================
+    # TEMPO MÉDIO DE FALHA
+    # =========================
+
+    cur.execute("""
+        SELECT
+            cidade,
+            inicio_evento,
+            final_evento
+
+        FROM eventos_ticket
+
+        WHERE cidade IS NOT NULL
+        AND cidade <> ''
+        AND inicio_evento IS NOT NULL
+        AND final_evento IS NOT NULL
+    """)
+
+    cidades = {}
+
+    for row in cur.fetchall():
+
+        try:
+
+            inicio = datetime.strptime(
+                row["inicio_evento"],
+                "%d/%m/%Y %H:%M"
+            )
+
+            fim = datetime.strptime(
+                row["final_evento"],
+                "%d/%m/%Y %H:%M"
+            )
+
+        except Exception:
+            continue
+
+        duracao = (
+            fim - inicio
+        ).total_seconds() / 60
+
+        cidade = row["cidade"]
+
+        if cidade not in cidades:
+
+            cidades[cidade] = {
+                "cidade": cidade,
+                "total_min": 0,
+                "qtd": 0
+            }
+
+        cidades[cidade]["total_min"] += duracao
+        cidades[cidade]["qtd"] += 1
+
+    ranking = []
+
+    for cidade, dados in cidades.items():
+
+        media = (
+            dados["total_min"]
+            / dados["qtd"]
+        )
+
+        ranking.append({
+            "cidade": cidade,
+            "tempo_medio": round(media, 1)
+        })
+
+    ranking.sort(
+        key=lambda x: x["tempo_medio"],
+        reverse=True
+    )
+
+    dashboard["tempo_medio_falha"] = ranking[:10]
+    
+    # =========================
+    # TENDÊNCIA MENSAL
+    # =========================
+
+    cur.execute("""
+        SELECT
+            substr(data_abertura, 4, 7) AS mes,
+            COUNT(DISTINCT id_ticket) AS total
+
+        FROM tickets
+
+        WHERE data_abertura IS NOT NULL
+        AND data_abertura <> ''
+
+        GROUP BY
+            substr(data_abertura, 4, 7)
+
+        ORDER BY
+            substr(data_abertura, 7, 4),
+            substr(data_abertura, 4, 2)
+    """)
+
+    dashboard["tendencia_mensal"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+    
+    # =========================
+    # CIDADES CRÍTICAS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            cidade,
+            COUNT(*) AS tickets
+
+        FROM tickets
+
+        WHERE cidade IS NOT NULL
+        AND cidade <> ''
+
+        GROUP BY cidade
+    """)
+
+    cidades = {}
+
+    for row in cur.fetchall():
+
+        cidade = row["cidade"]
+
+        cidades[cidade] = {
+            "cidade": cidade,
+            "tickets": row["tickets"],
+            "score": row["tickets"]
+        }
+
+    cur.execute("""
+        SELECT
+            cidade,
+            SUM(
+                COALESCE(vc_evento,0)
+            ) AS vc,
+            SUM(
+                COALESCE(minutos_ponderados,0)
+            ) AS mp
+
+        FROM eventos_ticket
+
+        WHERE cidade IS NOT NULL
+        AND cidade <> ''
+
+        GROUP BY cidade
+    """)
+
+    for row in cur.fetchall():
+
+        cidade = row["cidade"]
+
+        if cidade not in cidades:
+            continue
+
+        vc = row["vc"] or 0
+        mp = row["mp"] or 0
+
+        cidades[cidade]["score"] += (
+            vc * 0.1
+        ) + (
+            mp * 0.001
+        )
+
+    ranking = sorted(
+        cidades.values(),
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    dashboard["cidades_criticas"] = [
+        {
+            "cidade": item["cidade"],
+            "score": round(
+                item["score"],
+                1
+            )
+        }
+        for item in ranking[:10]
+    ]
+    
+    # =========================
+    # REGIONAIS CRÍTICAS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            nm_regional_cmv_bi,
+            COUNT(*) AS tickets
+
+        FROM tickets
+
+        WHERE nm_regional_cmv_bi IS NOT NULL
+        AND nm_regional_cmv_bi <> ''
+
+        GROUP BY nm_regional_cmv_bi
+    """)
+
+    regionais = {}
+
+    for row in cur.fetchall():
+
+        regional = row["nm_regional_cmv_bi"]
+
+        regionais[regional] = {
+            "regional": regional,
+            "tickets": row["tickets"],
+            "score": row["tickets"]
+        }
+
+    cur.execute("""
+        SELECT
+            t.nm_regional_cmv_bi,
+
+            SUM(
+                COALESCE(
+                    e.vc_evento,
+                    0
+                )
+            ) AS vc,
+
+            SUM(
+                COALESCE(
+                    e.minutos_ponderados,
+                    0
+                )
+            ) AS mp
+
+        FROM eventos_ticket e
+
+        INNER JOIN tickets t
+            ON e.id_ticket = t.id_ticket
+
+        WHERE t.nm_regional_cmv_bi IS NOT NULL
+        AND t.nm_regional_cmv_bi <> ''
+
+        GROUP BY
+            t.nm_regional_cmv_bi
+    """)
+
+    for row in cur.fetchall():
+
+        regional = row["nm_regional_cmv_bi"]
+
+        if regional not in regionais:
+            continue
+
+        vc = row["vc"] or 0
+        mp = row["mp"] or 0
+
+        regionais[regional]["score"] += (
+            vc * 0.1
+        ) + (
+            mp * 0.001
+        )
+
+    ranking = sorted(
+        regionais.values(),
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    dashboard["regionais_criticas"] = [
+        {
+            "regional": item["regional"],
+            "score": round(
+                item["score"],
+                1
+            )
+        }
+        for item in ranking[:10]
+    ]
+
+
+    # =========================
+    # VC POR MÊS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            substr(inicio_evento, 4, 7) AS mes,
+
+            SUM(
+                COALESCE(
+                    vc_evento,
+                    0
+                )
+            ) AS total_vc
+
+        FROM eventos_ticket
+
+        WHERE inicio_evento IS NOT NULL
+        AND inicio_evento <> ''
+
+        GROUP BY
+            substr(inicio_evento, 4, 7)
+
+        ORDER BY
+            substr(inicio_evento, 7, 4),
+            substr(inicio_evento, 4, 2)
+    """)
+
+    dashboard["vc_mensal"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+    
+    # =========================
+    # MP POR MÊS
+    # =========================
+
+    cur.execute("""
+        SELECT
+            substr(inicio_evento, 4, 7) AS mes,
+
+            SUM(
+                COALESCE(
+                    minutos_ponderados,
+                    0
+                )
+            ) AS total_mp
+
+        FROM eventos_ticket
+
+        WHERE inicio_evento IS NOT NULL
+        AND inicio_evento <> ''
+
+        GROUP BY
+            substr(inicio_evento, 4, 7)
+
+        ORDER BY
+            substr(inicio_evento, 7, 4),
+            substr(inicio_evento, 4, 2)
+    """)
+
+    dashboard["mp_mensal"] = [
+        dict(row)
+        for row in cur.fetchall()
+    ]
+    
     conn.close()
 
     return dashboard
