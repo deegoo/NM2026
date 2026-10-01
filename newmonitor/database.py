@@ -2786,3 +2786,115 @@ def get_dashboard_operacao():
     conn.close()
 
     return dashboard
+
+def cidades_clusters_diferentes(cidades):
+
+    print("\n========== DEBUG CLUSTERS ==========")
+    print("CIDADES RECEBIDAS:", cidades)
+
+    if not cidades or len(cidades) <= 1:
+
+        print("APENAS UMA CIDADE")
+        print("====================================\n")
+
+        return False
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    placeholders = ",".join(
+        "?" for _ in cidades
+    )
+
+    cur.execute(
+        f"""
+        SELECT DISTINCT
+            cidade_hub,
+            cidade_cluster
+        FROM clusters_cidades
+        WHERE cidade_cluster IN ({placeholders})
+        """,
+        cidades
+    )
+
+    rows = cur.fetchall()
+
+    conn.close()
+
+    print("REGISTROS ENCONTRADOS:")
+
+    cidades_encontradas = set()
+    hubs = set()
+
+    for row in rows:
+
+        cidade_cluster = row["cidade_cluster"]
+        cidade_hub = row["cidade_hub"]
+
+        print(
+            cidade_cluster,
+            "->",
+            cidade_hub
+        )
+
+        cidades_encontradas.add(
+            cidade_cluster
+        )
+
+        if cidade_hub:
+            hubs.add(cidade_hub)
+
+    # =========================
+    # CIDADES NÃO ENCONTRADAS
+    # =========================
+
+    cidades_nao_encontradas = [
+        cidade
+        for cidade in cidades
+        if cidade not in cidades_encontradas
+    ]
+
+    print(
+        "HUBS ENCONTRADOS:",
+        hubs
+    )
+
+    print(
+        "CIDADES NÃO ENCONTRADAS:",
+        cidades_nao_encontradas
+    )
+
+    # =========================
+    # REGRA
+    # =========================
+
+    if cidades_nao_encontradas:
+
+        print(
+            "CLUSTERS DIFERENTES: True "
+            "(cidade fora da tabela de clusters)"
+        )
+
+        print(
+            "====================================\n"
+        )
+
+        return True
+
+    diferentes = len(hubs) > 1
+
+    print(
+        "TOTAL HUBS:",
+        len(hubs)
+    )
+
+    print(
+        "CLUSTERS DIFERENTES:",
+        diferentes
+    )
+
+    print(
+        "====================================\n"
+    )
+
+    return diferentes

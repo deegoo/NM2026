@@ -194,40 +194,143 @@ function atualizarCategorias() {
     atualizarOfensores();
 }
 
-function atualizarOfensores() {
+async function atualizarOfensores() {
 
-    const cidadesSelecionadas = [...document.querySelectorAll("#cidadesSelecionadas li")];
-    const categoria = document.getElementById("categoria").value;
-    const ofensor = document.getElementById("ofensor");
+    const cidadesSelecionadas = [
+        ...document.querySelectorAll(
+            "#cidadesSelecionadas li"
+        )
+    ];
+
+    const categoria =
+        document.getElementById(
+            "categoria"
+        ).value;
+
+    const ofensor =
+        document.getElementById(
+            "ofensor"
+        );
 
     ofensor.innerHTML = "";
 
-    if (!cidadesSelecionadas.length) return;
+    if (!cidadesSelecionadas.length) {
+        return;
+    }
 
-    const multiCidade = cidadesSelecionadas.length > 1;
+    const cidades =
+        cidadesSelecionadas.map(
+            li => li.textContent.trim()
+        );
 
-    let ofensoresSet = new Set();
+    const multiCidade =
+        cidades.length > 1;
+
+    // =========================
+    // CLUSTERS DIFERENTES
+    // =========================
+
+    if (
+        multiCidade &&
+        normalizarTexto(categoria) === "LINKS"
+    ) {
+
+        try {
+
+            const res = await fetch(
+                "/api/clusters_diferentes",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        cidades: cidades
+                    })
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error(
+                    "Erro ao verificar clusters"
+                );
+            }
+
+            const dados =
+                await res.json();
+
+            if (dados.diferentes) {
+
+                [
+                    "BACKBONE",
+                    "GPON"
+                ].forEach(o => {
+
+                    ofensor.add(
+                        new Option(o, o)
+                    );
+
+                });
+
+                return;
+            }
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao verificar clusters:",
+                erro
+            );
+        }
+    }
+
+    // =========================
+    // REGRA NORMAL
+    // =========================
+
+    const ofensoresSet =
+        new Set();
 
     cidadesSelecionadas.forEach(li => {
 
-        const cidade = li.textContent;
+        const cidade =
+            li.textContent.trim();
 
-        const lista = estrutura[cidade]?.[categoria] || [];
+        const lista =
+            estrutura[cidade]?.[categoria]
+            || [];
 
         lista.forEach(o => {
+
             ofensoresSet.add(o);
+
         });
+
     });
 
-    let listaFinal = [...ofensoresSet];
+    const listaFinal = [
+        ...ofensoresSet
+    ];
 
     listaFinal
-        .sort((a, b) => a.localeCompare(b, "pt-BR"))
+        .sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+        )
         .forEach(o => {
-            ofensor.add(new Option(o, o));
+
+            ofensor.add(
+                new Option(o, o)
+            );
+
         });
 }
-
 
 /* =========================
    MOVE
@@ -338,7 +441,7 @@ function renderConfigServicos() {
                     )
                     
                 );
-                if (servico === "NET FONE") {
+                if (servico === "CLARO FONE") {
 
                     sintomaSelect.value = "MUDO";
 
@@ -367,7 +470,7 @@ function renderConfigServicos() {
 
             });
             
-        if (servico === "NET FONE") {
+        if (servico === "CLARO FONE") {
 
                 if (
                     [...eventoSelect.options]

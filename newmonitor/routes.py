@@ -54,7 +54,8 @@ from newmonitor.database import (
     get_dados_cidade,
     get_cluster_cidades,
     get_cnl_cidade,
-    get_dashboard_operacao
+    get_dashboard_operacao,
+    cidades_clusters_diferentes
 
 )
 
@@ -1139,3 +1140,22 @@ def dashboard_operacao():
     return jsonify(
         get_dashboard_operacao()
     )
+
+@app.route("/api/clusters_diferentes",methods=["POST"])
+@login_required
+def api_clusters_diferentes():
+
+    dados = request.get_json() or {}
+
+    cidades = dados.get(
+        "cidades",
+        []
+    )
+
+    diferentes = cidades_clusters_diferentes(
+        cidades
+    )
+
+    return jsonify({
+        "diferentes": diferentes
+    })
