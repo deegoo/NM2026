@@ -156,91 +156,252 @@
     <h2>
         Ticket {{ tickets[0].id_ticket }}
     </h2>
+    <br>
+    <button type="button" id="btnEditarTicket" class="evento_btn">Editar Ticket</button>
+    <br>
+    <div id="visualizacaoTicket">
+        <br>
+        <p>
+            <b>Descrição:</b>
+            {{ tickets[0].descricao }}
+        </p>
 
-    <p>
-        <b>Descrição:</b>
-        {{ tickets[0].descricao }}
-    </p>
+        <p>
+            <b>Data Início:</b>
+            {{ tickets[0].data_inicio }}
+        </p>
 
-    <p>
-        <b>Data Início:</b>
-        {{ tickets[0].data_inicio }}
-    </p>
+        <p>
+            <b>Data Abertura:</b>
+            {{ tickets[0].data_abertura }}
+        </p>
 
-    <p>
-        <b>Data Abertura:</b>
-        {{ tickets[0].data_abertura }}
-    </p>
+        <p>
+            <b>Categoria:</b>
+            {{ tickets[0].categoria }}
+        </p>
 
-    <p>
-        <b>Categoria:</b>
-        {{ tickets[0].categoria }}
-    </p>
+        <p>
+            <b>Ofensor:</b>
+            {{ tickets[0].ofensor }}
+        </p>
 
-    <p>
-        <b>Ofensor:</b>
-        {{ tickets[0].ofensor }}
-    </p>
+        <p>
+            <b>Chamado Operadora:</b>
+            {{ tickets[0].chamado_operadora or "-" }}
+        </p>
 
-    <p>
-        <b>Chamado Operadora:</b>
-        {{ tickets[0].chamado_operadora or "-" }}
-    </p>
+        <p>
+            <b>Outage:</b>
+            {{ tickets[0].outage or "-" }}
+        </p>
 
-    <p>
-        <b>Outage:</b>
-        {{ tickets[0].outage or "-" }}
-    </p>
+        <p>
+            <b>Status:</b>
+            {{ tickets[0].status }}
+        </p>
 
-    <p>
-        <b>Status:</b>
-        {{ tickets[0].status }}
-    </p>
+        <p>
+            <b>Usuário:</b>
+            {{ tickets[0].usuario }}
+        </p>
 
-    <p>
-        <b>Usuário:</b>
-        {{ tickets[0].usuario }}
-    </p>
+        <hr>
 
-    <hr>
+        <h3>Registros do Ticket</h3>
 
-    <h3>Registros do Ticket</h3>
+        <table
+            border="1"
+            width="100%"
+        >
+            <thead>
+                <tr>
+                    <th>Cidade</th>
+                    <th>Serviço</th>
+                    <th>Sintoma</th>
+                    <th>Evento</th>
+                </tr>
+            </thead>
 
-    <table
-        border="1"
-        width="100%"
-    >
-        <thead>
-            <tr>
-                <th>Cidade</th>
-                <th>Serviço</th>
-                <th>Sintoma</th>
-                <th>Evento</th>
-            </tr>
-        </thead>
+            <tbody>
 
-        <tbody>
+            {% for t in tickets %}
 
-        {% for t in tickets %}
+                <tr>
 
-            <tr>
+                    <td>{{ t.cidade }}</td>
 
-                <td>{{ t.cidade }}</td>
+                    <td>{{ t.servico }}</td>
 
-                <td>{{ t.servico }}</td>
+                    <td>{{ t.sintoma }}</td>
 
-                <td>{{ t.sintoma }}</td>
+                    <td>{{ t.evento }}</td>
 
-                <td>{{ t.evento }}</td>
+                </tr>
 
-            </tr>
+            {% endfor %}
 
-        {% endfor %}
+            </tbody>
 
-        </tbody>
+        </table>
+    </div>
+    <div id="edicaoTicket"style="display:none">
 
-    </table>
+        <h3>Editar Ticket</h3>
 
+        <label>Descrição:</label>
+        <br>
+
+        <textarea id="edit_descricao" rows="4" style="width:100%"></textarea>
+
+        <br><br>
+
+        <label>Data Início:</label>
+        <br>
+
+        <input type="datetime-local" id="edit_data_inicio">
+
+        <br><br>
+
+        <label>Categoria:</label>
+        <br>
+
+        <select id="edit_categoria"></select>
+
+        <br><br>
+
+        <label>Ofensor:</label>
+        <br>
+
+        <select id="edit_ofensor"></select>
+
+        <br><br>
+
+        <label>Chamado Operadora:</label>
+        <br>
+
+        <input type="text" id="edit_chamado_operadora">
+
+        <br><br>
+
+        <label>Outage:</label>
+        <br>
+
+        <input type="number" id="edit_outage">
+
+        <hr>
+
+ <h3>Cidades</h3>
+
+        <div style="
+            display:flex;
+            gap:20px;
+            align-items:flex-start;
+        ">
+
+            <!-- CIDADES DISPONÍVEIS -->
+
+            <div>
+
+                <label>
+                    Cidades Disponíveis
+                </label>
+
+                <ul
+                    id="edit_cidades_disponiveis"
+                    style="
+                        width:280px;
+                        height:250px;
+                        overflow-y:auto;
+                        overflow-x:hidden;
+                        border:1px solid #ccc;
+                        border-radius:4px;
+                        padding:8px;
+                        margin:5px 0 0 0;
+                        list-style:none;
+                        background:#fff;
+                        box-sizing:border-box;
+                    "
+                ></ul>
+
+            </div>
+
+
+            <!-- BOTÕES -->
+
+            <div style="
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+                padding-top:70px;
+            ">
+
+                <button type="button" id="btnEditAdicionarCidade">Adicionar Cidade</button>
+
+                <button type="button" id="btnEditRemoverCidade">Remover Cidade</button>
+
+            </div>
+
+
+            <!-- CIDADES SELECIONADAS -->
+
+            <div>
+
+                <label>
+                    Cidades Selecionadas
+                </label>
+
+                <ul
+                    id="edit_cidades_selecionadas"
+                    style="
+                        width:280px;
+                        height:250px;
+                        overflow-y:auto;
+                        overflow-x:hidden;
+                        border:1px solid #ccc;
+                        border-radius:4px;
+                        padding:8px;
+                        margin:5px 0 0 0;
+                        list-style:none;
+                        background:#fff;
+                        box-sizing:border-box;
+                    "
+                ></ul>
+
+            </div>
+
+        </div>
+        <hr>
+
+        <h3>Serviços</h3>
+
+        <select
+            id="edit_servicos"
+            multiple
+            size="6"
+        ></select>
+
+        <br><br>
+
+        <div id="edit_config_servicos"></div>
+
+        <hr>
+
+        <button
+            type="button"
+            id="btnCancelarEdicaoTicket"
+        >
+            Cancelar
+        </button>
+
+        <button
+            type="button"
+            id="btnSalvarEdicaoTicket"
+        >
+            Salvar Alterações
+        </button>
+
+    </div>
     <hr>
 
     <h3>Adicionar Comentário</h3>
@@ -266,7 +427,7 @@
 
     <hr>
 
-    <h3>Histórico</h3>
+    <h3>Comentários</h3>
 
     <div id="lista_logs">
 

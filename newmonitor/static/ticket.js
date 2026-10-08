@@ -16,6 +16,10 @@ let regrasFechamento = [];
 let temEventoSalvo = false;
 let temFechamentoSalvo = false;
 let modoEdicaoFechamento = false;
+let estruturaEdicao = {};
+let regrasEdicao = {};
+let categoriasMulticidadeEdicao = [];
+let modoEdicaoTicket = false;
 const servicoEdicao =
     new URLSearchParams(
         window.location.search
@@ -89,14 +93,24 @@ async function carregarRegrasFechamento() {
 
 function normalizarServico(servico) {
 
+    const valor = String(servico || "")
+        .trim()
+        .toUpperCase();
+
     const mapa = {
-        "PAY TV DIGITAL": "PAY TV",
-        "PAY TV HD": "PAY TV",
-        "PAYTV": "PAY TV",
-        "NET TV": "PAY TV"
+
+        "NET VIRTUA": "BANDA LARGA",
+        "NET FONE": "CLARO FONE",
+
+        "PAY TV DIGITAL": "CLARO TV",
+        "PAY TV HD": "CLARO TV",
+        "PAYTV": "CLARO TV",
+        "NET TV": "CLARO TV",
+        "PAY TV": "CLARO TV"
+
     };
 
-    return mapa[servico] || servico;
+    return mapa[valor] || valor;
 }
 // ============================
 // ✅ abrir telas do ticket
@@ -559,102 +573,95 @@ function iniciarFechamentoServico(servico) {
 
 async function carregarHistorico() {
 
-    const container = document.getElementById("lista_logs");
+    const container =
+        document.getElementById(
+            "lista_logs"
+        );
 
     if (!container) return;
 
     try {
 
-        const [atividades, comentarios] = await Promise.all([
-
-            fetch(
-                `/api/atividade/${window.ID_TICKET}`
-            ).then(r => r.json()),
-
-            fetch(
+        const resp =
+            await fetch(
                 `/api/comentarios/${window.ID_TICKET}`
-            ).then(r => r.json())
-        ]);
+            );
+
+        if (!resp.ok) {
+
+            throw new Error(
+                "Erro ao carregar comentários"
+            );
+        }
+
+        const comentarios =
+            await resp.json();
 
         let html = "";
 
-        atividades.forEach(item => {
+        comentarios.forEach(item => {
 
             html += `
                 <div style="
                     border:1px solid #ccc;
                     margin:10px;
                     padding:10px;
+                    border-radius:6px;
+                    background:#f8f9fa;
                 ">
+
                     <p>
                         <strong>
-                            ${item.data} - ${item.usuario}
+                            ${item.data}
+                            -
+                            ${item.usuario}
                         </strong>
                     </p>
 
                     <p>
-                        ${item.acao}
+                        ${item.comentario || ""}
                     </p>
 
-                    <p>
-                        ${item.detalhes || ""}
-                    </p>
+                    ${
+                        item.imagem
+                            ? `
+                                <img
+                                    src="/static/uploads/${item.imagem}"
+                                    style="
+                                        max-width:600px;
+                                        max-height:400px;
+                                    "
+                                >
+                            `
+                            : ""
+                    }
+
                 </div>
             `;
         });
-
-        comentarios.forEach(item => {
-
-    html += `
-        <div style="
-            border:1px solid #ccc;
-            margin:10px;
-            padding:10px;
-        ">
-
-            <p>
-                <strong>
-                    ${item.data} - ${item.usuario}
-                </strong>
-            </p>
-
-            <p>
-                ${item.comentario || ""}
-            </p>
-
-            ${
-                item.imagem
-                    ? `
-                        <img src="/static/uploads/${item.imagem}">
-                    `
-                    : ""
-            }
-
-        </div>
-    `;
-});
 
         if (!html) {
 
             html = `
                 <p>
-                    Sem histórico ainda
+                    Sem comentários ainda
                 </p>
             `;
         }
 
-        container.innerHTML = html;
+        container.innerHTML =
+            html;
 
     } catch (erro) {
 
         console.error(
-            "Erro ao carregar histórico:",
+            "Erro ao carregar comentários:",
             erro
         );
 
         container.innerHTML = `
             <p>
-                Erro ao carregar histórico
+                Erro ao carregar comentários
             </p>
         `;
     }
@@ -854,9 +861,7 @@ async function carregarFechamentosSalvos() {
 
     try {
 
-        const resp = await fetch(
-            `/api/fechamentos/${window.ID_TICKET}`
-        );
+        const resp = await fetch(`/api/fechamentos/${window.ID_TICKET}`);
 
         const dados = await resp.json();
 
@@ -1311,6 +1316,922 @@ function normalizarCidade(cidade) {
         .toUpperCase()
         .trim();
 }
+
+async function carregarDadosEdicaoTicket() {
+
+    const [
+        respEstrutura,
+        respRegras,
+        respCategorias
+    ] = await Promise.all([
+
+        fetch("/api/estrutura"),
+
+        fetch("/api/regras_abertura"),
+
+        fetch("/api/categorias_multicidade")
+    ]);
+
+    if (
+        !respEstrutura.ok ||
+        !respRegras.ok ||
+        !respCategorias.ok
+    ) {
+        throw new Error(
+            "Erro ao carregar dados para edição"
+        );
+    }
+
+    estruturaEdicao =
+        await respEstrutura.json();
+
+    regrasEdicao =
+        await respRegras.json();
+
+    categoriasMulticidadeEdicao =
+        await respCategorias.json();
+
+    console.log(
+        "DADOS EDIÇÃO CARREGADOS",
+        {
+            estruturaEdicao,
+            regrasEdicao,
+            categoriasMulticidadeEdicao
+        }
+    );
+}
+
+function dataBRParaInput(data) {
+
+    if (!data) {
+        return "";
+    }
+
+    if (data.includes("T")) {
+        return data;
+    }
+
+    const partes =
+        data.split(" ");
+
+    const dataParte =
+        partes[0];
+
+    const hora =
+        partes[1] || "00:00";
+
+    const [
+        dia,
+        mes,
+        ano
+    ] = dataParte.split("/");
+
+    return (
+        `${ano}-${mes}-${dia}T${hora}`
+    );
+}
+
+function criarCidadeEdicao(cidade) {
+
+    const li =
+        document.createElement("li");
+
+    li.textContent = cidade;
+
+    li.style.cursor =
+        "pointer";
+
+    li.addEventListener(
+        "click",
+        () => {
+
+            li.classList.toggle(
+                "selected"
+            );
+
+            li.style.background =
+                li.classList.contains(
+                    "selected"
+                )
+                    ? "#dbeafe"
+                    : "";
+        }
+    );
+
+    return li;
+}
+
+function carregarCidadesEdicao() {
+
+    const disponiveis =
+        document.getElementById(
+            "edit_cidades_disponiveis"
+        );
+
+    const selecionadas =
+        document.getElementById(
+            "edit_cidades_selecionadas"
+        );
+
+    disponiveis.innerHTML = "";
+    selecionadas.innerHTML = "";
+
+    const cidadesTicket = [
+        ...new Set(
+            tickets.map(
+                t => t.cidade
+            )
+        )
+    ];
+
+    Object.keys(
+        estruturaEdicao
+    )
+    .sort(
+        (a, b) =>
+            a.localeCompare(
+                b,
+                "pt-BR"
+            )
+    )
+    .forEach(cidade => {
+
+        const li =
+            criarCidadeEdicao(
+                cidade
+            );
+
+        if (
+            cidadesTicket.includes(
+                cidade
+            )
+        ) {
+
+            selecionadas.appendChild(
+                li
+            );
+
+        } else {
+
+            disponiveis.appendChild(
+                li
+            );
+        }
+    });
+}
+
+function moverCidadeEdicao(
+    origemId,
+    destinoId
+) {
+
+    const origem =
+        document.getElementById(
+            origemId
+        );
+
+    const destino =
+        document.getElementById(
+            destinoId
+        );
+
+    [
+        ...origem.querySelectorAll(
+            "li.selected"
+        )
+    ].forEach(li => {
+
+        li.classList.remove(
+            "selected"
+        );
+
+        li.style.background = "";
+
+        destino.appendChild(li);
+    });
+
+    atualizarCategoriasEdicao();
+}
+
+function atualizarCategoriasEdicao(
+    categoriaAtual = null
+) {
+
+    const cidades = [
+        ...document.querySelectorAll(
+            "#edit_cidades_selecionadas li"
+        )
+    ].map(
+        li => li.textContent.trim()
+    );
+
+    const select =
+        document.getElementById(
+            "edit_categoria"
+        );
+
+    select.innerHTML = "";
+
+    if (!cidades.length) {
+        return;
+    }
+
+    let categorias = [];
+
+    if (cidades.length > 1) {
+
+        categorias = [
+            ...categoriasMulticidadeEdicao
+        ];
+
+    } else {
+
+        categorias = Object.keys(
+            estruturaEdicao[
+                cidades[0]
+            ] || {}
+        );
+    }
+
+    categorias
+        .sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+        )
+        .forEach(cat => {
+
+            select.add(
+                new Option(
+                    cat,
+                    cat
+                )
+            );
+        });
+
+    if (
+        categoriaAtual &&
+        [...select.options].some(
+            o =>
+                o.value ===
+                categoriaAtual
+        )
+    ) {
+        select.value =
+            categoriaAtual;
+    }
+
+    atualizarOfensoresEdicao();
+}
+
+async function atualizarOfensoresEdicao(
+    ofensorAtual = null
+) {
+
+    const cidades = [
+        ...document.querySelectorAll(
+            "#edit_cidades_selecionadas li"
+        )
+    ].map(
+        li => li.textContent.trim()
+    );
+
+    const categoria =
+        document.getElementById(
+            "edit_categoria"
+        ).value;
+
+    const select =
+        document.getElementById(
+            "edit_ofensor"
+        );
+
+    select.innerHTML = "";
+
+    if (!cidades.length) {
+        return;
+    }
+
+    // ==========================
+    // MULTICIDADE / LINKS
+    // ==========================
+
+    if (
+        cidades.length > 1 &&
+        normalizarTextoEdicao(
+            categoria
+        ) === "LINKS"
+    ) {
+
+        try {
+
+            const resp =
+                await fetch(
+                    "/api/clusters_diferentes",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                cidades
+                            })
+                    }
+                );
+
+            if (!resp.ok) {
+
+                throw new Error(
+                    "Erro ao verificar clusters"
+                );
+            }
+
+            const dados =
+                await resp.json();
+
+            if (dados.diferentes) {
+
+                [
+                    "BACKBONE",
+                    "GPON"
+                ].forEach(item => {
+
+                    select.add(
+                        new Option(
+                            item,
+                            item
+                        )
+                    );
+                });
+
+                if (
+                    ofensorAtual &&
+                    [...select.options]
+                        .some(
+                            o =>
+                                o.value ===
+                                ofensorAtual
+                        )
+                ) {
+
+                    select.value =
+                        ofensorAtual;
+                }
+
+                return;
+            }
+
+        } catch (erro) {
+
+            console.error(
+                "Erro clusters edição:",
+                erro
+            );
+        }
+    }
+
+    // ==========================
+    // REGRA NORMAL
+    // ==========================
+
+    const ofensores =
+        new Set();
+
+    cidades.forEach(cidade => {
+
+        const lista =
+            estruturaEdicao[
+                cidade
+            ]?.[
+                categoria
+            ] || [];
+
+        lista.forEach(
+            item =>
+                ofensores.add(item)
+        );
+    });
+
+    [...ofensores]
+        .sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+        )
+        .forEach(item => {
+
+            select.add(
+                new Option(
+                    item,
+                    item
+                )
+            );
+        });
+
+    if (
+        ofensorAtual &&
+        [...select.options]
+            .some(
+                o =>
+                    o.value ===
+                    ofensorAtual
+            )
+    ) {
+
+        select.value =
+            ofensorAtual;
+    }
+}
+
+function normalizarTextoEdicao(texto) {
+
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toUpperCase()
+        .trim();
+}
+
+function carregarServicosEdicao() {
+
+    const select =
+        document.getElementById(
+            "edit_servicos"
+        );
+
+    select.innerHTML = "";
+
+    const atuais = [
+        ...new Set(
+            tickets.map(
+                t => t.servico
+            )
+        )
+    ];
+
+    Object.keys(
+        regrasEdicao
+    )
+    .sort(
+        (a, b) =>
+            a.localeCompare(
+                b,
+                "pt-BR"
+            )
+    )
+    .forEach(servico => {
+
+        const option =
+            new Option(
+                servico,
+                servico
+            );
+
+        if (
+            atuais.includes(
+                servico
+            )
+        ) {
+            option.selected = true;
+        }
+
+        select.add(option);
+    });
+
+    renderServicosEdicao();
+}
+
+function renderServicosEdicao() {
+
+    const container =
+        document.getElementById(
+            "edit_config_servicos"
+        );
+
+    container.innerHTML = "";
+
+    const servicos = [
+        ...document.getElementById(
+            "edit_servicos"
+        ).selectedOptions
+    ].map(
+        o => o.value
+    );
+
+    servicos.forEach(servico => {
+
+        const registroAtual =
+            tickets.find(
+                t =>
+                    t.servico ===
+                    servico
+            );
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.dataset.servico =
+            servico;
+
+        div.style.border =
+            "1px solid #ccc";
+
+        div.style.padding =
+            "10px";
+
+        div.style.marginBottom =
+            "10px";
+
+        div.innerHTML = `
+            <strong>
+                ${servico}
+            </strong>
+
+            <br><br>
+
+            <label>
+                Sintoma
+            </label>
+
+            <select
+                class="edit_sintoma"
+            ></select>
+
+            <br><br>
+
+            <label>
+                Evento
+            </label>
+
+            <select
+                class="edit_evento"
+            ></select>
+        `;
+
+        container.appendChild(
+            div
+        );
+
+        const sintomaSelect =
+            div.querySelector(
+                ".edit_sintoma"
+            );
+
+        const eventoSelect =
+            div.querySelector(
+                ".edit_evento"
+            );
+
+        const regra =
+            regrasEdicao[
+                servico
+            ] || {};
+
+        Object.keys(regra)
+            .sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        "pt-BR"
+                    )
+            )
+            .forEach(sintoma => {
+
+                sintomaSelect.add(
+                    new Option(
+                        sintoma,
+                        sintoma
+                    )
+                );
+            });
+
+        if (
+            registroAtual?.sintoma &&
+            [...sintomaSelect.options]
+                .some(
+                    o =>
+                        o.value ===
+                        registroAtual.sintoma
+                )
+        ) {
+
+            sintomaSelect.value =
+                registroAtual.sintoma;
+        }
+
+        function atualizarEventos() {
+
+            eventoSelect.innerHTML = "";
+
+            const eventos =
+                regra[
+                    sintomaSelect.value
+                ] || [];
+
+            eventos.forEach(evento => {
+
+                eventoSelect.add(
+                    new Option(
+                        evento,
+                        evento
+                    )
+                );
+            });
+        }
+
+        sintomaSelect.addEventListener(
+            "change",
+            atualizarEventos
+        );
+
+        atualizarEventos();
+
+        if (
+            registroAtual?.evento &&
+            [...eventoSelect.options]
+                .some(
+                    o =>
+                        o.value ===
+                        registroAtual.evento
+                )
+        ) {
+
+            eventoSelect.value =
+                registroAtual.evento;
+        }
+    });
+}
+
+async function abrirEdicaoTicket() {
+
+    if (temEventoSalvo) {
+
+        alert(
+            "Este ticket já possui evento e não pode ser editado completamente."
+        );
+
+        return;
+    }
+
+    try {
+
+        await carregarDadosEdicaoTicket();
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+
+        alert(
+            "Erro ao carregar dados para edição."
+        );
+
+        return;
+    }
+
+    modoEdicaoTicket = true;
+
+    const ticket =
+        tickets[0];
+
+    document.getElementById(
+        "edit_descricao"
+    ).value =
+        ticket.descricao || "";
+
+    document.getElementById(
+        "edit_data_inicio"
+    ).value =
+        dataBRParaInput(
+            ticket.data_inicio
+        );
+
+    document.getElementById(
+        "edit_chamado_operadora"
+    ).value =
+        ticket.chamado_operadora
+        || "";
+
+    document.getElementById(
+        "edit_outage"
+    ).value =
+        ticket.outage ?? "";
+
+    carregarCidadesEdicao();
+
+    atualizarCategoriasEdicao(
+        ticket.categoria
+    );
+
+    await atualizarOfensoresEdicao(
+        ticket.ofensor
+    );
+
+    carregarServicosEdicao();
+
+    document.getElementById(
+        "visualizacaoTicket"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "edicaoTicket"
+    ).style.display =
+        "block";
+}
+
+
+function cancelarEdicaoTicket() {
+
+    modoEdicaoTicket = false;
+
+    document.getElementById(
+        "edicaoTicket"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "visualizacaoTicket"
+    ).style.display =
+        "block";
+}
+
+async function salvarEdicaoTicket() {
+
+    const cidades = [
+        ...document.querySelectorAll(
+            "#edit_cidades_selecionadas li"
+        )
+    ].map(
+        li => li.textContent.trim()
+    );
+
+    const configs = [
+        ...document.querySelectorAll(
+            "#edit_config_servicos > div"
+        )
+    ];
+
+    if (!cidades.length) {
+
+        alert(
+            "Selecione pelo menos uma cidade."
+        );
+
+        return;
+    }
+
+    if (!configs.length) {
+
+        alert(
+            "Selecione pelo menos um serviço."
+        );
+
+        return;
+    }
+
+    const registros = [];
+
+    configs.forEach(div => {
+
+        const servico =
+            div.dataset.servico;
+
+        const sintoma =
+            div.querySelector(
+                ".edit_sintoma"
+            )?.value;
+
+        const evento =
+            div.querySelector(
+                ".edit_evento"
+            )?.value;
+
+        cidades.forEach(cidade => {
+
+            registros.push({
+
+                cidade,
+
+                servico,
+
+                sintoma,
+
+                evento,
+
+                descricao:
+                    document.getElementById(
+                        "edit_descricao"
+                    ).value.trim(),
+
+                data_inicio:
+                    document.getElementById(
+                        "edit_data_inicio"
+                    ).value,
+
+                categoria:
+                    document.getElementById(
+                        "edit_categoria"
+                    ).value,
+
+                ofensor:
+                    document.getElementById(
+                        "edit_ofensor"
+                    ).value,
+
+                chamado_operadora:
+                    document.getElementById(
+                        "edit_chamado_operadora"
+                    ).value.trim(),
+
+                outage:
+                    Number(
+                        document.getElementById(
+                            "edit_outage"
+                        ).value
+                    ) || null
+            });
+        });
+    });
+
+    console.log(
+        "EDITANDO TICKET",
+        registros
+    );
+
+    try {
+
+        const resp =
+            await fetch(
+                "/api/editar_ticket",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            id_ticket:
+                                window.ID_TICKET,
+
+                            registros
+                        })
+                }
+            );
+
+        const dados =
+            await resp.json();
+
+        if (!resp.ok) {
+
+            alert(
+                dados.erro ||
+                "Erro ao editar ticket."
+            );
+
+            return;
+        }
+
+        alert(
+            "✅ Ticket atualizado"
+        );
+
+        window.location.href =
+            `/ticket/${encodeURIComponent(
+                window.ID_TICKET
+            )}`;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao editar ticket:",
+            erro
+        );
+
+        alert(
+            "Erro ao editar ticket."
+        );
+    }
+}
+
+
 
 // ============================
 // ✅ DOM READY
@@ -1899,6 +2820,54 @@ if (formEvento) {
         );
 
         carregarEdicaoFechamento(servicoEdicao);
-    }
-        
+            }
+
+        // ============================
+        // EDIÇÃO DO TICKET
+        // ============================
+
+        document.getElementById("btnEditarTicket")?.addEventListener("click",abrirEdicaoTicket);
+
+        document.getElementById("btnCancelarEdicaoTicket")?.addEventListener("click",cancelarEdicaoTicket);
+
+        document.getElementById("btnSalvarEdicaoTicket")?.addEventListener("click",salvarEdicaoTicket);
+
+
+        // ============================
+        // MOVER CIDADES
+        // ============================
+
+        document.getElementById("btnEditAdicionarCidade")?.addEventListener("click",() => {
+                moverCidadeEdicao(
+                    "edit_cidades_disponiveis",
+                    "edit_cidades_selecionadas"
+                );
+            }
+        );
+
+        document.getElementById("btnEditRemoverCidade")?.addEventListener("click",() => {
+                moverCidadeEdicao(
+                    "edit_cidades_selecionadas",
+                    "edit_cidades_disponiveis"
+                );
+            }
+        );
+
+
+        // ============================
+        // ALTERAR CATEGORIA
+        // ============================
+
+        document.getElementById("edit_categoria")?.addEventListener("change",() => {
+                atualizarOfensoresEdicao();
+            }
+        );
+
+
+        // ============================
+        // ALTERAR SERVIÇOS
+        // ============================
+
+        document.getElementById("edit_servicos")?.addEventListener("change",renderServicosEdicao);
+                
 });

@@ -55,7 +55,8 @@ from newmonitor.database import (
     get_cluster_cidades,
     get_cnl_cidade,
     get_dashboard_operacao,
-    cidades_clusters_diferentes
+    cidades_clusters_diferentes,
+    editar_ticket
 
 )
 
@@ -456,6 +457,13 @@ def comentar(id_ticket):
         usuario=current_user.username,
         comentario=comentario,
         imagem=nome_arquivo
+    )
+    
+    registrar_atividade(
+        id_ticket=id_ticket,
+        usuario=current_user.username,
+        acao="COMENTARIO",
+        detalhes="Comentário adicionado"
     )
 
     return jsonify({
@@ -1158,4 +1166,241 @@ def api_clusters_diferentes():
 
     return jsonify({
         "diferentes": diferentes
+    })
+
+
+@app.route("/api/editar_ticket", methods=["POST"])
+@login_required
+def api_editar_ticket():
+
+    dados = request.get_json() or {}
+
+    id_ticket = dados.get("id_ticket")
+
+    registros = dados.get(
+        "registros",
+        []
+    )
+
+    # =========================
+    # VALIDAÇÕES BÁSICAS
+    # =========================
+
+    if not id_ticket:
+
+        return jsonify({
+            "erro": "Ticket não informado"
+        }), 400
+
+    if not registros:
+
+        return jsonify({
+            "erro":
+                "Nenhum registro informado"
+        }), 400
+
+    # =========================
+    # TICKET EXISTE?
+    # =========================
+
+    ticket_atual = get_ticket(
+        id_ticket
+    )
+
+    if not ticket_atual:
+
+        return jsonify({
+            "erro":
+                "Ticket não encontrado"
+        }), 404
+
+    # =========================
+    # BLOQUEIA SE JÁ HÁ EVENTO
+    # =========================
+
+    if ticket_possui_evento(
+        id_ticket
+    ):
+
+        return jsonify({
+            "erro": (
+                "Não é possível editar completamente "
+                "um ticket que já possui evento."
+            )
+        }), 400
+
+    # =========================
+    # REGRAS DE ABERTURA
+    # =========================
+
+    regras = get_regras_abertura()
+
+    for registro in registros:
+
+        servico = registro.get(
+            "servico"
+        )
+
+        sintoma = registro.get(
+            "sintoma"
+        )
+
+        evento = registro.get(
+            "evento"
+        )
+
+        cidade = registro.get(
+            "cidade"
+        )
+
+        if not cidade:
+
+            return jsonify({
+                "erro":
+                    "Cidade não informada"
+            }), 400
+
+        if servico not in regras:
+
+            return jsonify({
+                "erro":
+                    f"Serviço inválido: {servico}"
+            }), 400
+
+        if sintoma not in regras[servico]:
+
+            return jsonify({
+                "erro": (
+                    f"Sintoma inválido para "
+                    f"{servico}: {sintoma}"
+                )
+            }), 400
+
+        eventos_validos = (
+            regras[servico][sintoma]
+        )
+
+        if evento not in eventos_validos:
+
+            return jsonify({
+                "erro": (
+                    f"Evento inválido para "
+                    f"{servico}/{sintoma}: "
+                    f"{evento}"
+                )
+            }), 400
+
+        # =========================
+        # RECALCULA DADOS DA CIDADE
+        # =========================
+
+        dados_cidade = get_dados_cidade(
+            cidade
+        )
+
+        registro["uf"] = (
+            dados_cidade.get(
+                "uf",
+                ""
+            )
+        )
+
+        registro["regional"] = (
+            dados_cidade.get(
+               "regional",
+                ""
+            )
+        )
+
+        registro[
+            "nm_regional_cmv_bi"
+        ] = dados_cidade.get(
+            "nm_regional_cmv_bi",
+            ""
+        )
+
+        registro["cnl_net"] = (
+            get_cnl_cidade(
+                cidade
+            )
+        )
+
+    # =========================
+    # FORMATA DATA INÍCIO
+    # =========================
+
+    for registro in registros:
+
+        data_inicio = registro.get(
+            "data_inicio"
+        )
+
+        if (
+            data_inicio
+            and "T" in data_inicio
+        ):
+
+            try:
+
+                dt = datetime.strptime(
+                    data_inicio,
+                    "%Y-%m-%dT%H:%M"
+                )
+
+                registro[
+                    "data_inicio"
+                ] = dt.strftime(
+                    "%d/%m/%Y %H:%M"
+                )
+
+            except ValueError:
+
+                return jsonify({
+                    "erro":
+                        "Data de início inválida"
+                }), 400
+
+    # =========================
+    # SALVA
+    # =========================
+
+    try:
+
+        editar_ticket(
+            id_ticket,
+            registros
+        )
+
+    except ValueError as e:
+
+        return jsonify({
+            "erro": str(e)
+        }), 400
+
+    except Exception as e:
+
+        print(
+            "ERRO EDITAR TICKET:",
+            repr(e)
+        )
+
+        return jsonify({
+            "erro":
+                "Erro ao editar ticket"
+        }), 500
+
+    # =========================
+    # HISTÓRICO
+    # =========================
+
+    registrar_atividade(
+        id_ticket=id_ticket,
+        usuario=current_user.username,
+        acao="EDICAO_TICKET",
+        detalhes="Ticket editado"
+    )
+
+    return jsonify({
+        "ok": True,
+        "id_ticket": id_ticket
     })

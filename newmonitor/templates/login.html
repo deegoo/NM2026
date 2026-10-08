@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NewMonitor</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo_icon.png') }}">
+    <title>Login - SGT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,7 +74,7 @@
 <body>
 
 <div class="login-container">
-    <h2>NewMonitor</h2>
+    <h2><img src="/static/img/sgt_logo.png" width="350px"></h2>
 
     {# Exibe mensagens de erro caso o login falhe #}
     {% with messages = get_flashed_messages() %}

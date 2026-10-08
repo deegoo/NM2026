@@ -318,13 +318,6 @@ def salvar_comentario(
 
     conn.commit()
     conn.close()
-
-    registrar_atividade(
-        id_ticket=id_ticket,
-        usuario=usuario,
-        acao="COMENTARIO",
-        detalhes="Comentário adicionado"
-    )
     
 def salvar_evento_ticket(
     id_ticket,
@@ -2898,3 +2891,115 @@ def cidades_clusters_diferentes(cidades):
     )
 
     return diferentes
+
+def editar_ticket(id_ticket, registros):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    try:
+
+        # =========================
+        # DADOS ORIGINAIS
+        # =========================
+
+        cur.execute("""
+            SELECT
+                data_abertura,
+                usuario,
+                status
+            FROM tickets
+            WHERE id_ticket = ?
+            ORDER BY id
+            LIMIT 1
+        """, (id_ticket,))
+
+        original = cur.fetchone()
+
+        if not original:
+            raise ValueError(
+                "Ticket não encontrado"
+            )
+
+        data_abertura = original["data_abertura"]
+        usuario = original["usuario"]
+        status = original["status"]
+
+        # =========================
+        # REMOVE REGISTROS ANTIGOS
+        # =========================
+
+        cur.execute("""
+            DELETE FROM tickets
+            WHERE id_ticket = ?
+        """, (id_ticket,))
+
+        # =========================
+        # INSERE NOVA COMPOSIÇÃO
+        # =========================
+
+        for ticket in registros:
+
+            cur.execute("""
+                INSERT INTO tickets (
+                    id_ticket,
+                    cidade,
+                    servico,
+                    sintoma,
+                    evento,
+                    categoria,
+                    ofensor,
+                    descricao,
+                    data_inicio,
+                    data_abertura,
+                    chamado_operadora,
+                    outage,
+                    status,
+                    usuario,
+                    uf,
+                    regional,
+                    nm_regional_cmv_bi,
+                    cnl_net
+                )
+                VALUES (
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?
+                )
+            """, (
+                id_ticket,
+                ticket["cidade"],
+                ticket["servico"],
+                ticket.get("sintoma"),
+                ticket.get("evento"),
+                ticket.get("categoria"),
+                ticket.get("ofensor"),
+                ticket.get("descricao"),
+                ticket.get("data_inicio"),
+
+                # preservados
+                data_abertura,
+
+                ticket.get("chamado_operadora"),
+                ticket.get("outage"),
+
+                # preservados
+                status,
+                usuario,
+
+                ticket.get("uf"),
+                ticket.get("regional"),
+                ticket.get("nm_regional_cmv_bi"),
+                ticket.get("cnl_net")
+            ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        conn.close()
