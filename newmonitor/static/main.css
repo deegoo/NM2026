@@ -1068,3 +1068,7 @@ max-width: 170px;
   background-color: var(--shadow1);
   justify-content: center;
 }
+
+#data_inicio_evento{
+  max-width: 200px;
+}

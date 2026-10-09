@@ -496,6 +496,45 @@ def salvar_evento(id_ticket):
 
     inicio_evento = dados.get("inicio_evento")
 
+    if inicio_evento:
+
+        try:
+
+            dt = datetime.strptime(
+                inicio_evento,
+                "%Y-%m-%dT%H:%M"
+            )
+
+            inicio_evento_formatado = dt.strftime(
+                "%d/%m/%Y %H:%M"
+            )
+
+            conn = conectar()
+            cur = conn.cursor()
+
+            cur.execute("""
+                UPDATE tickets
+                SET data_inicio = ?
+                WHERE id_ticket = ?
+            """, (
+                inicio_evento_formatado,
+                id_ticket
+            ))
+
+            conn.commit()
+            conn.close()
+
+            inicio_evento = (
+                inicio_evento_formatado
+            )
+
+        except Exception as e:
+
+            print(
+                "ERRO DATA INICIO:",
+                e
+            )
+
     eventos = dados.get(
         "eventos",
         []
@@ -530,13 +569,21 @@ def salvar_evento(id_ticket):
         )
 
         for fase in evento.get("fases", []):
+            
+            if (
+                not fase.get("inicio_fase")
+                or not fase.get("fim_fase")
+            ):
+                continue
 
             salvar_fase_evento(
                 id_ticket=id_ticket,
                 cidade=cidade,
                 servico=servico,
-                tempo=fase.get("tempo", 0),
-                impacto=fase.get("impacto", 0)
+                inicio_fase= fase.get("inicio_fase"),
+                fim_fase=fase.get("fim_fase"),
+                tempo=fase.get("tempo",0),
+                impacto=fase.get("impacto",0)
             )
 
     registrar_atividade(

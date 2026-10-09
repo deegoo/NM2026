@@ -371,6 +371,8 @@ def salvar_fase_evento(
     id_ticket,
     cidade,
     servico,
+    inicio_fase,
+    fim_fase,
     tempo,
     impacto
 ):
@@ -383,16 +385,20 @@ def salvar_fase_evento(
             id_ticket,
             cidade,
             servico,
+            inicio_fase,
+            fim_fase,
             tempo,
             impacto
         )
         VALUES (
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?
         )
     """, (
         id_ticket,
         cidade,
         servico,
+        inicio_fase,
+        fim_fase,
         tempo,
         impacto
     ))
@@ -425,7 +431,13 @@ def get_fases_evento(id_ticket):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT *
+        SELECT
+            cidade,
+            servico,
+            inicio_fase,
+            fim_fase,
+            tempo,
+            impacto
         FROM fases_evento
         WHERE id_ticket = ?
         ORDER BY cidade, servico, id

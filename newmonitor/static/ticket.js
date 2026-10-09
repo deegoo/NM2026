@@ -213,11 +213,11 @@ function gerarEventosPorRegistro() {
                 <label>Interrupção (min):</label><br>
                 <span class="tempo-view" data-key="${key}">0</span><br>
 
-                <label>Impacto (%):</label><br>
-                <input type="number" class="impacto" data-key="${key}"><br>
-
                 <label>Final Evento:</label><br>
                 <input type="datetime-local" class="final_evento" data-key="${key}"><br>
+                
+                <label>Impacto (%):</label><br>
+                <input type="number" class="impacto" data-key="${key}"><br>
 
                 <div class="fases-container" data-key="${key}" style="display:none;"></div>
 
@@ -259,16 +259,51 @@ function gerarInputsPorCidade() {
 // ✅ CRIAR FASE (IMPACTO PARCIAL)
 // ============================
 
-function criarFase(container, key) {
+function criarFase(container, key, inicioAutomatico = "") {
 
     const div = document.createElement("div");
 
-    div.innerHTML = `
-        <label>Tempo (min):</label>
-        <input type="number" class="fase-tempo" data-key="${key}">
+    div.classList.add("fase-item");
 
-        <label>Impacto (%):</label>
-        <input type="number" class="fase-impacto" data-key="${key}">
+    div.innerHTML = `
+
+        <label>
+            Início Fase:
+        </label>
+
+        <input
+            type="datetime-local"
+            class="fase-inicio"
+            data-key="${key}"
+            value="${inicioAutomatico}"
+        >
+
+        <br><br>
+
+        <label>
+            Fim Fase:
+        </label>
+
+        <input
+            type="datetime-local"
+            class="fase-fim"
+            data-key="${key}"
+        >
+
+        <br><br>
+
+        <label>
+            Impacto (%):
+        </label>
+
+        <input
+            type="number"
+            class="fase-impacto"
+            data-key="${key}"
+            min="0"
+            max="100"
+        >
+
         <hr>
     `;
 
@@ -728,12 +763,24 @@ async function carregarEventosSalvos() {
                 Number(
                     evento.assinantes_impactados || 0
                 );
+                console.log(
+                    "FASES RECEBIDAS COMPLETO:",
+                    fases
+                );
+                console.log(
+                    "EVENTO ATUAL:",
+                    evento
+                );
             const fasesEvento =
                 fases.filter(f =>
                     f.cidade === evento.cidade &&
                     f.servico === evento.servico
                 );
-
+                console.log(
+                    "FASES EVENTO:",
+                    fasesEvento
+                );  
+                
             html += `
                 <div style="
                     border:1px solid #ccc;
@@ -784,15 +831,41 @@ async function carregarEventosSalvos() {
                     <ul>
 
                         ${
-                            fasesEvento.map(f => `
-                                <li>
+                            fasesEvento.map((f, idx) => `
+
+                                <li style="
+                                    margin-bottom:10px;
+                                    padding:8px;
+                                    border:1px solid #ddd;
+                                    border-radius:4px;
+                                ">
+
+                                    <b>Fase ${idx + 1}</b>
+
+                                    <br>
+
+                                    <b>Início:</b>
+                                    ${new Date(f.inicio_fase).toLocaleString("pt-BR")}
+
+                                    <br>
+
+                                    <b>Fim:</b>
+                                    ${new Date(f.fim_fase).toLocaleString("pt-BR")}
+
+                                    <br>
+
+                                    <b>Tempo:</b>
                                     ${f.tempo} min
-                                    /
+
+                                    <br>
+
+                                    <b>Impacto:</b>
                                     ${f.impacto}%
+
                                 </li>
+
                             `).join("")
                         }
-
                     </ul>
 
                 </div>
@@ -2231,6 +2304,43 @@ async function salvarEdicaoTicket() {
     }
 }
 
+function getInicioNovaFase(key) {
+
+    const fasesFim =
+        document.querySelectorAll(
+            `.fase-fim[data-key="${key}"]`
+        );
+
+    // PRIMEIRA FASE
+    if (!fasesFim.length) {
+
+        return document.querySelector(
+            `.final_evento[data-key="${key}"]`
+        )?.value || "";
+    }
+
+    // DEMAIS FASES
+    const ultimaFase =
+        fasesFim[
+            fasesFim.length - 1
+        ];
+
+    if (!ultimaFase.value) {
+        return "";
+    }
+
+    const data = new Date(
+        ultimaFase.value
+    );
+
+    data.setMinutes(
+        data.getMinutes() + 1
+    );
+
+    return data
+        .toISOString()
+        .slice(0, 16);
+}
 
 
 // ============================
@@ -2240,6 +2350,21 @@ async function salvarEdicaoTicket() {
 document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("🔥 DOM carregado");
+    const campoInicioEvento =
+        document.getElementById(
+            "data_inicio_evento"
+        );
+
+    if (
+        campoInicioEvento &&
+        tickets.length
+    ) {
+
+        campoInicioEvento.value =
+            dataBRParaInput(
+                tickets[0].data_inicio
+            );
+    }
     await carregarRegrasFechamento();
     await carregarBaseAssinantes();
     carregarHistorico()
@@ -2339,18 +2464,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // ============================
-    // ✅ BOTÃO ADICIONAR FASE
-    // ============================
-    document.addEventListener("click", function (e) {
+// ============================
+// ✅ BOTÃO ADICIONAR FASE
+// ============================
 
-        if (!e.target.classList.contains("add-fase")) return;
+document.addEventListener("click", function (e) {
 
-        const key = e.target.dataset.key;
-        const container = document.querySelector(`.fases-container[data-key="${key}"]`);
+    if (!e.target.classList.contains("add-fase")) {
+        return;
+    }
 
-        criarFase(container, key);
-    });
+    const key =
+        e.target.dataset.key;
+
+    const container = document.querySelector(`.fases-container[data-key="${key}"]`);
+
+    const inicioAutomatico = getInicioNovaFase(key);
+
+    criarFase(container, key, inicioAutomatico);
+});
 
     // ============================
     //  SUBMIT
@@ -2403,6 +2535,8 @@ if (formEvento) {
             });
         }
 
+        let erroFases = false;
+
         const eventos = tickets.map(reg => {
 
             const key = `${reg.cidade}-${reg.servico}`;
@@ -2411,44 +2545,178 @@ if (formEvento) {
                 ? global
                 : document.querySelector(`.final_evento[data-key="${key}"]`)?.value;
 
+            if (
+                !usarImpactoParcial &&
+                !final_evento
+            ) {
+
+                alert(
+                    `Preencha o Final Evento da cidade ${reg.cidade} (${reg.servico}).`
+                );
+
+                erroFases = true;
+
+                return;
+            }
+
             if (final_evento && final_evento.includes("T")) {
                 const [data, hora] = final_evento.split("T");
                 const [ano, mes, dia] = data.split("-");
                 final_evento = `${dia}/${mes}/${ano} ${hora}`;
             }
-
+            
             let fases = [];
 
             if (usarImpactoParcial) {
 
-                const tempos = document.querySelectorAll(`.fase-tempo[data-key="${key}"]`);
+                const inicios = document.querySelectorAll(`.fase-inicio[data-key="${key}"]`);
+
+                const fins = document.querySelectorAll(`.fase-fim[data-key="${key}"]`);
+
                 const impactos = document.querySelectorAll(`.fase-impacto[data-key="${key}"]`);
 
-                tempos.forEach((t, i) => {
+                for (
+                    let i = 0;
+                    i < impactos.length;
+                    i++
+                ) {
+
+                    const inicio = inicios[i]?.value;
+
+                    const fim = fins[i]?.value;
+
+                    const impacto = Number(impactos[i]?.value);
+
+                    // =====================
+                    // CAMPOS OBRIGATÓRIOS
+                    // =====================
+
+                    if (
+                        !inicio || !fim || impactos[i]?.value === "" || impactos[i]?.value == null) {
+
+                        alert(
+                            "Preencha início, fim e impacto de todas as fases."
+                        );
+
+                        erroFases = true;
+                        return;
+                    }
+
+                    const dtInicio = new Date(inicio);
+
+                    const dtFim = new Date(fim);
+
+                    if (dtFim < dtInicio) {
+
+                        alert(
+                            "A data final da fase não pode ser menor que a data inicial."
+                        );
+
+                        erroFases = true;
+                        return;
+                    }
+                    // =====================
+                    // SOBREPOSIÇÃO DE FASES
+                    // =====================
+
+                    if (i > 0) {
+
+                        const fimFaseAnterior =
+                            new Date(
+                                fins[i - 1]?.value
+                            );
+
+                        if (
+                            dtInicio <= fimFaseAnterior
+                        ) {
+
+                            alert(
+                                "O início da fase deve ser maior que o fim da fase anterior."
+                            );
+
+                            erroFases = true;
+                            return;
+                        }
+                    }
+
+                    const tempo = Math.round((dtFim - dtInicio) / 60000);
+
                     fases.push({
-                        tempo: Number(t.value || 0),
-                        impacto: Number(impactos[i]?.value || 0)
+
+                        inicio_fase:
+                            inicio,
+
+                        fim_fase:
+                            fim,
+
+                        tempo:
+                            tempo,
+
+                        impacto:
+                            impacto
                     });
-                });
+                }
+
+                // =====================
+                // FINAL EVENTO
+                // =====================
+
+                if (fases.length) {
+
+                    final_evento =
+                        fases[
+                            fases.length - 1
+                        ].fim_fase;
+                }
+
+                if (
+                    final_evento &&
+                    final_evento.includes("T")
+                ) {
+
+                    const [data, hora] =
+                        final_evento.split("T");
+
+                    const [ano, mes, dia] =
+                        data.split("-");
+
+                    final_evento =
+                        `${dia}/${mes}/${ano} ${hora}`;
+                }
 
             } else {
 
-                const inicio = tickets[0]?.data_inicio;
+                const inicio = getInicioEvento();
+
                 const tempo = calcularDuracao(inicio, final_evento);
 
                 let impacto;
 
-                if (document.getElementById("impactoCidade")?.checked) {
-                    impacto = impactoCidadeMap[reg.cidade] || 0;
+                if (
+                    document.getElementById(
+                        "impactoCidade"
+                    )?.checked
+                ) {
+
+                    impacto =
+                        impactoCidadeMap[
+                            reg.cidade
+                        ] || 0;
+
                 } else {
+
                     impacto = Number(
-                        document.querySelector(`.impacto[data-key="${key}"]`)?.value || 0
+                        document.querySelector(
+                            `.impacto[data-key="${key}"]`
+                        )?.value || 0
                     );
                 }
 
-                fases.push({ tempo, impacto });
+                fases.push({
+                    tempo,
+                    impacto
+                });
             }
-
             const vc_total = calcularVCFases(
                 fases,
                 reg.cidade,
@@ -2515,10 +2783,15 @@ if (formEvento) {
         };
 
     });
-        const payload = {
-            inicio_evento: tickets[0]?.data_inicio,
-            eventos
-        };
+
+        if (erroFases) {
+            return;
+        }
+        if (eventos.some(ev => !ev)) {
+            return;
+        }
+
+        const payload = {inicio_evento:document.getElementById("data_inicio_evento")?.value,eventos};
 
         console.log("📦 payload:", payload);
 
@@ -2554,6 +2827,7 @@ if (formEvento) {
         });
 
     });
+
 }
         document.getElementById("btnFecharTudo")?.addEventListener("click", () => {
             const servicos = [...new Set(tickets.map(t => t.servico))];

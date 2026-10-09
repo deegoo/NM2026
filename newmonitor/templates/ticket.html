@@ -10,7 +10,7 @@
 <div id="tela_evento" class="tela" style="display:none">
 
     <h2>Evento</h2>
-    <div id="eventosSalvosContainer"></div>
+    
         <div class="resumo_evento">
 
         <div class="resumo_evento_item">
@@ -46,18 +46,18 @@
 
     </div>
 
+    
     <hr>
-
 
     <form class="evento_form">
 
         <div class="ini_eve">
 
-            <label>Início Evento:</label>
+            <label>
+                Início Evento:
+            </label>
 
-            <p>
-                {{ tickets[0].data_inicio }}
-            </p>
+            <input type="datetime-local" id="data_inicio_evento" value="">
 
         </div>
 
@@ -101,10 +101,14 @@
         </div>
 
         <div id="eventosPorCidade"></div>
+        
 
         <button id="btnSalvarEvento" type="submit" class="evento_btn">Salvar Evento</button>
 
     </form>
+    
+    <hr>
+    <div id="eventosSalvosContainer"></div>
 
 </div>
 <div id="tela_fechamento" class="tela" style="display:none">
@@ -245,8 +249,8 @@
 
         </table>
     </div>
-    <div id="edicaoTicket"style="display:none">
-
+    <div id="edicaoTicket" style="display:none">
+    
         <h3>Editar Ticket</h3>
 
         <label>Descrição:</label>
@@ -432,7 +436,7 @@
     <div id="lista_logs">
 
         <p>
-            Carregando histórico...
+            Carregando comentários...
         </p>
 
     </div>
